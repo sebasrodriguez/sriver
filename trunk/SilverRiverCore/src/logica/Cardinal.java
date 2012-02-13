@@ -3,7 +3,7 @@ package logica;
 public class Cardinal {
 
 	enum cardinal{
-		N(0), NE(45), E(90), SE(135), S(180), SO(-135), O(-90), NO(-45);		
+		N(0), NE(45), E(90), SE(135), S(180), SW(-135), W(-90), NW(-45);		
 	
 		private int direction;
 	
