@@ -12,7 +12,7 @@ public class Ship {
 	private int torpedo;
 	private int viewRange;
 	private int size;
-	private Point position;	
+	private Coordenate position;	
 	private Cardinal orientation;	
 	private int side;
 	
@@ -24,7 +24,7 @@ public class Ship {
 		
 	}
 	
-	public Ship(int id, int speed, int armor, int ammo, int torpedo, int viewRange, int size, Point position, Cardinal orientation, int side){
+	public Ship(int id, int speed, int armor, int ammo, int torpedo, int viewRange, int size, Coordenate position, Cardinal orientation, int side){
 		this.id = id;
 		this.speed = speed;
 		this.armor = armor;
@@ -69,7 +69,7 @@ public class Ship {
 		this.size = size;
 	}
 
-	public void setPosition(Point position){
+	public void setPosition(Coordenate position){
 		this.position = position;
 	}
 	
@@ -112,7 +112,7 @@ public class Ship {
 		return this.size;
 	}
 	
-	public Point getPosition(){
+	public Coordenate getPosition(){
 		return this.position;
 	}
 	
@@ -135,7 +135,7 @@ public class Ship {
 	 * 	Actualiza la posicion del barco a la nueva posicion del barco
 	 * 	Envia a la cola del otro jugador la accion que acaba de realizar para que el otro jugador actualize
 	 */
-	public MoveAction Move(Point destination){
+	public MoveAction Move(Coordenate destination){
 		
 	
 	}
@@ -162,7 +162,7 @@ public class Ship {
 	 * 	Actualizar la nueva cantidad de balas
 	 * 	Enviar a la cola del otro jugador la accion que acaba de realizar para que el otro jugador actualize
 	 */
-	public FireAction Fire(Weapon gun, Point destination){
+	public FireAction Fire(Weapon gun, Coordenate destination){
 		
 		
 		
