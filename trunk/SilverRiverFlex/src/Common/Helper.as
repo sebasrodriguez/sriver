@@ -1,24 +1,27 @@
-package Common 
+package Common
 {
 	import flash.geom.Point;
+	
 	/**
 	 * ...
 	 * @author sebas
 	 */
-	public class Helper 
+	public class Helper
 	{
 		
-		public function Helper() {			
+		public function Helper()
+		{
 		}
 		
-		public static function ConvertPointToCoordinate(point: Point, squaresize: int):Coordinate {
-			var position: Coordinate = new Coordinate();
+		public static function ConvertPointToCoordinate(point:Point, squareSize:int):Coordinate
+		{
+			var position:Coordinate = new Coordinate();
 			
-			position.X = Math.floor(point.x / squaresize);
-			position.Y = Math.floor(point.y / squaresize);
+			position.X = Math.floor(point.x / squareSize);
+			position.Y = Math.floor(point.y / squareSize);
 			
 			return position;
-		}		
+		}
 	}
 
 }
