@@ -7,9 +7,7 @@ package Entities
 	public class Ship 
 	{
 		
-		public function Ship() {
-			
+		public function Ship() {			
 		}		
 	}
-
 }

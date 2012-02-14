@@ -10,12 +10,9 @@ package Actions
 		
 		private var _ship: Ship;
 		
-		public function Action() {			
-		}
-		
-		public function Action(ship: Ship) {
+		public function Action(ship: Ship = null) {
 			this._ship = ship;
-		}
+		}		
 		
 		public function get ActionShip(): Ship {
 			return _ship;
