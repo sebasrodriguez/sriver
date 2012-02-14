@@ -7,11 +7,15 @@ package
 	 */
 	public class Ship extends Sprite
 	{
-		
-		public function Ship(a:Number, b:Number) 
-		{
+		public function Ship() {
 			
 		}
+		
+	
+		/*public function Ship(a:Number, b:Number) 
+		{
+			
+		}*/
 		
 	}
 
