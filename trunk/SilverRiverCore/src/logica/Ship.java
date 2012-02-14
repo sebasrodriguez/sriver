@@ -1,7 +1,5 @@
 package logica;
 
-import java.awt.Point;
-
 public class Ship {
 
 	
@@ -136,7 +134,7 @@ public class Ship {
 	 * 	Envia a la cola del otro jugador la accion que acaba de realizar para que el otro jugador actualize
 	 */
 	public MoveAction Move(Coordenate destination){
-		
+		return null;
 	
 	}
 	
@@ -149,7 +147,7 @@ public class Ship {
 	 *
 	 */
 	public RotateAction Rotate(Cardinal destination){
-		
+		return null;
 	}
 	
 	/*
@@ -163,7 +161,7 @@ public class Ship {
 	 * 	Enviar a la cola del otro jugador la accion que acaba de realizar para que el otro jugador actualize
 	 */
 	public FireAction Fire(Weapon gun, Coordenate destination){
-		
+		return null;
 		
 		
 	}
