@@ -126,43 +126,40 @@ public class Ship {
 	 * Actions
 	 */
 	/*
-	 * Como entrada tiene el id del barco y el punto de destino
+	 * Como entrada tiene el punto de destino
 	 * Entrada: punto de destino
-	 * Salida: MoveAction
+	 * Salida: void
 	 * Procedimiento: 
 	 * 	Actualiza la posicion del barco a la nueva posicion del barco
-	 * 	Envia a la cola del otro jugador la accion que acaba de realizar para que el otro jugador actualize
 	 */
-	public MoveAction Move(Coordenate destination){
-		return null;
-	
+	public void Move(Coordenate destination){
+		this.position = destination;	
 	}
 	
 	/*
 	 *Entrada: cardinal de destino
-	 *Salida: RotateAction
+	 *Salida: void
 	 *Procedimiento:
 	 *	Actualiza la rotacion del barco al nuevo punto cardinal
-	 *	Envia a la cola del otro jugador la accion que acaba de realizar para que el otro jugador actualize
-	 *
 	 */
-	public RotateAction Rotate(Cardinal destination){
-		return null;
+	public void Rotate(Cardinal destination){
+		this.orientation = destination;
 	}
 	
 	/*
 	 * Entrada: arma usuada y destino a donde hizo click el jugador
-	 * Salida FireAction
+	 * Salida: void
 	 * Procedimiento:
 	 * 	Realizar el random para saber donde realmente cae la bala
 	 * 	Calcular daño hecho en caso de haberlo
 	 * 	Actualizar el daño hecho al otro barco
 	 * 	Actualizar la nueva cantidad de balas
-	 * 	Enviar a la cola del otro jugador la accion que acaba de realizar para que el otro jugador actualize
 	 */
-	public FireAction Fire(Weapon gun, Coordenate destination){
-		return null;
+	public void Fire(Weapon gun, Coordenate destination){
 		
+		/*
+		 * FALTAAAAAAAAAAA
+		 */
 		
 	}
 }
