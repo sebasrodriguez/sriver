@@ -1,5 +1,6 @@
 package UI
 {
+	import Common.*;
 	import flash.display.Shape;
 	import mx.core.UIComponent;
 	
@@ -9,11 +10,11 @@ package UI
 	 */
 	public class GridSquareBuilder
 	{
-		private var squareSize: int;
-		private var squareFillColor: uint;
-		private var squareBorderColor: uint;
+		private var squareSize:int;
+		private var squareFillColor:uint;
+		private var squareBorderColor:uint;
 		
-		public function GridSquareBuilder(_squareSize:int = 40, _squareFillColor:uint=0x000000, _squareBorderColor: uint=0x000000)
+		public function GridSquareBuilder(_squareSize:int = 40, _squareFillColor:uint = 0x000000, _squareBorderColor:uint = 0x000000)
 		{
 			squareSize = _squareSize;
 			squareFillColor = _squareFillColor;
