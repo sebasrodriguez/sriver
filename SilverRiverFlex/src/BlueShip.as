@@ -8,14 +8,11 @@ package
 	public class BlueShip extends Ship 
 	{
 		
-		public function BlueShip() 
+		public function BlueShip(x:Number = 0, y:Number = 0) 
 		{
-			
-			this.graphics.beginBitmapFill(Assets.BLUESHIP_DATA, null, false, false);
-			this.graphics.drawRect(0, 0, Assets.BLUESHIP_DATA.rect.width, Assets.BLUESHIP_DATA.rect.height);
-			this.graphics.endFill();
-			this.width = this.width * Constants.GAME_SCALE*1/2;
-			this.height = this.height * Constants.GAME_SCALE*1/2;
+			super(x,y);
+			this.setBitmap(Assets.BLUESHIP_DATA);
+			fixCenter();
 		}
 		
 	}

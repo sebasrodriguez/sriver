@@ -1,21 +1,14 @@
 package  
 {
-	import flash.display.Sprite;
 	/**
 	 * ...
 	 * @author pablo
 	 */
-	public class Ship extends Sprite
+	public class Ship extends GameUIComponent
 	{
-		public function Ship() {
-			
+		public function Ship(x:Number = 0, y:Number = 0) {
+			super(x, y);
 		}
-		
-	
-		/*public function Ship(a:Number, b:Number) 
-		{
-			
-		}*/
 		
 	}
 

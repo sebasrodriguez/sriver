@@ -31,32 +31,30 @@
 			//myCanvas.verticalScrollBar.visible = false;
 			//myCanvas.horizontalScrollBar.visible = false;
 			//trace(myCanvas)
-			var mc:UIComponent = new UIComponent();
-			var redship:UIComponent = new UIComponent();
-			var blueship1:UIComponent = new UIComponent();
-			var blueship2:UIComponent = new UIComponent();
-			var blueship3:UIComponent = new UIComponent();
-			var mp:Map = new Map();
-			mc.addChild(mp);
-			myCanvas.addChild(mc);
-			myCanvas.width = mp.width;
-			myCanvas.height = mp.height;
-			var rship:RedShip = new RedShip();
-			redship.addChild(rship);
-			rship.x = -(rship.width / 2);
-			rship.y = -(rship.height / 2);
-			//redship.horizontalCenter = rship.width / 2;
-			//redship.verticalCenter = rship.height / 2;
-			myCanvas.addChild(redship);
-			blueship1.addChild(new BlueShip());
-			blueship2.addChild(new BlueShip());
-			blueship3.addChild(new BlueShip());
-			myCanvas.addChild(blueship1);
-			myCanvas.addChild(blueship2);
-			myCanvas.addChild(blueship3);
+			var mapComponent:Map = new Map();
+			var redShipComponent:RedShip = new RedShip(350, 500);
+			var blueShipComponent1:BlueShip = new BlueShip(200, 200);
+			var blueShipComponent2:BlueShip = new BlueShip(400, 200);
+			var blueShipComponent3:BlueShip = new BlueShip(600, 200);
+			myCanvas.width = mapComponent.getSprite().width;
+			myCanvas.height = mapComponent.getSprite().height;	
+			
+			myCanvas.addChild(mapComponent);			
+			myCanvas.addChild(redShipComponent);
+			myCanvas.addChild(blueShipComponent1);
+			myCanvas.addChild(blueShipComponent2);
+			myCanvas.addChild(blueShipComponent3);
+			
+			mapComponent.show();
+			redShipComponent.show();
+			blueShipComponent1.show();
+			blueShipComponent2.show();
+			blueShipComponent3.show();
+			
+			blueShipComponent1.moveTo(200, 400);
 			
 			//start position of redship
-			var mdo:MatchDataObject = dataFromServer();
+			/*var mdo:MatchDataObject = dataFromServer();
 			redship.x = mdo.redship_a_coordinate;
 			redship.y = mdo.redship_b_coordinate;
 			redship.rotation = mdo.redship_rotation;
@@ -65,12 +63,12 @@
 			blueship2.x = mdo.blueship2_a_coordinate;
 			blueship2.y = mdo.blueship2_b_coordinate;
 			blueship3.x = mdo.blueship3_a_coordinate;
-			blueship3.y = mdo.blueship3_b_coordinate;
-			new Tween(redship,0,1000,5000, 20, function tweenupd(newX:Number):void{
+			blueship3.y = mdo.blueship3_b_coordinate;*/
+			/*new Tween(redship,0,1000,5000, 20, function tweenupd(newX:Number):void{
 					redship.rotation = newX;
 				}, function tweenend():void {
 						
-				});
+				});*/
 			//myCanvas.x = -100;
 				//myCanvas.x = -100;
 		}

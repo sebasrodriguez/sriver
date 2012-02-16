@@ -1,7 +1,8 @@
 package{
 	import flash.display.*;
-	public final class Projectile extends Sprite{
-		public function Projectile(){
+	public final class Projectile extends GameUIComponent{
+		public function Projectile() {
+			super();
 		}
 	}
 }

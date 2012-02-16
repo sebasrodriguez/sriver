@@ -9,7 +9,10 @@ package
 		
 		public function Torpedo() 
 		{
+			super();
+			//this.setBitmap(Assets.BLUESHIP_DATA);
 			
+			fixCenter();
 		}
 		
 	}
