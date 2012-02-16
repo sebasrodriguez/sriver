@@ -154,12 +154,12 @@ public class Ship {
 	 * 	Calcular daño hecho en caso de haberlo
 	 * 	Actualizar el daño hecho al otro barco
 	 * 	Actualizar la nueva cantidad de balas
+	 * 
+	 * Otra version: actualizar la cantidad de ammo (-1) del arma
+	 * Precondicion: tiene que tener por lo menos una bala disponible para ese weapon
 	 */
 	public void Fire(Weapon gun, Coordenate destination){
 		
-		/*
-		 * FALTAAAAAAAAAAA
-		 */
 		
 		
 		
