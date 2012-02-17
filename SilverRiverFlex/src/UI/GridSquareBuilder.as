@@ -24,7 +24,7 @@ package UI
 		public function DrawGridSquare(coordinate:Coordinate, uiComponent:UIComponent):void
 		{
 			var square:Shape = new Shape();
-			square.graphics.beginFill(squareFillColor, 1);
+			square.graphics.beginFill(squareFillColor, 0.5);
 			square.graphics.lineStyle(2, squareBorderColor, 1);
 			square.graphics.drawRect(coordinate.X * squareSize, coordinate.Y * squareSize, squareSize, squareSize);
 			square.graphics.endFill();
