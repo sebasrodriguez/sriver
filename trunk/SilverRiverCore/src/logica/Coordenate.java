@@ -1,13 +1,16 @@
 package logica;
 
+/*
+ * Contiene las coordenadas (ubicacion en el mapa) del barco
+ */
 public class Coordenate {
 
 	private int x;
 	private int y;
 	
 	
-	/**
-	 * Constructors
+	/*
+	 * Constructores
 	 */
 	Coordenate(){
 		

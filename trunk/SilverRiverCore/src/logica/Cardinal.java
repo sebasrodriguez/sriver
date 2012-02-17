@@ -1,5 +1,8 @@
 package logica;
 
+/*
+ * Enumerado para tener la direccion a la cual esta apuntando la proa el barco.
+ */
 public class Cardinal {
 
 	enum cardinal{

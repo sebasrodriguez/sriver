@@ -2,12 +2,16 @@ package logica;
 
 
 /*
- * Como la clase Player no me deja crearla porque ya existe una similar, se renombro a Captain
+ * Como Player no me dejaba crearla, se renombro a Captain 
  */
 public class Captain {
 	
 	private int id;
 	private String username;
+	
+	/*
+	 * Constructores
+	 */
 	
 	Captain(){
 		
@@ -18,6 +22,9 @@ public class Captain {
 		this.username = username;
 	}
 	
+	/*
+	 * Setters
+	 */
 	public void setId(int id){
 		this.id = id;
 	}
@@ -26,6 +33,9 @@ public class Captain {
 		this.username = username;
 	}
 	
+	/*
+	 * Getters
+	 */
 	public int getId(){
 		return this.id;
 	}
