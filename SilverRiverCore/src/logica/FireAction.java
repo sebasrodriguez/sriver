@@ -1,6 +1,6 @@
 package logica;
 
-public class FireAction extends Action {
+public class FireAction extends ShipAction {
 	
 	private Weapon weaponType;
 	private Coordenate hitCoordenate;
@@ -10,7 +10,7 @@ public class FireAction extends Action {
 	
 	
 	/*
-	 * Constructors
+	 * Constructores
 	 */
 	FireAction(){
 		

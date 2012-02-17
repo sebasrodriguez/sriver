@@ -1,16 +1,17 @@
 package logica;
 
-public class MoveAction extends Action{
+public class MoveAction extends ShipAction{
 
 	private Coordenate position;
 	
 	
 	/*
-	 * Constructors
+	 * Constructores
 	 */
 	MoveAction(){
 		
 	}
+	
 	MoveAction(Ship shipMoving, Coordenate position){
 		super(shipMoving);
 		this.position = position;

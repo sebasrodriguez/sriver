@@ -1,6 +1,6 @@
 package logica;
 
-public class Ship {
+public abstract class Ship {
 
 	
 	private int id;
@@ -12,9 +12,7 @@ public class Ship {
 	private int size;
 	private Coordenate position;	
 	private Cardinal orientation;	
-	private int side;
-	
-	
+		
 	/*
 	 * Constructors
 	 */
@@ -22,7 +20,7 @@ public class Ship {
 		
 	}
 	
-	public Ship(int id, int speed, int armor, int ammo, int torpedo, int viewRange, int size, Coordenate position, Cardinal orientation, int side){
+	public Ship(int id, int speed, int armor, int ammo, int torpedo, int viewRange, int size, Coordenate position, Cardinal orientation){
 		this.id = id;
 		this.speed = speed;
 		this.armor = armor;
@@ -32,7 +30,6 @@ public class Ship {
 		this.size = size;
 		this.position = position;
 		this.orientation = orientation;
-		this.side = side;
 	}
 	
 	
@@ -75,9 +72,7 @@ public class Ship {
 		this.orientation = orientation;
 	}
 	
-	public void setSide(int side){
-		this.side = side;
-	}	
+	
 
 	/*
 	 * Getters
@@ -116,52 +111,5 @@ public class Ship {
 	
 	public Cardinal getOrientation(){
 		return this.orientation;
-	}
-	
-	public int getSide(){
-		return this.side;
-	}
-	
-	/*
-	 * Actions
-	 */
-	/*
-	 * Como entrada tiene el punto de destino
-	 * Entrada: punto de destino
-	 * Salida: void
-	 * Procedimiento: 
-	 * 	Actualiza la posicion del barco a la nueva posicion del barco
-	 */
-	public void Move(Coordenate destination){
-		this.position = destination;	
-	}
-	
-	/*
-	 *Entrada: cardinal de destino
-	 *Salida: void
-	 *Procedimiento:
-	 *	Actualiza la rotacion del barco al nuevo punto cardinal
-	 */
-	public void Rotate(Cardinal destination){
-		this.orientation = destination;
-	}
-	
-	/*
-	 * Entrada: arma usuada y destino a donde hizo click el jugador
-	 * Salida: void
-	 * Procedimiento:
-	 * 	Realizar el random para saber donde realmente cae la bala
-	 * 	Calcular daño hecho en caso de haberlo
-	 * 	Actualizar el daño hecho al otro barco
-	 * 	Actualizar la nueva cantidad de balas
-	 * 
-	 * Otra version: actualizar la cantidad de ammo (-1) del arma
-	 * Precondicion: tiene que tener por lo menos una bala disponible para ese weapon
-	 */
-	public void Fire(Weapon gun, Coordenate destination){
-		
-		
-		
-		
-	}
+	}	
 }

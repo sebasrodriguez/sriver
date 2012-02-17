@@ -2,6 +2,12 @@ package logica;
 
 import java.util.ArrayList;
 
+/*
+ * IMPLEMENTARLA COMO SERIALIZE PARA QUE SE PUEDA GRABAR EN UNA BD
+ * TENGO DUDAS DE LOS METODOS GET Y SET DE LAS QUEUE
+ * FALTA IMPLEMENTAR SAVE Y LOAD GAME
+ * 
+ */
 public class Board {
 
 	private int id;

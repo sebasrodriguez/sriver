@@ -1,11 +1,11 @@
 package logica;
 
-public class RotateAction extends Action{
+public class RotateAction extends ShipAction{
 
 	private Cardinal cardinal;
 	
 	/*
-	 * Constructors 
+	 * Constructores 
 	 */
 	RotateAction(){
 		
