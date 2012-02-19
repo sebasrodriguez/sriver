@@ -4,31 +4,60 @@ package Common
 	 * ...
 	 * @author sebas
 	 */
-	public class Coordinate 
+	public class Coordinate
 	{
+		public static const POINT_SIZE:Number = 50;
 		
-		private var _x: int;
-		private var _y: int;		
+		private var _x: Number;
+		private var _y: Number;
+		private var _c:Number;
+		private var _r:Number;
 		
-		public function Coordinate(x:int=0, y:int=0) {
-			this._x = x;
-			this._y = y;
+		public function Coordinate(r:Number = 0, c:Number = 0) {
+			_r = r;
+			_c = c;
+			_x = POINT_SIZE * c + POINT_SIZE / 2;
+			_y = POINT_SIZE * r + POINT_SIZE / 2;
 		}
 		
-		public function get X(): int {
+		public function get x(): Number {
 			return _x;
 		}
 		
-		public function set X(x:int): void {
+		public function set x(x:Number): void {
 			_x = x;
 		}
 		
-		public function get Y(): int {
+		public function get y(): Number {
 			return _y;
 		}
 		
-		public function set Y(y:int): void {
+		public function set y(y:Number): void {
 			_y = y;
-		}		
+		}	
+		
+		public function get c():Number 
+		{
+			return _c;
+		}
+		
+		public function set c(value:Number):void 
+		{
+			_c = value;
+		}
+		
+		public function get r():Number 
+		{
+			return _r;
+		}
+		
+		public function set r(value:Number):void 
+		{
+			_r = value;
+		}
+		
+		public function toString():String {
+            return "Coordinate: ("+_r+","+_c+"), XY: ("+_x+","+_y+")";
+        }
 	}
 }
