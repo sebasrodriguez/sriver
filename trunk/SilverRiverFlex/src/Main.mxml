@@ -4,7 +4,8 @@
                xmlns:mx="library://ns.adobe.com/flex/mx"
 			   contentCreationComplete="creationCompleteHandler(event)"
 			   initialize="initializeHandler(event)"
-			   mouseMove="mouseMoveHandler(event)">
+			   mouseMove="mouseMoveHandler(event)"
+			   >
 	
 	<fx:Declarations>
 		<!--<s:WebService id="wsRequest" wsdl="http://localhost:8080/SilverRiverServices/services/Facade?wsdl"> 			
@@ -15,14 +16,22 @@
 	</mx:Canvas>
 	<fx:Script>
 		<![CDATA[
+		import Common.Coordinate;
 		import Common.MatchDataObject;
 		import flash.display.MovieClip;
 		import flash.events.Event;
+		import flash.events.MouseEvent;
 		import mx.core.UIComponent;
 		import mx.effects.Tween;
+		import UI.*;
 		
-		public var mc:UIComponent = new UIComponent();
-		
+		public var mapComponent:Map;
+		public var gridComponent:GameGrid;
+		public var redShipComponent:RedShip;
+		public var blueShipComponent1:BlueShip;
+		public var blueShipComponent2:BlueShip;
+		public var blueShipComponent3:BlueShip;
+			
 		private function initializeHandler(e:Event):void {
 			
 		}
@@ -31,19 +40,24 @@
 			//myCanvas.verticalScrollBar.visible = false;
 			//myCanvas.horizontalScrollBar.visible = false;
 			//trace(myCanvas)
-			var mapComponent:Map = new Map();
-			var redShipComponent:RedShip = new RedShip(350, 500);
-			var blueShipComponent1:BlueShip = new BlueShip(200, 200);
-			var blueShipComponent2:BlueShip = new BlueShip(400, 200);
-			var blueShipComponent3:BlueShip = new BlueShip(600, 200);
-			myCanvas.width = mapComponent.getSprite().width;
-			myCanvas.height = mapComponent.getSprite().height;	
+			mapComponent = new Map();
 			
-			myCanvas.addChild(mapComponent);			
+			myCanvas.width = mapComponent.sprite.width;
+			myCanvas.height = mapComponent.sprite.height;
+			gridComponent = new GameGrid(myCanvas, 18, 32);	
+			
+			redShipComponent = new RedShip(new Coordinate(6,6));
+			blueShipComponent1 = new BlueShip(new Coordinate(0,0));
+			blueShipComponent2 = new BlueShip(new Coordinate(1,1));
+			blueShipComponent3 = new BlueShip(new Coordinate(2,2));
+			
+			myCanvas.addChild(mapComponent);	
+			myCanvas.addChild(gridComponent);		
 			myCanvas.addChild(redShipComponent);
 			myCanvas.addChild(blueShipComponent1);
 			myCanvas.addChild(blueShipComponent2);
 			myCanvas.addChild(blueShipComponent3);
+			
 			
 			mapComponent.show();
 			redShipComponent.show();
@@ -51,7 +65,11 @@
 			blueShipComponent2.show();
 			blueShipComponent3.show();
 			
-			blueShipComponent1.moveTo(200, 400);
+			gridComponent.addEventListener(CellEvent.CLICK, function(e:CellEvent):void {
+				blueShipComponent1.moveTo(e.coordinate);
+			});
+			
+			//blueShipComponent1.moveTo(250, 400);
 			
 			//start position of redship
 			/*var mdo:MatchDataObject = dataFromServer();
@@ -71,6 +89,11 @@
 				});*/
 			//myCanvas.x = -100;
 				//myCanvas.x = -100;
+		}
+		
+		private function mouseClickHandler(e:MouseEvent):void {
+			//var co:Coordinate = this.gridComponent.getCoordinateFromXY(e.stageX, e.stageY);
+			//blueShipComponent1.moveTo(co);
 		}
 		
 		private function mouseMoveHandler(e:MouseEvent):void {

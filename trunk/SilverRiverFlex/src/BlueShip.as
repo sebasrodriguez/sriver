@@ -1,6 +1,7 @@
 package  
 {
 	import Common.Constants;
+	import Common.Coordinate;
 	/**
 	 * ...
 	 * @author pablo
@@ -8,9 +9,9 @@ package
 	public class BlueShip extends Ship 
 	{
 		
-		public function BlueShip(x:Number = 0, y:Number = 0) 
+		public function BlueShip(c:Coordinate) 
 		{
-			super(x,y);
+			super(c);
 			this.setBitmap(Assets.BLUESHIP_DATA);
 			fixCenter();
 		}
