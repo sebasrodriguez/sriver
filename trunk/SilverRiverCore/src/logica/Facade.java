@@ -9,7 +9,7 @@ import java.util.Iterator;
  */
 public class Facade {
 
-	private ArrayList<Board> activeGames;
+	private ArrayList<Game> activeGames;
 	private static Facade facade;
 	
 	/*
@@ -30,7 +30,7 @@ public class Facade {
 	}
 	
 	/*
-	Facade(ArrayList<Board> activeGames){
+	Facade(ArrayList<Game> activeGames){
 		this.activeGames = activeGames;
 	}
 	*/
@@ -38,14 +38,14 @@ public class Facade {
 	/*
 	 * Getters
 	 */
-	public ArrayList<Board> getActiveGames(){
+	public ArrayList<Game> getActiveGames(){
 		return this.activeGames;
 	}
 	
 	/*
 	 * Setters
 	 */
-	public void setActiveGames(ArrayList<Board> activeGames){
+	public void setActiveGames(ArrayList<Game> activeGames){
 		this.activeGames = activeGames;
 	}
 	
@@ -56,18 +56,18 @@ public class Facade {
 	/*
 	 * Metodo privado el cual encuentra la partida a la cual hago referencia en el array de partidas activas del Facade
 	 */
-	private Board findBoard(int gameId){
-		Iterator<Board> boardIterator = this.activeGames.iterator();
-		Board boardToReturn = null;
+	private Game findGame(int gameId){
+		Iterator<Game> gameIterator = this.activeGames.iterator();
+		Game gameToReturn = null;
 		boolean found = false;
 		
-		while(boardIterator.hasNext() && !found){
-			boardToReturn = boardIterator.next();
-			if(boardToReturn.getId() == gameId ){
+		while(gameIterator.hasNext() && !found){
+			gameToReturn = gameIterator.next();
+			if(gameToReturn.getId() == gameId ){
 				found = true;				
 			}			
 		}
-		return boardToReturn;
+		return gameToReturn;
 	}
 	
 	/*
@@ -81,18 +81,18 @@ public class Facade {
 	
 	public MoveAction move(int gameId, int shipId, Coordenate destination){
 		MoveAction moveActionToReturn = null;
-		Board activeBoard = findBoard(gameId);
+		Game activeGame = findGame(gameId);
 		
-		if(activeBoard != null){
-			activeBoard.getShip(shipId).setPosition(destination);
-			moveActionToReturn = new MoveAction(activeBoard.getShip(shipId),destination);
+		if(activeGame != null){
+			activeGame.getShip(shipId).setPosition(destination);
+			moveActionToReturn = new MoveAction(activeGame.getShip(shipId),destination);
 			
 			
 			//Comparo si es igual al jugador ROJO
-			if(activeBoard.getShift().getActivePlayer().equals(activeBoard.getRedPlayer())){
-				activeBoard.getBlueActionQueue().add(moveActionToReturn);
+			if(activeGame.getTurn().getActivePlayer().equals(activeGame.getRedPlayer())){
+				activeGame.getBlueActionQueue().add(moveActionToReturn);
 			}else{
-				activeBoard.getRedActionQueue().add(moveActionToReturn);
+				activeGame.getRedActionQueue().add(moveActionToReturn);
 			}
 		}		
 		return moveActionToReturn;	
@@ -104,20 +104,20 @@ public class Facade {
 	 
 		
 		MoveAction moveAction = null;		
-		Iterator<Board> boardIterator = this.activeGames.iterator();
-		Board board = boardIterator.next();
+		Iterator<Game> GameIterator = this.activeGames.iterator();
+		Game Game = GameIterator.next();
 		
 		boolean found = false;
 		
-		while(boardIterator.hasNext() && !found){
-			if(board.getId() == gameId){
+		while(GameIterator.hasNext() && !found){
+			if(Game.getId() == gameId){
 				found = true;			
 			}	
-			board = boardIterator.next();
+			Game = GameIterator.next();
 		}
 		
 		shipMoving.setPosition(destination);
-		board.getShips(shipMoving.getId()).setPosition(destination);
+		Game.getShips(shipMoving.getId()).setPosition(destination);
 		
 		moveAction = new MoveAction(shipMoving, destination);
 		return moveAction;		
@@ -140,34 +140,34 @@ public class Facade {
 		
 		//NO SE COMO CALCULAR EL PUNTO EXACTO DE DISPARO!!
 		//OJO, CAMBIAR EL FIRINGPOINT POR EL CALCULO DEL PUNTO EXACTO!!! INCLUSO EN EL FIREACTION A RETORNAR
-		Board activeBoard = this.findBoard(gameId);
+		Game activeGame = this.findGame(gameId);
 		FireAction fireActionToReturn = null;
 		int newAmunition = 0;
 		boolean hit = false;
 		Ship affectedShip = null; 
 		
-		if(activeBoard.getShipFiredId(firingPoint) != -1){
+		if(activeGame.getShipFiredId(firingPoint) != -1){
 			//acerto	
 			hit = true;
-			int newArmor = activeBoard.getShip(activeBoard.getShipFiredId(firingPoint)).getArmor() - 20;
-			affectedShip = activeBoard.getShip(activeBoard.getShipFiredId(firingPoint));
+			int newArmor = activeGame.getShip(activeGame.getShipFiredId(firingPoint)).getArmor() - 20;
+			affectedShip = activeGame.getShip(activeGame.getShipFiredId(firingPoint));
 			affectedShip.setArmor(newArmor);	
 			if(affectedShip.getArmor() <= 0){
-				activeBoard.destoyedShip(affectedShip.getId());
+				activeGame.destoyedShip(affectedShip.getId());
 			}			
 		}
 		
 		//comparo si es torpedo
 		if(weaponType.equals("TORPEDO")){
-			newAmunition = activeBoard.getShip(shipFiringId).getTorpedo() - 1;
-			activeBoard.getShip(shipFiringId).setTorpedo(newAmunition);
+			newAmunition = activeGame.getShip(shipFiringId).getTorpedo() - 1;
+			activeGame.getShip(shipFiringId).setTorpedo(newAmunition);
 			
 		}else{
-			newAmunition = activeBoard.getShip(shipFiringId).getAmmo() - 1;
-			activeBoard.getShip(shipFiringId).setAmmo(newAmunition);
+			newAmunition = activeGame.getShip(shipFiringId).getAmmo() - 1;
+			activeGame.getShip(shipFiringId).setAmmo(newAmunition);
 		}
 		
-		fireActionToReturn = new FireAction(activeBoard.getShip(shipFiringId), weaponType, firingPoint, hit, affectedShip);
+		fireActionToReturn = new FireAction(activeGame.getShip(shipFiringId), weaponType, firingPoint, hit, affectedShip);
 		return fireActionToReturn;
 	}
 	
@@ -200,18 +200,18 @@ public class Facade {
 	public RotateAction rotate(int gameId, int shipId, Cardinal destination){
 		
 		RotateAction rotateActionToReturn = null;
-		Board activeBoard = this.findBoard(gameId);
+		Game activeGame = this.findGame(gameId);
 		
-		if(activeBoard != null){
-			activeBoard.getShip(shipId).setOrientation(destination);
+		if(activeGame != null){
+			activeGame.getShip(shipId).setOrientation(destination);
 			
-			rotateActionToReturn = new RotateAction(activeBoard.getShip(shipId), destination);
+			rotateActionToReturn = new RotateAction(activeGame.getShip(shipId), destination);
 			
 			//Comparo si es igual al jugador ROJO
-			if(activeBoard.getShift().getActivePlayer().equals(activeBoard.getRedPlayer())){
-				activeBoard.getBlueActionQueue().add(rotateActionToReturn);
+			if(activeGame.getTurn().getActivePlayer().equals(activeGame.getRedPlayer())){
+				activeGame.getBlueActionQueue().add(rotateActionToReturn);
 			}else{
-				activeBoard.getRedActionQueue().add(rotateActionToReturn);
+				activeGame.getRedActionQueue().add(rotateActionToReturn);
 			}			
 		}
 		return rotateActionToReturn;		
@@ -242,16 +242,16 @@ public class Facade {
 	 */
 	public EndTurnAction endTurn(int gameId){
 		
-		Board activeBoard = this.findBoard(gameId);
+		Game activeGame = this.findGame(gameId);
 		EndTurnAction endTurnActionToReturn = null;
 		
 		//comparo si el jugador actual es el rojo
-		if(activeBoard.getShift().getActivePlayer().equals(activeBoard.getRedPlayer())){
-			activeBoard.getShift().endShift(activeBoard.getBluePlayer());
-			endTurnActionToReturn = new EndTurnAction(gameId, activeBoard.getBluePlayer());
+		if(activeGame.getTurn().getActivePlayer().equals(activeGame.getRedPlayer())){
+			activeGame.getTurn().endTurn(activeGame.getBluePlayer());
+			endTurnActionToReturn = new EndTurnAction(gameId, activeGame.getBluePlayer());
 		}else{
-			activeBoard.getShift().endShift(activeBoard.getRedPlayer());
-			endTurnActionToReturn = new EndTurnAction(gameId, activeBoard.getRedPlayer());
+			activeGame.getTurn().endTurn(activeGame.getRedPlayer());
+			endTurnActionToReturn = new EndTurnAction(gameId, activeGame.getRedPlayer());
 		}		
 		return endTurnActionToReturn;		
 	}
@@ -260,7 +260,7 @@ public class Facade {
 	 * Entrada: Id de la partida
 	 * Salida: void
 	 * Procedimiento:
-	 * Llama al metodo saveGame en la clase Board 
+	 * Llama al metodo saveGame en la clase Game 
 	 */
 	public void saveGame(int gameId){
 		
