@@ -2,6 +2,12 @@
 public class FacadePublic {
 	public String test = "hola 1 2 3";
 	
+	
+	public FacadePublic(){
+		System.out.println("Hola new Facade");
+	}
+	
+	
 	public void setTest(String value){
 		this.test = value;
 		System.out.println("Se cambio el valor para: " + value);
