@@ -36,4 +36,14 @@ public class Turn
 	{
 		this.movesLeft = movesLeft;
 	}
+	
+	/*
+	 * Termina el turno y le da paso al otro jugador
+	 * Recibe al siguiente jugador para colocarlo como activo
+	 * Coloca la cantidad de movimientos en 5, "resetea" la cantidad  de movimientos restantes
+	 */
+	public void endTurn(Player nextPlayer){
+		this.activePlayer = nextPlayer;
+		this.movesLeft = 5; //OJO QUE SI SACAMOS ESTE NUMERO DE UNA PROPERTY, NO DEJARLO HARDCODE!!!		
+	}
 }

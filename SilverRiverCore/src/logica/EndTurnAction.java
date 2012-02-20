@@ -2,7 +2,7 @@ package logica;
 
 public class EndTurnAction extends GameAction {
 	
-	private Captain playerTurn;
+	private Player playerTurn;
 	
 	/*
 	 * Constructores
@@ -11,7 +11,7 @@ public class EndTurnAction extends GameAction {
 		
 	}
 	
-	EndTurnAction(int gameId, Captain playerTurn){
+	EndTurnAction(int gameId, Player playerTurn){
 		super(gameId);
 		this.playerTurn = playerTurn;
 	}
@@ -19,14 +19,14 @@ public class EndTurnAction extends GameAction {
 	/*
 	 * Getters
 	 */
-	public Captain getPlayerTurn(){
+	public Player getPlayerTurn(){
 		return this.playerTurn;
 	}
 	
 	/*
 	 * Setters
 	 */
-	public void setPlayerTurn(Captain playerTurn){
+	public void setPlayerTurn(Player playerTurn){
 		this.playerTurn = playerTurn;
 	}
 }

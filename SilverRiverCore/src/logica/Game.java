@@ -100,4 +100,49 @@ public class Game
 	{
 		this.turn = turn;
 	}
+	
+		public Ship getShip(int shipId){
+		Ship shipToReturn = null;
+		boolean found = false;
+		int i = 0;
+		
+		while(i < this.ships.length && !found){
+			if(this.ships[i].getId() == shipId){
+				shipToReturn = this.ships[i];
+				found = true;
+			}
+			i++;
+		}
+		return shipToReturn;		
+	}
+	
+	public int getShipFiredId(Coordenate position){
+		int shipIdToReturn = -1;
+		boolean found = false;
+		int i = 0;
+		
+		while (i < this.ships.length && !found){
+			if(this.ships[i].getPosition().equals(position)){
+				found = true;
+				shipIdToReturn = this.ships[i].getId();
+			}
+			i++;
+		}
+		return shipIdToReturn;		
+	}
+	
+	public void destoyedShip(int shipId){
+		boolean found = false;
+		int i = 0;
+		
+		while(i < this.ships.length && !found){
+			if(this.ships[i].getId() == shipId){				
+				found = true;
+				this.ships[i] = null;
+			}
+			i++;
+		}
+	}
+	
+	
 }

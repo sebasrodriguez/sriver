@@ -1,8 +1,8 @@
 package pruebas;
 
-import logica.Captain;
+import logica.Player;
 
-public class pruebaCaptain {
+public class pruebaPlayer {
 
 	/**
 	 * @param args
@@ -10,13 +10,13 @@ public class pruebaCaptain {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-	Captain jugadorRojo = null;
-	Captain jugadorAzul = null;
+	Player jugadorRojo = null;
+	Player jugadorAzul = null;
 	
 	
 	System.out.println("Cargando los 2 jugadores....");
-	jugadorRojo = new Captain(0, "Jugador 1");
-	jugadorAzul = new Captain(1,"Jugador 2");
+	jugadorRojo = new Player(0, "Jugador 1");
+	jugadorAzul = new Player(1,"Jugador 2");
 	
 	System.out.println("JugadorRojo: " + jugadorRojo.getId() + " " + jugadorRojo.getUsername());
 	System.out.println("JugadorAzul: " + jugadorAzul.getId() + " " + jugadorAzul.getUsername());
