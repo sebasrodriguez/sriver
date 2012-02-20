@@ -8,9 +8,10 @@
 			   >
 	
 	<fx:Declarations>
-		<!--<s:WebService id="wsRequest" wsdl="http://localhost:8080/SilverRiverServices/services/Facade?wsdl"> 			
-            <mx:operation name="init" result="wsInitHandler(event)"/>
-        </s:WebService>-->
+		<s:WebService id="wsRequest" wsdl="http://localhost:8080/SilverRiverServices/services/FacadePublic?wsdl"> 			
+            <mx:operation name="setTest" result="wsSetTestHandler(event)"/>	
+            <mx:operation name="getTest" result="wsGetTestHandler(event)"/>
+        </s:WebService>
 	</fx:Declarations>
 	<mx:Canvas x="0" y="0" width="100%" height="100%" id="myCanvas" horizontalScrollPolicy="off" verticalScrollPolicy="off">	
 	</mx:Canvas>
@@ -23,6 +24,7 @@
 		import flash.events.MouseEvent;
 		import mx.core.UIComponent;
 		import mx.effects.Tween;
+		import mx.rpc.events.ResultEvent;
 		import UI.*;
 		
 		public var mapComponent:Map;
@@ -40,6 +42,9 @@
 			//myCanvas.verticalScrollBar.visible = false;
 			//myCanvas.horizontalScrollBar.visible = false;
 			//trace(myCanvas)
+			
+			wsRequest.getTest();
+			
 			mapComponent = new Map();
 			
 			myCanvas.width = mapComponent.sprite.width;
@@ -146,10 +151,13 @@
 			return res;
 		}
 		
-		private function wsInitHandler(e:Event):void {
-			
+		private function wsGetTestHandler(e:ResultEvent):void {
+			trace(e.result);
 		}
 		
+		private function wsSetTestHandler(e:ResultEvent):void {
+			trace(e.result);
+		}
 		]]>
 	</fx:Script>
 	
