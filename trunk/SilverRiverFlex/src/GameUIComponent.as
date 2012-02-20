@@ -51,12 +51,16 @@ package
 			var ydelta:Number = c.y - this.y;
 			var distance:Number = Math.sqrt(Math.pow(xdelta, 2) + Math.pow(ydelta, 2));
 			
-			var time:Number = distance / 50;
+			var time:Number = distance / 50 * 1000;
+			var angle:Number = Math.tan(xdelta / ydelta);
+			var ox:Number = this.x;
+			var oy:Number = this.y;
 			
-			trace("Tiempo: " + time);
-			trace("Distancia " + distance);
-			new Tween(this, 0, distance, distance / 50 * 1000, 20, function (newX:Number):void {
-				trace("newX: " + newX);
+			/*trace("Tiempo: " + time);
+			trace("Distancia " + distance);*/
+			new Tween(this, 0, distance, time, 20, function (newX:Number):void {
+				this.listener.x = ox + xdelta * (newX/distance);
+				this.listener.y = oy + ydelta * (newX/distance);
 				
 			}, function():void { } );
 		}
