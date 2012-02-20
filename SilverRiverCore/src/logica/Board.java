@@ -11,6 +11,7 @@ import java.util.ArrayList;
  */
 public class Board implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private Captain redPlayer;
 	private Captain bluePlayer;

@@ -4,7 +4,7 @@ package logica;
  * Como Turn no me dejaba crearla, se renombro a Shift.
  * Se usa para manejar el turno del jugador.
  */
-public abstract class Shift {
+public class Shift {
 
 	private Captain activePlayer;
 	private int movesLeft;
