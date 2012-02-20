@@ -5,12 +5,22 @@ import java.util.Iterator;
 
 
 /*
- * VA A SER SINGLETON?
+ * La clase Facade es singleton
  */
 public class Facade {
 
 	private ArrayList<Board> activeGames;
+	private static Facade facade;
 	
+	/*
+	 * Devuelve la instancia del Facade (Singleton)
+	 */
+	public static Facade getInstance(){
+		if(facade == null){
+			facade = new Facade();
+		}
+		return facade;
+	}
 	
 	/*
 	 * Constructores
@@ -19,9 +29,11 @@ public class Facade {
 		
 	}
 	
+	/*
 	Facade(ArrayList<Board> activeGames){
 		this.activeGames = activeGames;
 	}
+	*/
 	
 	/*
 	 * Getters
@@ -230,6 +242,18 @@ public class Facade {
 	 */
 	public EndTurnAction endTurn(int gameId){
 		
+		Board activeBoard = this.findBoard(gameId);
+		EndTurnAction endTurnActionToReturn = null;
+		
+		//comparo si el jugador actual es el rojo
+		if(activeBoard.getShift().getActivePlayer().equals(activeBoard.getRedPlayer())){
+			activeBoard.getShift().endShift(activeBoard.getBluePlayer());
+			endTurnActionToReturn = new EndTurnAction(gameId, activeBoard.getBluePlayer());
+		}else{
+			activeBoard.getShift().endShift(activeBoard.getRedPlayer());
+			endTurnActionToReturn = new EndTurnAction(gameId, activeBoard.getRedPlayer());
+		}		
+		return endTurnActionToReturn;		
 	}
 	
 	/*
@@ -261,6 +285,6 @@ public class Facade {
 	 * NO ENTIENDO EL PORQUE DE ESTE METODO
 	 */
 	public ArrayList<Action> listAction(int gameId){
-		
+		return null;
 	}
 }

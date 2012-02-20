@@ -13,11 +13,11 @@ public class Captain {
 	 * Constructores
 	 */
 	
-	Captain(){
+	public Captain(){
 		
 	}
 	
-	Captain(int id, String username){
+	public Captain(int id, String username){
 		this.id = id;
 		this.username = username;
 	}

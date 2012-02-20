@@ -1,11 +1,5 @@
 package logica;
 
-public class Weapon {
-
-	enum weapon{
+public enum Weapon{
 		TORPEDO, MACHINEGUN, AIRCRAFT, ANTIAIRCRAFT;
-	
-		weapon(){
-		}
-	}
 }

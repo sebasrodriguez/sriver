@@ -12,10 +12,10 @@ public class Coordenate {
 	/*
 	 * Constructores
 	 */
-	Coordenate(){
+	public Coordenate(){
 		
 	}
-	Coordenate(int x, int y){
+	public Coordenate(int x, int y){
 		this.x = x;
 		this.y = y;
 	}
