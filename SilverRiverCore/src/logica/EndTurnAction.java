@@ -7,11 +7,11 @@ public class EndTurnAction extends GameAction {
 	/*
 	 * Constructores
 	 */
-	EndTurnAction(){
+	public EndTurnAction(){
 		
 	}
 	
-	EndTurnAction(int gameId, Player playerTurn){
+	public EndTurnAction(int gameId, Player playerTurn){
 		super(gameId);
 		this.playerTurn = playerTurn;
 	}
