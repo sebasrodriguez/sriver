@@ -63,4 +63,41 @@ public class FireAction extends ShipAction {
 	public void setAffectedShip(Ship affectedShip){
 		this.affectedShip = affectedShip;
 	}
+	
+	//Calcula la distacia entre el barco que dispara y el punto donde el jugador hizo click
+	//Esta distacia se vá a usar para variar que tanto se puede desviar el disparo.
+	//A más distacia más se va a desviar el disparo.
+	public double caluclateDistance()
+	{
+		int x1 = this.getShip().getPosition().getX();
+		int y1 = this.getShip().getPosition().getY();
+		int x2 = this.getHitCoordenate().getX();
+		int y2 = this.getHitCoordenate().getY();
+		
+		return  Math.hypot(x2 - x1, y2 - y1);
+	}
+	
+	//Calcula donde pega el disparo dependiendo de la distancia entre
+	//el barco que dispara y el objetivo.
+	//El punto final se calcula con un número aleatorio entre x - offset e x + offset, lo mismo para las y
+	public Coordenate calculateHitPoint()
+	{
+		Coordenate coord = new Coordenate();
+		int offset = 50;
+		
+		//int offset = (int)this.caluclateDistance();
+		int max_x = this.getHitCoordenate().getX() + offset;
+		int max_y = this.getHitCoordenate().getY() + offset;
+		
+		int min_x = max_x - (offset * 2);
+		int min_y = max_y - (offset * 2);
+		
+		int x = (int)(Math.random() * (max_x - min_x)) + min_x;
+		int y = (int)(Math.random() * (max_y - min_y)) + min_y;
+		
+		coord.setX(x);
+		coord.setY(y);
+		
+		return coord;
+	}
 }

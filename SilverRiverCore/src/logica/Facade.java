@@ -25,7 +25,7 @@ public class Facade {
 	/*
 	 * Constructores
 	 */
-	Facade(){
+	public Facade(){
 		
 	}
 	
