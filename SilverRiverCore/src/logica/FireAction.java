@@ -12,11 +12,11 @@ public class FireAction extends ShipAction {
 	/*
 	 * Constructores
 	 */
-	FireAction(){
+	public FireAction(){
 		
 	}
 	
-	FireAction(Ship shipFiring, Weapon weaponType, Coordenate hitCoordenate, boolean hit, Ship affectedShip){
+	public FireAction(Ship shipFiring, Weapon weaponType, Coordenate hitCoordenate, boolean hit, Ship affectedShip){
 		super(shipFiring);
 		this.weaponType = weaponType;
 		this.hitCoordenate = hitCoordenate;
