@@ -7,11 +7,11 @@ public abstract class ShipAction extends Action {
 	/*
 	 * Constructores
 	 */
-	ShipAction(){
+	public ShipAction(){
 		
 	}
 	
-	ShipAction(Ship ship){
+	public ShipAction(Ship ship){
 		this.ship = ship;
 	}	
 	
