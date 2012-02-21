@@ -5,11 +5,11 @@ public class EndGameAction extends GameAction {
 	/*
 	 * Constructores
 	 */
-	EndGameAction(){
+	public EndGameAction(){
 		
 	}
 	
-	EndGameAction(int gameId){
+	public EndGameAction(int gameId){
 		super(gameId);
 	}
 }

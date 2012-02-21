@@ -7,11 +7,11 @@ public class GameAction extends Action{
 	/*
 	 * Constructores
 	 */
-	GameAction(){
+	public GameAction(){
 		
 	}
 	
-	GameAction(int gameId){
+	public GameAction(int gameId){
 		this.gameId = gameId;
 	}
 	
