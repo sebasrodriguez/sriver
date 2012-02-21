@@ -6,6 +6,12 @@
 			   initialize="initializeHandler(event)">
 
 	<fx:Declarations>
+		<!--<s:WebService id="wsRequest"
+					  wsdl="http://localhost:12137/WebSite1/FacadePublic.asmx?wsdl">
+			<mx:operation name="NewGame"
+						  result="_game.NewGameResult(event)"
+						  resultFormat="object" />			
+		</s:WebService>-->
 		<s:WebService id="wsRequest"
 					  wsdl="http://localhost:12137/WebSite1/FacadePublic.asmx?wsdl">
 			<mx:operation name="NewGame"
@@ -41,11 +47,7 @@
 			}			
 			
 			private function creationCompleteHandler(e:Event):void
-			{
-			/*wsRequest.getTest();
-			   wsRequest.setTest("hola 4");
-			 wsRequest.getTest();*/
-			
+			{			
 			}			
 			
 			private function dataFromServer():MatchDataObject
