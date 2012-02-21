@@ -7,11 +7,11 @@ public class RotateAction extends ShipAction{
 	/*
 	 * Constructores 
 	 */
-	RotateAction(){
+	public RotateAction(){
 		
 	}
 	
-	RotateAction(Ship shipRotating, Cardinal cardinal){
+	public RotateAction(Ship shipRotating, Cardinal cardinal){
 		super(shipRotating);
 		this.cardinal = cardinal;
 	}
