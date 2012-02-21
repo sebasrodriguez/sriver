@@ -12,11 +12,11 @@ public class RedShip extends Ship {
 	 * Constructores
 	 */
 	
-	RedShip(){
+	public RedShip(){
 		
 	}
 	
-	RedShip(int id, int speed, int armor, int ammo, int torpedo, int viewRange, int size, Coordenate position, Cardinal orientation){
+	public RedShip(int id, int speed, int armor, int ammo, int torpedo, int viewRange, int size, Coordenate position, Cardinal orientation){
 		super(id, speed, armor, ammo, torpedo, viewRange, size, position, orientation);
 	}	
 }

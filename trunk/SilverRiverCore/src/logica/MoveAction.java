@@ -8,11 +8,11 @@ public class MoveAction extends ShipAction{
 	/*
 	 * Constructores
 	 */
-	MoveAction(){
+	public MoveAction(){
 		
 	}
 	
-	MoveAction(Ship shipMoving, Coordenate position){
+	public MoveAction(Ship shipMoving, Coordenate position){
 		super(shipMoving);
 		this.position = position;
 	}
