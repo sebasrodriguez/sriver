@@ -165,13 +165,13 @@ package
 			if (event.selectedShip != _selectedShip)
 			{					
 				_selectedShip = event.selectedShip;
-				var glow:GlowFilter = new GlowFilter(0xFF6633);				
+				var glow:GlowFilter = new GlowFilter(0xFF0000);
 				_selectedShip.filters = [glow];
 			}
 			else
 			{
-				_selectedShip = null;
 				_selectedShip.filters = null;
+				_selectedShip = null;				
 			}
 		}
 	}
