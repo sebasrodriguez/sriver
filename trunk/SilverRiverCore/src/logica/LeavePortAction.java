@@ -7,11 +7,11 @@ public class LeavePortAction extends ShipAction{
 	/*
 	 * Constructores
 	 */
-	LeavePortAction(){
+	public LeavePortAction(){
 		
 	}
 	
-	LeavePortAction(Ship ship, int port){
+	public LeavePortAction(Ship ship, int port){
 		super(ship);
 		this.port = port;
 	}

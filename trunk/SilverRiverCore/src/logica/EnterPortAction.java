@@ -8,11 +8,11 @@ public class EnterPortAction extends ShipAction {
 	/*
 	 * Constructores
 	 */
-	EnterPortAction(){
+	public EnterPortAction(){
 		
 	}
 	
-	EnterPortAction(Ship ship, int port){
+	public EnterPortAction(Ship ship, int port){
 		super(ship);
 		this.port = port;
 	}
