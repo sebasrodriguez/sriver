@@ -12,7 +12,8 @@ package
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.soap.WebService;
-	import mx.rpc.soap.Operation
+	import mx.rpc.soap.Operation;
+	import UI.*;
 	
 	/**
 	 * ...
@@ -40,11 +41,7 @@ package
 		{
 			_main = main;
 			main.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
-			main.wsRequest.NewGame();
-			// main.wsRequest.getTest();
-			//revisar en java el webservice
-			//startSyncronizing();
-			//se crea el canvas principal que contiene el mapa y barcos			
+			main.wsRequest.NewGame();			
 		}
 		
 		/*
@@ -81,8 +78,9 @@ package
 			}
 			if (e.stageY < 50)
 			{ //scroll top	
-				if (_board.y < 0)
-					_board.y += 10;
+				if (_board != null)
+					if (_board.y < 0)
+						_board.y += 10;
 			}
 			if (e.stageY > (_main.stage.stageHeight - 50))
 			{ //scroll height		
@@ -91,24 +89,9 @@ package
 			}
 		}
 		
-		//Webservices handlers, son publicos porque los llamo desde el Main
-		public function wsSyncronizeHandler(event:ResultEvent):void
-		{
-			trace(event.result);
-		}
-		
-		public function wsGetTestHandler(event:ResultEvent):void
-		{
-			trace(event.result);
-		}
-		
-		public function wsGetTestFaultHandler(event:FaultEvent):void
-		{
-			trace(event.fault);
-		}
-		
 		public function NewGameResult(event:ResultEvent):void
 		{
+			// Inicializa el Canvas que contiene los demas elementos
 			_board = new Canvas();
 			_board.x = 0;
 			_board.y = 0;
@@ -116,34 +99,21 @@ package
 			_board.verticalScrollPolicy = "off";
 			_main.addElement(_board);
 			
+			// Inicializa el mapa
 			_mapComponent = new Map();
 			_board.width = _mapComponent.sprite.width;
 			_board.height = _mapComponent.sprite.height;
 			
+			// Crea la grilla del mapa
 			_gridComponent = new GameGrid(_board, GAME_BOARD_ROWS, GAME_BOARD_COLS);
-			_gridComponent.addEventListener(CellEvent.CLICK, function(event:CellEvent):void
-				{
-					if (_selectedShip != null)
-					{
-						_selectedShip.moveTo(event.coordinate);
-					}
-				});
+			_gridComponent.addEventListener(CellEvent.CLICK, selectedCellEvent);
 			
-			var c1:Coordinate = new Coordinate(event.result.Ships[0].Position.Y, event.result.Ships[0].Position.X);
-			var c2:Coordinate = new Coordinate(event.result.Ships[1].Position.Y, event.result.Ships[1].Position.X);
-			var c3:Coordinate = new Coordinate(event.result.Ships[2].Position.Y, event.result.Ships[2].Position.X);
-			var c4:Coordinate = new Coordinate(event.result.Ships[3].Position.Y, event.result.Ships[3].Position.X);
+			// Crea y ubica los barcos en el mapa
+			createAndLocateShips(event);
 			
-			_redShipComponent = new RedShip(c1);
-			_redShipComponent.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
-			_blueShipComponent1 = new BlueShip(c2);
-			_blueShipComponent1.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
-			_blueShipComponent2 = new BlueShip(c3);
-			_blueShipComponent2.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
-			_blueShipComponent3 = new BlueShip(c4);
-			_blueShipComponent3.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
 			_selectedShip = null;
 			
+			// Agrega los componentes al objeto Canvas
 			_board.addChild(_mapComponent);
 			_board.addChild(_gridComponent);
 			_board.addChild(_redShipComponent);
@@ -151,6 +121,7 @@ package
 			_board.addChild(_blueShipComponent2);
 			_board.addChild(_blueShipComponent3);
 			
+			// Muestra los componentes en pantalla
 			_mapComponent.show();
 			_redShipComponent.show();
 			_blueShipComponent1.show();
@@ -158,12 +129,40 @@ package
 			_blueShipComponent3.show();
 		}
 		
+		// Evento disparado cuando se selecciona una celda de la grilla
+		private function selectedCellEvent(event:CellEvent):void
+		{
+			if (_selectedShip != null)
+			{
+				_selectedShip.moveTo(event.coordinate);
+				_selectedShip.rotateTo(45);
+			}
+		}
+		
+		private function createAndLocateShips(event:ResultEvent):void
+		{
+			var c1:Coordinate = new Coordinate(event.result.Ships[0].Position.Y, event.result.Ships[0].Position.X);
+			var c2:Coordinate = new Coordinate(event.result.Ships[1].Position.Y, event.result.Ships[1].Position.X);
+			var c3:Coordinate = new Coordinate(event.result.Ships[2].Position.Y, event.result.Ships[2].Position.X);
+			var c4:Coordinate = new Coordinate(event.result.Ships[3].Position.Y, event.result.Ships[3].Position.X);
+			
+			_redShipComponent = new RedShip(c1);
+			_blueShipComponent1 = new BlueShip(c2);
+			_blueShipComponent2 = new BlueShip(c3);
+			_blueShipComponent3 = new BlueShip(c4);
+			
+			_redShipComponent.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
+			_blueShipComponent1.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
+			_blueShipComponent2.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
+			_blueShipComponent3.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
+		}
+		
 		public function selectedShipEvent(event:SelectedShipEvent):void
-		{			
+		{
 			if (_selectedShip != null)
 				_selectedShip.filters = null;
 			if (event.selectedShip != _selectedShip)
-			{					
+			{
 				_selectedShip = event.selectedShip;
 				var glow:GlowFilter = new GlowFilter(0xFF0000);
 				_selectedShip.filters = [glow];
@@ -171,7 +170,7 @@ package
 			else
 			{
 				_selectedShip.filters = null;
-				_selectedShip = null;				
+				_selectedShip = null;
 			}
 		}
 	}

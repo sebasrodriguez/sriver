@@ -18,7 +18,7 @@ package UI
 		{
 			squareSize = _squareSize;
 			squareFillColor = _squareFillColor;
-			squareBorderColor = _squareBorderColor;
+			squareBorderColor = _squareBorderColor;			
 		}
 		
 		public function DrawGridSquare(coordinate:Coordinate, uiComponent:UIComponent):void

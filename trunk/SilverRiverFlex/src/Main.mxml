@@ -5,22 +5,14 @@
 			   contentCreationComplete="creationCompleteHandler(event)"
 			   initialize="initializeHandler(event)">
 
-	<fx:Declarations>
-		<!--<s:WebService id="wsRequest"
-					  wsdl="http://localhost:12137/WebSite1/FacadePublic.asmx?wsdl">
-			<mx:operation name="NewGame"
-						  result="_game.NewGameResult(event)"
-						  resultFormat="object" />			
-		</s:WebService>-->
+	<fx:Declarations>		
 		<s:WebService id="wsRequest"
 					  wsdl="http://localhost:12137/WebSite1/FacadePublic.asmx?wsdl">
 			<mx:operation name="NewGame"
 						  result="_game.NewGameResult(event)"
 						  resultFormat="object" />			
 		</s:WebService>
-	</fx:Declarations>
-	<!--<mx:Canvas x="0" y="0" width="100%" height="100%" id="myCanvas" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-		 </mx:Canvas>-->
+	</fx:Declarations>	
 	<fx:Script>
 		<![CDATA[
 			import Common.Coordinate;
@@ -36,8 +28,7 @@
 			import mx.rpc.events.ResultEvent;
 			import mx.rpc.soap.Operation;
 			import mx.rpc.soap.WebService;
-			import mx.rpc.wsdl.WSDLOperation;
-			import UI.*;
+			import mx.rpc.wsdl.WSDLOperation;			
 			
 			private var _game:Game;			
 			

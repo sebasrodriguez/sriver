@@ -25,7 +25,7 @@ package UI
 		{
 			_coordinate = c;
 			_shape = new Shape();
-			_shape.graphics.beginFill(_fillColor, 0.5);
+			_shape.graphics.beginFill(_fillColor, 0.1);
 			_shape.graphics.lineStyle(1, _borderColor, 1);
 			_shape.graphics.drawRect(0, 0, _size, _size);
 			_shape.graphics.endFill();
