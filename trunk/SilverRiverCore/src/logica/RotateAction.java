@@ -1,5 +1,8 @@
 package logica;
 
+import entities.Cardinal;
+import entities.ShipVO;
+
 public class RotateAction extends ShipAction{
 
 	private Cardinal cardinal;
@@ -11,7 +14,7 @@ public class RotateAction extends ShipAction{
 		
 	}
 	
-	public RotateAction(Ship shipRotating, Cardinal cardinal){
+	public RotateAction(ShipVO shipRotating, Cardinal cardinal){
 		super(shipRotating);
 		this.cardinal = cardinal;
 	}
