@@ -1,4 +1,4 @@
-import logica.Facade;
+import logic.Facade;
 
 
 public class Main {
