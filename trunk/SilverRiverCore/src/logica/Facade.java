@@ -3,6 +3,11 @@ package logica;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import entities.Cardinal;
+import entities.Coordinate;
+import entities.ShipVO;
+import entities.Weapon;
+
 
 /*
  * La clase Facade es singleton
@@ -79,7 +84,7 @@ public class Facade {
 	 * Retorna MoveAction
 	 */
 	
-	public MoveAction move(int gameId, int shipId, Coordenate destination){
+	public MoveAction move(int gameId, int shipId, Coordinate destination){
 		MoveAction moveActionToReturn = null;
 		Game activeGame = findGame(gameId);
 		
@@ -136,7 +141,7 @@ public class Facade {
 	 * actualiza los valores del barco que disparo
 	 * devuelve el fireAction	 	
 	*/
-	public FireAction fire(int gameId, int shipFiringId, Coordenate firingPoint, Weapon weaponType){
+	public FireAction fire(int gameId, int shipFiringId, Coordinate firingPoint, Weapon weaponType){
 		
 		//NO SE COMO CALCULAR EL PUNTO EXACTO DE DISPARO!!
 		//OJO, CAMBIAR EL FIRINGPOINT POR EL CALCULO DEL PUNTO EXACTO!!! INCLUSO EN EL FIREACTION A RETORNAR
@@ -144,7 +149,7 @@ public class Facade {
 		FireAction fireActionToReturn = null;
 		int newAmunition = 0;
 		boolean hit = false;
-		Ship affectedShip = null; 
+		ShipVO affectedShip = null; 
 		
 		if(activeGame.getShipFiredId(firingPoint) != -1){
 			//acerto	
