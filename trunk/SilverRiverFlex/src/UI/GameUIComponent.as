@@ -1,6 +1,5 @@
 package UI
 {
-	import Actions.Action;
 	import Common.Coordinate;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
