@@ -1,9 +1,12 @@
 package logica;
 
+import entities.Coordinate;
+import entities.Weapon;
+
 public class FireAction extends ShipAction {
 	
 	private Weapon weaponType;
-	private Coordenate hitCoordenate;
+	private Coordinate hitCoordenate;
 	private boolean hit;
 	private Ship affectedShip;
 	
@@ -16,7 +19,7 @@ public class FireAction extends ShipAction {
 		
 	}
 	
-	public FireAction(Ship shipFiring, Weapon weaponType, Coordenate hitCoordenate, boolean hit, Ship affectedShip){
+	public FireAction(Ship shipFiring, Weapon weaponType, Coordinate hitCoordenate, boolean hit, Ship affectedShip){
 		super(shipFiring);
 		this.weaponType = weaponType;
 		this.hitCoordenate = hitCoordenate;
@@ -32,7 +35,7 @@ public class FireAction extends ShipAction {
 		return this.weaponType;
 	}
 	
-	public Coordenate getHitCoordenate(){
+	public Coordinate getHitCoordenate(){
 		return this.hitCoordenate;
 	}
 	
@@ -52,7 +55,7 @@ public class FireAction extends ShipAction {
 		this.weaponType = weaponType;
 	}
 	
-	public void setHitCoordenate(Coordenate hitCoordenate){
+	public void setHitCoordenate(Coordinate hitCoordenate){
 		this.hitCoordenate = hitCoordenate;
 	}
 	
@@ -80,9 +83,9 @@ public class FireAction extends ShipAction {
 	//Calcula donde pega el disparo dependiendo de la distancia entre
 	//el barco que dispara y el objetivo.
 	//El punto final se calcula con un número aleatorio entre x - offset e x + offset, lo mismo para las y
-	public Coordenate calculateHitPoint()
+	public Coordinate calculateHitPoint()
 	{
-		Coordenate coord = new Coordenate();
+		Coordinate coord = new Coordinate();
 		int offset = 50;
 		
 		//int offset = (int)this.caluclateDistance();
