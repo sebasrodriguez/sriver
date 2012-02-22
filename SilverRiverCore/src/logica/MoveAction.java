@@ -1,8 +1,10 @@
 package logica;
 
+import entities.Coordinate;
+
 public class MoveAction extends ShipAction{
 
-	private Coordenate position;
+	private Coordinate position;
 	
 	
 	/*
@@ -12,7 +14,7 @@ public class MoveAction extends ShipAction{
 		
 	}
 	
-	public MoveAction(Ship shipMoving, Coordenate position){
+	public MoveAction(Ship shipMoving, Coordinate position){
 		super(shipMoving);
 		this.position = position;
 	}
@@ -20,14 +22,14 @@ public class MoveAction extends ShipAction{
 	/*
 	 * Getters
 	 */
-	public Coordenate getPosition(){
+	public Coordinate getPosition(){
 		return this.position;
 	}
 	
 	/*
 	 * Setters
 	 */
-	public void setPosition(Coordenate position){
+	public void setPosition(Coordinate position){
 		this.position = position;
 	}
 }
