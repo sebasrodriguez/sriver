@@ -112,32 +112,6 @@ public class Facade {
 	
 		
 	/*
-	 public MoveAction move(int gameId, Ship shipMoving, Coordenate destination){
-	 
-		
-		MoveAction moveAction = null;		
-		Iterator<Game> GameIterator = this.activeGames.iterator();
-		Game Game = GameIterator.next();
-		
-		boolean found = false;
-		
-		while(GameIterator.hasNext() && !found){
-			if(Game.getId() == gameId){
-				found = true;			
-			}	
-			Game = GameIterator.next();
-		}
-		
-		shipMoving.setPosition(destination);
-		Game.getShips(shipMoving.getId()).setPosition(destination);
-		
-		moveAction = new MoveAction(shipMoving, destination);
-		return moveAction;		
-	}
-	*/
-	
-	
-	/*
 	 * Entrada: Id de la partida, id del barco que dispara, punto la que dispara
 	 * Salida: FireAction
 	 * Procedimiento:
@@ -185,24 +159,6 @@ public class Facade {
 	
 	
 	/*
-	 * Entrada: Id de la partida, barco que dispara, punto la que dispara
-	 * Salida: FireAction
-	 * Procedimiento:
-	 * Calcula el punto exacto del disparo
-	 * Verifica que haya o no acertado
-	 * Si acerto
-	 * 	actualiza los valores del barco dañado
-	 * actualiza los valores del barco que disparo
-	 * devuelve el fireAction	 	
-	 
-	public FireAction fire(int gameId, Ship shipFiring, Coordenate firingPoint){
-		
-		
-		
-	}
-	*/
-	
-	/*
 	 * Entrada: Id de la partida, id del barco que rota y cardinal de destino
 	 * Salida: RotateAction
 	 * Procedimiento:
@@ -228,20 +184,6 @@ public class Facade {
 		}
 		return rotateActionToReturn;		
 	}
-	
-	
-	/*
-	 * Entrada: Id de la partidam, barco que rota y cardianl de destino
-	 * Salida: RotateAction
-	 * Procedimiento:
-	 * Actualiza la posicion a la cual apunta el barco
-	 * devuelve el rotateAction 
-	 */
-	/*
-	public RotateAction rotate(int gameId, ship shipRotating, Cardinal destination){	
-	
-	}
-	*/
 	
 	
 	/*
