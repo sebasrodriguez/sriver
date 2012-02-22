@@ -1,6 +1,7 @@
 package logica;
 
 import entities.Coordinate;
+import entities.ShipVO;
 
 public class MoveAction extends ShipAction{
 
@@ -14,7 +15,7 @@ public class MoveAction extends ShipAction{
 		
 	}
 	
-	public MoveAction(Ship shipMoving, Coordinate position){
+	public MoveAction(ShipVO shipMoving, Coordinate position){
 		super(shipMoving);
 		this.position = position;
 	}
