@@ -2,9 +2,9 @@ package tests;
 
 import entities.Coordinate;
 import entities.Cardinal;
-import logic.RedShip;
-import logic.RotateAction;
-import logic.Ship;
+import logic.actions.RotateAction;
+import logic.ship.RedShip;
+import logic.ship.Ship;
 
 public class pruebaRotateAction {
 

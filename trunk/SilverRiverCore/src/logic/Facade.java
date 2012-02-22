@@ -3,6 +3,14 @@ package logic;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import logic.actions.Action;
+import logic.actions.EndTurnAction;
+import logic.actions.FireAction;
+import logic.actions.MoveAction;
+import logic.actions.RotateAction;
+import logic.game.Game;
+import logic.ship.Ship;
+
 import entities.Cardinal;
 import entities.Coordinate;
 import entities.Weapon;
