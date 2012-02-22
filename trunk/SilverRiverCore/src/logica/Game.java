@@ -3,6 +3,9 @@ package logica;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import entities.Coordinate;
+import entities.ShipVO;
+
 public class Game 
 {
 	private int id;
@@ -10,7 +13,7 @@ public class Game
 	private Player bluePlayer;
 	private ArrayList<Action> redActionQueue;
 	private ArrayList<Action> blueActionQueue;
-	private ArrayList<Ship> ships;
+	private ShipVO ships;
 	private Turn turn;
 	
 	public Game(){
@@ -18,7 +21,7 @@ public class Game
 	}
 	
 	public Game(int id, Player redPlayer, Player bluePlayer, ArrayList<Action> redActionQueue, 
-			ArrayList<Action> blueActionQueue,ArrayList<Ship> ships, Turn turn) {
+			ArrayList<Action> blueActionQueue,ShipVO ships, Turn turn) {
 		
 		super();
 		this.id = id;
@@ -70,11 +73,11 @@ public class Game
 		this.blueActionQueue = blueActionQueue;
 	}
 
-	public ArrayList<Ship> getShips(){
+	public ShipVO getShips(){
 		return ships;
 	}
 
-	public void setShips(ArrayList<Ship> ships){
+	public void setShips(ShipVO ships){
 		this.ships = ships;
 	}
 
@@ -89,27 +92,27 @@ public class Game
 	/*
 	 * Devuelve el barco a partir de su id, en caso de no econtrarlo devuelve null
 	 */
-	public Ship getShip(int shipId){
-		Ship shipToReturn = null;
-		Iterator<Ship> shipIterator = this.ships.iterator();
+/*	public ShipVO getShip(int shipId){
+		ShipVO shipToReturn = null;
+		Iterator<ShipVO> shipIterator = this.ships.iterator();
 		boolean found = false;		
 		
 		
 		while (shipIterator.hasNext() && !found){
-			Ship aux = shipIterator.next();
+			ShipVO aux = shipIterator.next();
 			if(aux.getId() == shipId){
 				shipToReturn = aux;
 				found = true;
 			}			
 		}
 		return shipToReturn;		
-	}
+	}*/
 	
 	/*
 	 * Funcion que devuelve el id del barco disparado a partir de una posicion a la cual se disparo
 	 * Devuelve el id del barco dañado o -1 en caso de que no haya barco en dicha posicion
 	 */
-	public int getShipFiredId(Coordenate position){
+	/*public int getShipFiredId(Coordinate position){
 		int shipIdToReturn = -1;
 		boolean found = false;
 		Iterator<Ship> shipIterator = this.ships.iterator();
@@ -124,12 +127,12 @@ public class Game
 		return shipIdToReturn;		
 	}
 	
-	
+	*/
 	/*
 	 * En caso de hundimiento de barco elimina el mismo del ArrayList
 	 */
-	public void destoyedShip(int shipId){
-		Ship shipToRemove = this.getShip(shipId);
+	/*public void destoyedShip(int shipId){
+		ShipVO shipToRemove = this.getShip(shipId);
 		this.ships.remove(shipToRemove);
-	}	
+	}*/	
 }
