@@ -1,5 +1,7 @@
 package logica;
 
+import entities.ShipVO;
+
 public class LeavePortAction extends ShipAction{
 
 	private int port;
@@ -11,7 +13,7 @@ public class LeavePortAction extends ShipAction{
 		
 	}
 	
-	public LeavePortAction(Ship ship, int port){
+	public LeavePortAction(ShipVO ship, int port){
 		super(ship);
 		this.port = port;
 	}
