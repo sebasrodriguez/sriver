@@ -1,6 +1,6 @@
 package tests;
 
-import logic.EndGameAction;
+import logic.actions.EndGameAction;
 
 public class pruebaEndGameAction {
 

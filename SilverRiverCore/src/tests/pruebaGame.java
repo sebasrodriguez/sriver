@@ -5,13 +5,13 @@ import java.util.Iterator;
 
 import entities.Coordinate;
 
-import logic.Action;
-import logic.BlueShip;
-import logic.Game;
-import logic.Player;
-import logic.RedShip;
-import logic.Ship;
-import logic.Turn;
+import logic.actions.Action;
+import logic.game.Game;
+import logic.game.Turn;
+import logic.player.Player;
+import logic.ship.BlueShip;
+import logic.ship.RedShip;
+import logic.ship.Ship;
 import entities.Cardinal;
 
 public class pruebaGame {
@@ -169,21 +169,28 @@ public class pruebaGame {
 		System.out.println("ShipFiredId: "+ gamePrueba.getShipFiredId(position));
 		System.out.println("-------------------------------------------------------");
 		
+		System.out.println("Hundiendo barcos");
+		gamePrueba.destoyedShip(3);
 		
-		/*
-		 * Funcion que devuelve el id del barco disparado a partir de una posicion a la cual se disparo
-		 * Devuelve el id del barco dañado o -1 en caso de que no haya barco en dicha posicion
+		if(gamePrueba.getShip(0) != null){
+			System.out.println("Probando el metodo Ship getShip(int ShipId) con id 0");
+			System.out.println("Ship: " + gamePrueba.getShip(0).toString());
+		}
+		if(gamePrueba.getShip(1) != null){
+			System.out.println("Probando el metodo Ship getShip(int ShipId) con id 1");
+			System.out.println("Ship: " + gamePrueba.getShip(1).toString());
+		}
+		if(gamePrueba.getShip(2) != null){
+			System.out.println("Probando el metodo Ship getShip(int ShipId) con id 2");
+			System.out.println("Ship: " + gamePrueba.getShip(2).toString());
+		}
+		if(gamePrueba.getShip(3) != null){
+			System.out.println("Probando el metodo Ship getShip(int ShipId) con id 3");
+			System.out.println("Ship: " + gamePrueba.getShip(3).toString());
+		}
+		System.out.println("-------------------------------------------------------");
 		
-		public int getShipFiredId(Coordinate position){
-			
-		
-		/*
-		 * En caso de hundimiento de barco elimina el mismo del ArrayList
-		
-		public void destoyedShip(int shipId){
-			
-		
-		*/		
+
 	}
 
 }

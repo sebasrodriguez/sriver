@@ -2,8 +2,8 @@ package tests;
 
 import entities.Coordinate;
 import entities.Cardinal;
-import logic.RedShip;
-import logic.Ship;
+import logic.ship.RedShip;
+import logic.ship.Ship;
 
 public class pruebaRedShip {
 

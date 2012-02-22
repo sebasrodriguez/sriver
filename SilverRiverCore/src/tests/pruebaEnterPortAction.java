@@ -2,9 +2,9 @@ package tests;
 
 import entities.Coordinate;
 import entities.Cardinal;
-import logic.EnterPortAction;
-import logic.RedShip;
-import logic.Ship;
+import logic.actions.EnterPortAction;
+import logic.ship.RedShip;
+import logic.ship.Ship;
 
 public class pruebaEnterPortAction {
 

@@ -1,6 +1,6 @@
 package entities;
 
-import logic.Action;
+import logic.actions.Action;
 
 
 public class GameVO {

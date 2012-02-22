@@ -1,7 +1,7 @@
 package tests;
 
-import logic.Player;
-import logic.Turn;
+import logic.game.Turn;
+import logic.player.Player;
 
 
 

@@ -1,7 +1,7 @@
 package tests;
 
-import logic.EndTurnAction;
-import logic.Player;
+import logic.actions.EndTurnAction;
+import logic.player.Player;
 
 public class pruebaEndTurnAction {
 

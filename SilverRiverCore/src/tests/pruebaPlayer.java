@@ -1,6 +1,6 @@
 package tests;
 
-import logic.Player;
+import logic.player.Player;
 
 public class pruebaPlayer {
 
