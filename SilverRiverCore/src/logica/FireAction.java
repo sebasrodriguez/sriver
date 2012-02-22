@@ -1,6 +1,7 @@
 package logica;
 
 import entities.Coordinate;
+import entities.ShipVO;
 import entities.Weapon;
 
 public class FireAction extends ShipAction {
@@ -8,7 +9,7 @@ public class FireAction extends ShipAction {
 	private Weapon weaponType;
 	private Coordinate hitCoordenate;
 	private boolean hit;
-	private Ship affectedShip;
+	private ShipVO affectedShip;
 	
 	
 	
@@ -19,7 +20,7 @@ public class FireAction extends ShipAction {
 		
 	}
 	
-	public FireAction(Ship shipFiring, Weapon weaponType, Coordinate hitCoordenate, boolean hit, Ship affectedShip){
+	public FireAction(ShipVO shipFiring, Weapon weaponType, Coordinate hitCoordenate, boolean hit, ShipVO affectedShip){
 		super(shipFiring);
 		this.weaponType = weaponType;
 		this.hitCoordenate = hitCoordenate;
@@ -43,7 +44,7 @@ public class FireAction extends ShipAction {
 		return this.hit;
 	}
 	
-	public Ship getAffectedShip(){
+	public ShipVO getAffectedShip(){
 		return this.affectedShip;
 	}
 	
@@ -63,7 +64,7 @@ public class FireAction extends ShipAction {
 		this.hit = hit;
 	}
 	
-	public void setAffectedShip(Ship affectedShip){
+	public void setAffectedShip(ShipVO affectedShip){
 		this.affectedShip = affectedShip;
 	}
 	
