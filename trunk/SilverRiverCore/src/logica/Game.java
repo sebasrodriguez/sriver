@@ -1,26 +1,25 @@
 package logica;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Game 
 {
 	private int id;
 	private Player redPlayer;
 	private Player bluePlayer;
-	private List<Action> redActionQueue;
-	private List<Action> blueActionQueue;
-	private Ship[] ships;
+	private ArrayList<Action> redActionQueue;
+	private ArrayList<Action> blueActionQueue;
+	private ArrayList<Ship> ships;
 	private Turn turn;
 	
-	public Game()
-	{
+	public Game(){
 		
 	}
 	
-	public Game(int id, Player redPlayer, Player bluePlayer,
-			List<Action> redActionQueue, List<Action> blueActionQueue,
-			Ship[] ships, Turn turn) 
-	{
+	public Game(int id, Player redPlayer, Player bluePlayer, ArrayList<Action> redActionQueue, 
+			ArrayList<Action> blueActionQueue,ArrayList<Ship> ships, Turn turn) {
+		
 		super();
 		this.id = id;
 		this.redPlayer = redPlayer;
@@ -31,118 +30,106 @@ public class Game
 		this.turn = turn;
 	}
 
-	public int getId() 
-	{
+	public int getId(){
 		return id;
 	}
 
-	public void setId(int id) 
-	{
+	public void setId(int id){
 		this.id = id;
 	}
 
-	public Player getRedPlayer() 
-	{
+	public Player getRedPlayer(){
 		return redPlayer;
 	}
 
-	public void setRedPlayer(Player redPlayer) 
-	{
+	public void setRedPlayer(Player redPlayer){
 		this.redPlayer = redPlayer;
 	}
 
-	public Player getBluePlayer() 
-	{
+	public Player getBluePlayer(){
 		return bluePlayer;
 	}
 
-	public void setBluePlayer(Player bluePlayer) 
-	{
+	public void setBluePlayer(Player bluePlayer){
 		this.bluePlayer = bluePlayer;
 	}
 
-	public List<Action> getRedActionQueue() 
-	{
+	public ArrayList<Action> getRedActionQueue(){
 		return redActionQueue;
 	}
 
-	public void setRedActionQueue(List<Action> redActionQueue) 
-	{
+	public void setRedActionQueue(ArrayList<Action> redActionQueue){
 		this.redActionQueue = redActionQueue;
 	}
 
-	public List<Action> getBlueActionQueue() 
-	{
+	public ArrayList<Action> getBlueActionQueue(){
 		return blueActionQueue;
 	}
 
-	public void setBlueActionQueue(List<Action> blueActionQueue) 
-	{
+	public void setBlueActionQueue(ArrayList<Action> blueActionQueue){
 		this.blueActionQueue = blueActionQueue;
 	}
 
-	public Ship[] getShips() 
-	{
+	public ArrayList<Ship> getShips(){
 		return ships;
 	}
 
-	public void setShips(Ship[] ships) 
-	{
+	public void setShips(ArrayList<Ship> ships){
 		this.ships = ships;
 	}
 
-	public Turn getTurn() 
-	{
+	public Turn getTurn(){
 		return turn;
 	}
 
-	public void setTurn(Turn turn) 
-	{
+	public void setTurn(Turn turn){
 		this.turn = turn;
 	}
 	
-		public Ship getShip(int shipId){
+	/*
+	 * Devuelve el barco a partir de su id, en caso de no econtrarlo devuelve null
+	 */
+	public Ship getShip(int shipId){
 		Ship shipToReturn = null;
-		boolean found = false;
-		int i = 0;
+		Iterator<Ship> shipIterator = this.ships.iterator();
+		boolean found = false;		
 		
-		while(i < this.ships.length && !found){
-			if(this.ships[i].getId() == shipId){
-				shipToReturn = this.ships[i];
+		
+		while (shipIterator.hasNext() && !found){
+			Ship aux = shipIterator.next();
+			if(aux.getId() == shipId){
+				shipToReturn = aux;
 				found = true;
-			}
-			i++;
+			}			
 		}
 		return shipToReturn;		
 	}
 	
+	/*
+	 * Funcion que devuelve el id del barco disparado a partir de una posicion a la cual se disparo
+	 * Devuelve el id del barco dañado o -1 en caso de que no haya barco en dicha posicion
+	 */
 	public int getShipFiredId(Coordenate position){
 		int shipIdToReturn = -1;
 		boolean found = false;
-		int i = 0;
+		Iterator<Ship> shipIterator = this.ships.iterator();
 		
-		while (i < this.ships.length && !found){
-			if(this.ships[i].getPosition().equals(position)){
+		while(shipIterator.hasNext() && !found){
+			Ship aux = shipIterator.next();
+			if(aux.getPosition().equals(position)){
 				found = true;
-				shipIdToReturn = this.ships[i].getId();
+				shipIdToReturn = aux.getId();
 			}
-			i++;
-		}
+		}		
 		return shipIdToReturn;		
 	}
 	
+	
+	/*
+	 * En caso de hundimiento de barco elimina el mismo del ArrayList
+	 */
 	public void destoyedShip(int shipId){
-		boolean found = false;
-		int i = 0;
-		
-		while(i < this.ships.length && !found){
-			if(this.ships[i].getId() == shipId){				
-				found = true;
-				this.ships[i] = null;
-			}
-			i++;
-		}
-	}
-	
-	
+		Ship shipToRemove = this.getShip(shipId);
+		this.ships.remove(shipToRemove);
+	}	
 }
