@@ -1,4 +1,4 @@
-package UI
+package 
 {
 	import Common.*;
 	import flash.display.Shape;
@@ -25,7 +25,7 @@ package UI
 		{
 			var square:Shape = new Shape();
 			square.graphics.beginFill(squareFillColor, 0.5);
-			square.graphics.lineStyle(2, squareBorderColor, 1);
+			square.graphics.lineStyle(2, squareBorderColor, 0.5);
 			square.graphics.drawRect(coordinate.X * squareSize, coordinate.Y * squareSize, squareSize, squareSize);
 			square.graphics.endFill();
 			

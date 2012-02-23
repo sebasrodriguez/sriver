@@ -134,8 +134,7 @@ package
 		{
 			if (_selectedShip != null)
 			{
-				_selectedShip.moveTo(event.coordinate);
-				_selectedShip.rotateTo(45);
+				_selectedShip.moveTo(event.coordinate);				
 			}
 		}
 		
