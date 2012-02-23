@@ -1,16 +1,12 @@
 package webservice;
 
 import logic.Facade;
-import entities.Coordinate;
+import logic.actions.MoveAction;
+import entities.*;
 
 public class SilverRiverService {	
 
-	public int getTest(){
-		return Facade.getInstance().GetTest();
-	}
-	
-	public Coordinate getCoordinate(){
-		return new Coordinate(2, 5);
-		
+	public MoveAction move(int gameId, int shipId, Coordinate destination){
+		return Facade.getInstance().move(gameId, shipId, destination);	
 	}
 }
