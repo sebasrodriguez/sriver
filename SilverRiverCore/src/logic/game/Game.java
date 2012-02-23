@@ -149,4 +149,35 @@ public class Game
 		this.ships.remove(indexToRemove);
 
 	}
+	
+	/*
+	 * Inserta la accion en la cola del jugador rojo
+	 */
+	public void insertActionRedQueue(Action action){
+		this.redActionQueue.add(action);
+	}
+	
+	/*
+	 * Inserta la accion en la cola del jugador azul
+	 */
+	public void insertActionBlueQueue(Action action){
+		this.blueActionQueue.add(action);
+	}
+	
+	/*
+	 * Vacia las acciones de la cola del jugador rojo
+	 * Este metodo se llama luego de consumir las acciones de dicha cola
+	 */
+	public void clearRedActionQueue(){
+		this.redActionQueue.clear();
+	}
+	
+	
+	/*
+	 * Vacia las acciones de la cola del jugador azul
+	 * Este metodo se llama luego de consumir las acciones de dicha cola
+	 */
+	public void clearBlueActionQueue(){
+		this.blueActionQueue.clear();
+	}
 }
