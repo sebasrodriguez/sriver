@@ -6,6 +6,8 @@ import java.util.Iterator;
 import entities.Coordinate;
 
 import logic.actions.Action;
+import logic.actions.MoveAction;
+import logic.actions.RotateAction;
 import logic.game.Game;
 import logic.game.Turn;
 import logic.player.Player;
@@ -13,6 +15,7 @@ import logic.ship.BlueShip;
 import logic.ship.RedShip;
 import logic.ship.Ship;
 import entities.Cardinal;
+
 
 public class pruebaGame {
 
@@ -168,6 +171,24 @@ public class pruebaGame {
 		position = new Coordinate(100,100);
 		System.out.println("ShipFiredId: "+ gamePrueba.getShipFiredId(position));
 		System.out.println("-------------------------------------------------------");
+		
+		System.out.println("Probando los actions");
+		position = new Coordinate(20,20);
+		MoveAction bac = new MoveAction(gamePrueba.getShip(2), position);
+		gamePrueba.insertActionRedQueue(bac);
+		position= new Coordinate(30,30);
+		bac = new MoveAction(gamePrueba.getShip(1), position);
+		gamePrueba.insertActionRedQueue(bac);
+		orientation = new Cardinal(2);
+		RotateAction rac = new RotateAction(gamePrueba.getShip(1), orientation);
+		gamePrueba.insertActionBlueQueue(rac);
+		
+		System.out.println("BlueActionQueue: " + gamePrueba.getBlueActionQueue().size());
+		System.out.println("RedActionQueue: " + gamePrueba.getRedActionQueue().size());
+		
+		System.out.println("-------------------------------------------------------");
+		
+		
 		
 		System.out.println("Hundiendo barcos");
 		gamePrueba.destoyedShip(3);

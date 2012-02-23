@@ -2,6 +2,7 @@ package tests;
 
 import entities.Coordinate;
 import entities.Cardinal;
+import entities.Weapon;
 import logic.ship.RedShip;
 import logic.ship.Ship;
 
@@ -15,6 +16,7 @@ public class pruebaRedShip {
 
 		Coordinate position = new Coordinate(20,70);
 		Cardinal orientation = new Cardinal(180);
+		Weapon weapon = null;
 		
 		Ship redShipPrueba = new RedShip(3,50,60,70,80,90,100,position,orientation);
 		
@@ -35,18 +37,21 @@ public class pruebaRedShip {
 		
 		
 		System.out.println("Cambiando los valores a: 10,30,50,60,70,80,90, (10,1), NW");
+		
 		redShipPrueba.setId(10);
 		redShipPrueba.setSpeed(30);
-		redShipPrueba.setArmor(50);
-		redShipPrueba.setAmmo(60);
-		redShipPrueba.setTorpedo(70);
+		redShipPrueba.setArmor(50);		
+		weapon = new Weapon(0);
+		redShipPrueba.fire(weapon);
+		weapon = new Weapon(1);
+		redShipPrueba.fire(weapon);		
 		redShipPrueba.setViewRange(80);
 		redShipPrueba.setSize(90);
 		position.setX(10);
 		position.setY(1);
-		redShipPrueba.setPosition(position);
+		redShipPrueba.move(position);
 		orientation = new Cardinal(-45);
-		redShipPrueba.setOrientation(orientation);
+		redShipPrueba.rotate(orientation);
 		
 		System.out.println("RedShip: ");
 		System.out.println("Id: "+ redShipPrueba.getId());
