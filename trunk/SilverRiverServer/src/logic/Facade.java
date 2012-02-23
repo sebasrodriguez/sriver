@@ -9,17 +9,20 @@ import logic.actions.FireAction;
 import logic.actions.MoveAction;
 import logic.actions.RotateAction;
 import logic.game.Game;
-import logic.ship.Ship;
+import logic.game.Turn;
+import logic.player.Player;
+import logic.ship.*;
 
 import entities.Cardinal;
 import entities.Coordinate;
+import entities.PlayerVO;
 import entities.Weapon;
 
 
 /*
  * La clase Facade es singleton
  */
-public class Facade {
+public class Facade {	
 	
 	private ArrayList<Game> activeGames;
 	private static Facade facade;
@@ -37,7 +40,26 @@ public class Facade {
 	/*
 	 * Constructores
 	 */
-	public Facade(){		
+	public Facade(){	
+		Game newGame = new Game();
+		
+		newGame.setBlueActionQueue(new ArrayList<Action>());
+		newGame.setRedActionQueue(new ArrayList<Action>());
+		newGame.setId(1);
+		ArrayList<Ship> ships = new ArrayList<Ship>();		
+		ships.add(new RedShip(1, 2, 3, 4, 5 ,6 ,7, new Coordinate(5, 5), new Cardinal(Cardinal.E)));
+		ships.add(new BlueShip(2, 2, 3, 4, 5 ,6 ,7, new Coordinate(6, 6), new Cardinal(Cardinal.E)));
+		ships.add(new BlueShip(3, 2, 3, 4, 5 ,6 ,7, new Coordinate(7, 7), new Cardinal(Cardinal.E)));
+		ships.add(new BlueShip(4, 2, 3, 4, 5 ,6 ,7, new Coordinate(8, 8), new Cardinal(Cardinal.E)));
+		newGame.setShips(ships);
+		Player redPlayer = new Player(1, "sebas");
+		Player bluePlayer = new Player(2, "pablo");
+		newGame.setBluePlayer(bluePlayer);
+		newGame.setRedPlayer(redPlayer);
+		Turn turn = new Turn(redPlayer, 5);
+		newGame.setTurn(turn);
+		
+		this.activeGames.add(newGame);
 	}	
 	
 	/*
@@ -79,7 +101,7 @@ public class Facade {
 			}			
 		}
 		return gameToReturn;
-	}
+	}	
 	
 	/*
 	 * Entrada: Id de la partida, Id del barco que se mueve, destino
