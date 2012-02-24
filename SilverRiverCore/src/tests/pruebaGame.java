@@ -211,6 +211,11 @@ public class pruebaGame {
 		}
 		System.out.println("-------------------------------------------------------");
 		
+		gamePrueba.clearBlueActionQueue();
+		blueActionQueuePrueba.add(rac);
+		blueActionQueuePrueba.add(rac);
+		blueActionQueuePrueba.add(rac);
+		System.out.println(blueActionQueuePrueba.size());
 
 	}
 

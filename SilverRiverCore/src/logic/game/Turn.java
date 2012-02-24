@@ -48,4 +48,11 @@ public class Turn
 		this.activePlayer = nextPlayer;
 		this.movesLeft = 5; //OJO QUE SI SACAMOS ESTE NUMERO DE UNA PROPERTY, NO DEJARLO HARDCODE!!!		
 	}
+	
+	/*
+	 * Decrementa en 1 la cantidad de movimientos restantes
+	 */
+	public void consumeMovement(){
+		this.movesLeft = this.movesLeft - 1;
+	}
 }
