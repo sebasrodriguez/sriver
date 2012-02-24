@@ -17,7 +17,7 @@ public abstract class Ship {
 	private Cardinal orientation;	
 		
 	/*
-	 * Constructors
+	 * Constructores
 	 */
 	public Ship(){
 		
@@ -115,4 +115,40 @@ public abstract class Ship {
 	public Cardinal getOrientation(){
 		return this.orientation;
 	}	
+	
+	/*
+	 * Metodo que actualiza la posicion del barco 
+	 */
+	public void move(Coordinate destination){
+		this.position = destination;
+	}
+	
+	/*
+	 * Metodo que actualiza la orientacion del barco
+	 */
+	public void rotate(Cardinal orientation){
+		this.orientation = orientation;
+	}
+	
+	/*
+	 * Metodo que actualiza la cantidad de balas del barco
+	 */
+	public void fire(Weapon weaponType){
+		
+		switch (weaponType.getWeapon()){
+			case 0:
+				this.torpedo = this.torpedo - 1;
+				break;
+			case 1:
+				this.ammo = this.ammo -1;
+				break;			
+		}
+	}
+	
+	/*
+	 * Metodo que actualiza el daño causado por impacto
+	 */
+	public void damaged(int damage){
+		this.armor = this.armor - damage;
+	}
 }

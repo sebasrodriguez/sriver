@@ -128,6 +128,7 @@ public class Facade {
 				activeGame.getRedActionQueue().add(moveActionToReturn);
 			}
 		}		
+		activeGame.getTurn().consumeMovement();
 		return moveActionToReturn;	
 	}
 	
@@ -175,6 +176,14 @@ public class Facade {
 		}
 		
 		fireActionToReturn = new FireAction(activeGame.getShip(shipFiringId), weaponType, firingPoint, hit, affectedShip);
+		//Comparo si es igual al jugador ROJO
+		if(activeGame.getTurn().getActivePlayer().equals(activeGame.getRedPlayer())){
+			activeGame.getBlueActionQueue().add(fireActionToReturn);
+		}else{
+			activeGame.getRedActionQueue().add(fireActionToReturn);
+		}
+		
+		activeGame.getTurn().consumeMovement();	
 		return fireActionToReturn;
 	}
 	
@@ -203,6 +212,7 @@ public class Facade {
 				activeGame.getRedActionQueue().add(rotateActionToReturn);
 			}			
 		}
+		activeGame.getTurn().consumeMovement();
 		return rotateActionToReturn;		
 	}
 	

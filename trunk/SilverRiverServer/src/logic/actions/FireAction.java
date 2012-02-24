@@ -71,7 +71,7 @@ public class FireAction extends ShipAction {
 	//Calcula la distacia entre el barco que dispara y el punto donde el jugador hizo click
 	//Esta distacia se vá a usar para variar que tanto se puede desviar el disparo.
 	//A más distacia más se va a desviar el disparo.
-	public double caluclateDistance()
+	public double calculateDistance()
 	{
 		int x1 = this.getShip().getPosition().getX();
 		int y1 = this.getShip().getPosition().getY();
