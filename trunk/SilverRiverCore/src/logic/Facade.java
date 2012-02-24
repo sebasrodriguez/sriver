@@ -41,26 +41,7 @@ public class Facade {
 		
 	}
 	
-	/*
-	Facade(ArrayList<Game> activeGames){
-		this.activeGames = activeGames;
-	}
-	*/
-	
-	/*
-	 * Getters
-	 */
-	public ArrayList<Game> getActiveGames(){
-		return this.activeGames;
-	}
-	
-	/*
-	 * Setters
-	 */
-	public void setActiveGames(ArrayList<Game> activeGames){
-		this.activeGames = activeGames;
-	}
-	
+
 	/*
 	 * Acciones
 	 */	
@@ -83,6 +64,7 @@ public class Facade {
 	}
 	
 	/*
+	 * Precondicion: el jugador tiene que tener por lo menos 1 movimiento restante
 	 * Entrada: Id de la partida, Id del barco que se mueve, destino
 	 * Salida: MoveAction
 	 * Procedimiento: 
@@ -106,7 +88,8 @@ public class Facade {
 			}else{
 				activeGame.getRedActionQueue().add(moveActionToReturn);
 			}
-		}		
+		}	
+		activeGame.getTurn().consumeMovement();
 		return moveActionToReturn;	
 	}
 	
@@ -144,16 +127,25 @@ public class Facade {
 		}
 		
 		//comparo si es torpedo
-		if(weaponType.equals("TORPEDO")){
+		if(weaponType.getWeapon() == 0){
 			newAmunition = activeGame.getShip(shipFiringId).getTorpedo() - 1;
-			activeGame.getShip(shipFiringId).setTorpedo(newAmunition);
-			
+			activeGame.getShip(shipFiringId).setTorpedo(newAmunition);			
 		}else{
 			newAmunition = activeGame.getShip(shipFiringId).getAmmo() - 1;
 			activeGame.getShip(shipFiringId).setAmmo(newAmunition);
 		}
 		
+		
 		fireActionToReturn = new FireAction(activeGame.getShip(shipFiringId), weaponType, firingPoint, hit, affectedShip);
+		
+		//Comparo si es igual al jugador ROJO
+		if(activeGame.getTurn().getActivePlayer().equals(activeGame.getRedPlayer())){
+			activeGame.getBlueActionQueue().add(fireActionToReturn);
+		}else{
+			activeGame.getRedActionQueue().add(fireActionToReturn);
+		}
+		
+		activeGame.getTurn().consumeMovement();		
 		return fireActionToReturn;
 	}
 	
@@ -182,6 +174,7 @@ public class Facade {
 				activeGame.getRedActionQueue().add(rotateActionToReturn);
 			}			
 		}
+		activeGame.getTurn().consumeMovement();
 		return rotateActionToReturn;		
 	}
 	
@@ -235,10 +228,4 @@ public class Facade {
 		
 	}
 	
-	/*
-	 * NO ENTIENDO EL PORQUE DE ESTE METODO
-	 */
-	public ArrayList<Action> listAction(int gameId){
-		return null;
-	}
 }

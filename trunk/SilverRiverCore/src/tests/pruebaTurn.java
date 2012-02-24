@@ -30,6 +30,7 @@ public class pruebaTurn {
 			
 			System.out.println("Cambiando jugador activo....");
 			
+					
 			if(turn.getActivePlayer().equals(jugadorRojo)){
 				turn.endTurn(jugadorAzul);
 			}else{
