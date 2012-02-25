@@ -3,7 +3,6 @@ package logic;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import logic.actions.Action;
 import logic.actions.EndTurnAction;
 import logic.actions.FireAction;
 import logic.actions.MoveAction;
@@ -98,6 +97,7 @@ public class Facade {
 			}
 		}		
 		activeGame.getTurn().consumeMovement();
+		this.checkTurn(gameId);
 		return moveActionToReturn;	
 	}
 	
@@ -151,7 +151,8 @@ public class Facade {
 			activeGame.getRedActionQueue().add(fireActionToReturn);
 		}
 		
-		activeGame.getTurn().consumeMovement();	
+		activeGame.getTurn().consumeMovement();
+		this.checkTurn(gameId);
 		return fireActionToReturn;
 	}
 	
@@ -181,6 +182,7 @@ public class Facade {
 			}			
 		}
 		activeGame.getTurn().consumeMovement();
+		this.checkTurn(gameId);
 		return rotateActionToReturn;		
 	}
 	
@@ -261,7 +263,7 @@ public class Facade {
 	 * Salida: -1 si gameWithoutBluePlayer != null o last GameId in activeGames
 	 * Procedimiento:
 	 * 	Si gameWithoutBluePlayer != null devuelve -1
-	 * 	sino devuelve el ultimo GameId	 * 
+	 * 	sino devuelve el ultimo GameId
 	 */
 	public int checkGameId(){
 		if(gameWithoutBluePlayer != null){
@@ -364,8 +366,26 @@ public class Facade {
 		return gameToInsert.getId();		
 	}
 	
+	/*
+	 * Entrada: Id del game
+	 * Salida: void
+	 * Procedimiento:
+	 * 	Si al jugador se le acabaron todos los movimientos entonces invoca al endTurn()
+	 */
+	private void checkTurn(int gameId){
+		Game activeGame = this.findGame(gameId);
+		
+		if(activeGame.getTurn().getMovesLeft() <= 0){
+			this.endTurn(gameId);
+		}		
+	}
+	
+	
+	
 	//OJO QUE HAY QUE BORRARLOOOOO
 	public Iterator<Game> devolverITerator(){
 		return this.activeGames.iterator();
 	}
+	
+	
 }
