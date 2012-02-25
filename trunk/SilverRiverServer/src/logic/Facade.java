@@ -40,27 +40,7 @@ public class Facade {
 	private Facade(){	
 		
 		this.activeGames = new ArrayList<Game>();
-		this.gameWithoutBluePlayer = null;
-		
-		/*Game newGame = new Game();
-		
-		newGame.setBlueActionQueue(new ArrayList<Action>());
-		newGame.setRedActionQueue(new ArrayList<Action>());
-		newGame.setId(1);
-		ArrayList<Ship> ships = new ArrayList<Ship>();		
-		ships.add(new RedShip(1, 2, 3, 4, 5 ,6 ,7, new Coordinate(5, 5), new Cardinal(Cardinal.E)));
-		ships.add(new BlueShip(2, 2, 3, 4, 5 ,6 ,7, new Coordinate(6, 6), new Cardinal(Cardinal.E)));
-		ships.add(new BlueShip(3, 2, 3, 4, 5 ,6 ,7, new Coordinate(7, 7), new Cardinal(Cardinal.E)));
-		ships.add(new BlueShip(4, 2, 3, 4, 5 ,6 ,7, new Coordinate(8, 8), new Cardinal(Cardinal.E)));
-		newGame.setShips(ships);
-		Player redPlayer = new Player(1, "sebas");
-		Player bluePlayer = new Player(2, "pablo");
-		newGame.setBluePlayer(bluePlayer);
-		newGame.setRedPlayer(redPlayer);
-		Turn turn = new Turn(redPlayer, 5);
-		newGame.setTurn(turn);
-		
-		this.activeGames.add(newGame);*/
+		this.gameWithoutBluePlayer = null;		
 	}	
 	
 
@@ -230,10 +210,16 @@ public class Facade {
 	}
 	
 	/*
-	 * QUE HARIA EL ENDGAME??????
+	 * Entrada: Id del game a eliminar de la memoria}
+	 * Salida: void
+	 * Procedimiento:
+	 * 	Busca el index del game por su id
+	 * 	Elimina el Game en ese index del ArrayList
 	 */
 	public void endGame(int gameId){
-		
+		Game gameToRemove = this.findGame(gameId);
+		int indexToRemove = activeGames.indexOf(gameToRemove);
+		this.activeGames.remove(indexToRemove);		
 	}
 	
 	/*
@@ -246,9 +232,8 @@ public class Facade {
 	public int newGame(String username){
 		
 		if(this.gameWithoutBluePlayer == null){
-			int nextIdToUse = this.activeGames.size();
-			Player redPlayer = new Player(username);
-			
+			int nextIdToUse = this.nextFreeIndex();			
+			Player redPlayer = new Player(username);			
 			this.gameWithoutBluePlayer = new Game(nextIdToUse, redPlayer, null);
 			return -1;
 		}else{
@@ -256,7 +241,7 @@ public class Facade {
 			
 		}				
 	}
-		
+	
 	
 	/*
 	 * Entrada: void 
@@ -269,19 +254,12 @@ public class Facade {
 		if(gameWithoutBluePlayer != null){
 			return -1;
 		}else{
-			return this.activeGames.size() -1;
+			return this.nextFreeIndex() - 1;
 		}		
 	}
 		
 	
 	
-	/*
-	 * NO ENTIENDO EL PORQUE DE ESTE METODO
-	
-	public ArrayList<Action> listAction(int gameId){
-		return null;
-	}
-	*/
 	
 	
 	/*
@@ -361,7 +339,8 @@ public class Facade {
 		gameWithoutBluePlayer = null;
 		
 		gameToInsert.setBluePlayer(bluePlayer);
-		this.activeGames.add(gameToInsert.getId(), gameToInsert);
+		//this.activeGames.add(gameToInsert.getId(), gameToInsert);
+		this.activeGames.add(gameToInsert);
 		
 		return gameToInsert.getId();		
 	}
@@ -380,6 +359,22 @@ public class Facade {
 		}		
 	}
 	
+	/*
+	 * Entrada:void
+	 * Salida: el proximo index libre para asignarle a la partida
+	 * Procedimiento:
+	 * 	Busca el ultimo index y le suma 1
+	 */
+	private int nextFreeIndex(){
+		Iterator<Game> gameIt = this.activeGames.iterator();
+		Game aux = null;
+		int indexToReturn = 0;
+		while(gameIt.hasNext()){
+			aux = gameIt.next();
+			indexToReturn = aux.getId() + 1;
+		}
+		return indexToReturn;
+	}
 	
 	
 	//OJO QUE HAY QUE BORRARLOOOOO
