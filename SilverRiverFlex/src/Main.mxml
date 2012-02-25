@@ -13,20 +13,15 @@
 	</fx:Declarations>	
 	<fx:Script>
 		<![CDATA[
-			import Common.Coordinate;
-			import Common.MatchDataObject;
-			import flash.display.MovieClip;
-			import flash.events.Event;
-			import flash.events.MouseEvent;
-			import flash.events.TimerEvent;
-			import flash.utils.Timer;
-			import mx.core.UIComponent;
-			import mx.effects.Tween;
-			import mx.rpc.events.FaultEvent;
-			import mx.rpc.events.ResultEvent;
-			import mx.rpc.soap.Operation;
-			import mx.rpc.soap.WebService;
-			import mx.rpc.wsdl.WSDLOperation;			
+			import flash.display.*;
+			import flash.events.*;
+			import flash.utils.*;
+			import mx.core.*;
+			import mx.effects.*;
+			import mx.rpc.events.*;
+			import mx.rpc.soap.*;
+			import mx.rpc.wsdl.*;
+			import components.*
 			
 			private var _game:Game;			
 			
@@ -39,21 +34,7 @@
 			{			
 			}			
 			
-			private function dataFromServer():MatchDataObject
-			{
-				/*var res:MatchDataObject = new MatchDataObject();
-				   res.redship_a_coordinate = 300;
-				   res.redship_b_coordinate = 400;
-				   res.redship_rotation = 45;
-				   res.blueship1_a_coordinate = 500;
-				   res.blueship1_b_coordinate = 300;
-				   res.blueship2_a_coordinate = 700;
-				   res.blueship2_b_coordinate = 300;
-				   res.blueship3_a_coordinate = 900;
-				   res.blueship3_b_coordinate = 300;
-				 return res;*/
-				return null;
-			}
+			
 		]]>
 	</fx:Script>
 
