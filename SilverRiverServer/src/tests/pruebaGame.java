@@ -7,7 +7,6 @@ import entities.Coordinate;
 
 import logic.actions.Action;
 import logic.game.Game;
-import logic.game.Turn;
 import logic.player.Player;
 import logic.ship.BlueShip;
 import logic.ship.RedShip;

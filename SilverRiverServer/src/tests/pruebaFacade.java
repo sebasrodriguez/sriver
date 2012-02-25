@@ -1,6 +1,5 @@
 package tests;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import entities.Cardinal;
@@ -297,20 +296,35 @@ public class pruebaFacade {
 		printFireAction(fireAction);
 		System.out.println("--------------------------------------------");	
 		
+		System.out.println("Eliminando el Game con Id 0");
+		facadePrueba.endGame(0);
+		Iterator<Game> gameIt = facadePrueba.devolverITerator();
+		int i = 0;
+		while(gameIt.hasNext()){
+			i++;
+			gameIt.next();
+		}
+		System.out.println("ActiveGames size: " + i);
+		System.out.println("-------------------------------------------------------------");
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		//Partida 1
+		System.out.println("Cargando al jugador 5 en el juego");
+		facadePrueba.newGame("Jugador 5");
+		spooleando();
+		if(facadePrueba.checkGameId() == -1){
+			System.out.println("Esperando al segundo jugador....");
+		}else{
+			System.out.println("Ya encontre mi segundo jugador, id de la partida: " + facadePrueba.checkGameId());
+		}
+		System.out.println("Cargando al jugador 6 en el juego");
+		facadePrueba.newGame("Jugador 6");
+		spooleando();
+		if(facadePrueba.checkGameId() == -1){
+			System.out.println("Esperando al segundo jugador....");
+		}else{
+			System.out.println("Ya encontre mi segundo jugador, id de la partida: " + facadePrueba.checkGameId());
+		}
+		System.out.println("-------------------------------------------------------------");		
 		
 	}
 
