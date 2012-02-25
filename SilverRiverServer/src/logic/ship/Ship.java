@@ -2,6 +2,7 @@ package logic.ship;
 
 import entities.Cardinal;
 import entities.Coordinate;
+import entities.Weapon;
 
 public abstract class Ship {
 
