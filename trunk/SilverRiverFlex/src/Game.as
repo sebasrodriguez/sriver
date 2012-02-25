@@ -41,7 +41,7 @@ package
 		{
 			_main = main;
 			_main.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
-			newGame();			
+			newGame();
 		}
 		
 		/*
@@ -135,16 +135,16 @@ package
 		{
 			if (_selectedShip != null)
 			{
-				_selectedShip.moveTo(event.coordinate);				
+				_selectedShip.moveTo(event.coordinate);
 			}
 		}
 		
 		private function createAndLocateShips():void
 		{
-			var c1:Coordinate = new Coordinate(6, 2);
-			var c2:Coordinate = new Coordinate(2,4);
-			var c3:Coordinate = new Coordinate(2,2);
-			var c4:Coordinate = new Coordinate(2,6);
+			var c1:Coordinate = new Coordinate(10, 10);
+			var c2:Coordinate = new Coordinate(2, 4);
+			var c3:Coordinate = new Coordinate(2, 2);
+			var c4:Coordinate = new Coordinate(2, 6);
 			
 			_redShipComponent = new RedShip(c1);
 			_blueShipComponent1 = new BlueShip(c2);
@@ -172,6 +172,58 @@ package
 				_selectedShip.filters = null;
 				_selectedShip = null;
 			}
+			if (_selectedShip != null)
+			{
+				drawMovements();
+			}
+		}
+		
+		private function drawMovements():void
+		{
+			// estos parametros luego los obtenemos del objeto _selectedShip
+			var shipSpeed:int = 4;
+			var shipDirection:int = -90;
+			var shipCoordinate:Coordinate = new Coordinate(9, 10);
+			var shipSize:int = 3;
+			var coordinate:Coordinate = new Coordinate(shipCoordinate.r, shipCoordinate.c);
+			
+			if (shipSize == 3)
+			{
+				coordinate = calculateNextCell(shipCoordinate, shipDirection);
+			}
+			
+			for (var i:int = 0; i < shipSpeed; i++)
+			{
+				coordinate = calculateNextCell(coordinate, shipDirection);
+				_gridComponent.enableCell(coordinate);
+			}
+		}
+		
+		private function calculateNextCell(actualCoordinate:Coordinate, direction:int):Coordinate
+		{
+			var newCoordinate:Coordinate = new Coordinate(actualCoordinate.r, actualCoordinate.c);
+			// si la direccion es al este
+			if (direction == 90)
+			{
+				newCoordinate.c = newCoordinate.c + 1;
+			}
+			// si la direccion es al oeste
+			if (direction == -90)
+			{
+				newCoordinate.c = newCoordinate.c - 1;
+			}
+			// si la direccion es al norte
+			if (direction == 0)
+			{
+				newCoordinate.r = newCoordinate.r - 1;
+			}
+			// si la direccion es al sur
+			if (direction == 180)
+			{
+				newCoordinate.r = newCoordinate.r + 1;
+			}
+			
+			return newCoordinate;
 		}
 	}
 }
