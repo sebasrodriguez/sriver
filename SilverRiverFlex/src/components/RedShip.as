@@ -8,9 +8,9 @@ package components
 	public class RedShip extends Ship 
 	{
 		
-		public function RedShip(c:Coordinate) 
+		public function RedShip(c:Coordinate, d:Cardinal) 
 		{
-			super(c);
+			super(c, d);
 			this.setBitmap(Assets.REDSHIP_DATA);
 			fixCenter();
 		}

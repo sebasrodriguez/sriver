@@ -142,14 +142,21 @@ package components
 		private function createAndLocateShips():void
 		{
 			var c1:Coordinate = new Coordinate(10, 10);
-			var c2:Coordinate = new Coordinate(2, 4);
-			var c3:Coordinate = new Coordinate(2, 2);
-			var c4:Coordinate = new Coordinate(2, 6);
+			var d1:Cardinal = new Cardinal(Cardinal.E);
 			
-			_redShipComponent = new RedShip(c1);
-			_blueShipComponent1 = new BlueShip(c2);
-			_blueShipComponent2 = new BlueShip(c3);
-			_blueShipComponent3 = new BlueShip(c4);
+			var c2:Coordinate = new Coordinate(2, 4);
+			var d2:Cardinal = new Cardinal(Cardinal.N);
+			
+			var c3:Coordinate = new Coordinate(2, 2);
+			var d3:Cardinal = new Cardinal(Cardinal.S);
+			
+			var c4:Coordinate = new Coordinate(2, 6);
+			var d4:Cardinal = new Cardinal(Cardinal.W);
+			
+			_redShipComponent = new RedShip(c1, d1);
+			_blueShipComponent1 = new BlueShip(c2, d2);
+			_blueShipComponent2 = new BlueShip(c3, d3);
+			_blueShipComponent3 = new BlueShip(c4, d4);
 			
 			_redShipComponent.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
 			_blueShipComponent1.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
@@ -182,8 +189,8 @@ package components
 		{
 			// estos parametros luego los obtenemos del objeto _selectedShip
 			var shipSpeed:int = 4;
-			var shipDirection:int = -90;
-			var shipCoordinate:Coordinate = new Coordinate(9, 10);
+			var shipDirection:int = _selectedShip.direction.cardinal;
+			var shipCoordinate:Coordinate = _selectedShip.currentPos;
 			var shipSize:int = 3;
 			var coordinate:Coordinate = new Coordinate(shipCoordinate.r, shipCoordinate.c);
 			
@@ -203,24 +210,43 @@ package components
 		{
 			var newCoordinate:Coordinate = new Coordinate(actualCoordinate.r, actualCoordinate.c);
 			// si la direccion es al este
-			if (direction == 90)
+			if (direction == Cardinal.E)
 			{
 				newCoordinate.c = newCoordinate.c + 1;
 			}
 			// si la direccion es al oeste
-			if (direction == -90)
+			if (direction == Cardinal.W)
 			{
 				newCoordinate.c = newCoordinate.c - 1;
 			}
 			// si la direccion es al norte
-			if (direction == 0)
+			if (direction == Cardinal.N)
 			{
 				newCoordinate.r = newCoordinate.r - 1;
 			}
 			// si la direccion es al sur
-			if (direction == 180)
+			if (direction == Cardinal.S)
 			{
 				newCoordinate.r = newCoordinate.r + 1;
+			}
+			if (direction == Cardinal.SE)
+			{
+				newCoordinate.r = newCoordinate.r + 1;
+				newCoordinate.c = newCoordinate.c + 1;
+			}
+			if (direction == Cardinal.SW)
+			{
+				newCoordinate.r = newCoordinate.r + 1;
+				newCoordinate.c = newCoordinate.c - 1;
+			}
+			if (direction == Cardinal.NE)
+			{
+				newCoordinate.r = newCoordinate.r - 1;
+				newCoordinate.c = newCoordinate.c + 1;
+			}
+			if (direction == Cardinal.NW) {
+				newCoordinate.r = newCoordinate.r - 1;
+				newCoordinate.c = newCoordinate.c - 1;
 			}
 			
 			return newCoordinate;
