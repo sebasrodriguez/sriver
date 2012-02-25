@@ -12,6 +12,7 @@ package
 		public function Map() 
 		{	
 			this.setBitmap(Assets.MAP_DATA);
+			
 		}
 		
 	}
