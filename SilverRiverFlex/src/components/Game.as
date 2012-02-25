@@ -141,22 +141,22 @@ package components
 		
 		private function createAndLocateShips():void
 		{
-			var c1:Coordinate = new Coordinate(10, 10);
-			var d1:Cardinal = new Cardinal(Cardinal.E);
+			var c1:Coordinate = new Coordinate(10, 12);
+			var d1:Cardinal = new Cardinal(Cardinal.S);
 			
-			var c2:Coordinate = new Coordinate(2, 4);
+			var c2:Coordinate = new Coordinate(15, 10);
 			var d2:Cardinal = new Cardinal(Cardinal.N);
 			
-			var c3:Coordinate = new Coordinate(2, 2);
+			var c3:Coordinate = new Coordinate(15, 15);
 			var d3:Cardinal = new Cardinal(Cardinal.S);
 			
-			var c4:Coordinate = new Coordinate(2, 6);
+			var c4:Coordinate = new Coordinate(15, 18);
 			var d4:Cardinal = new Cardinal(Cardinal.W);
 			
-			_redShipComponent = new RedShip(c1, d1);
-			_blueShipComponent1 = new BlueShip(c2, d2);
-			_blueShipComponent2 = new BlueShip(c3, d3);
-			_blueShipComponent3 = new BlueShip(c4, d4);
+			_redShipComponent = new RedShip(c1, d1, 4, 3);
+			_blueShipComponent1 = new BlueShip(c2, d2, 4, 1);
+			_blueShipComponent2 = new BlueShip(c3, d3, 4, 1);
+			_blueShipComponent3 = new BlueShip(c4, d4, 4, 1);
 			
 			_redShipComponent.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
 			_blueShipComponent1.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
@@ -186,65 +186,67 @@ package components
 		}
 		
 		private function drawMovements():void
-		{
-			// estos parametros luego los obtenemos del objeto _selectedShip
-			var shipSpeed:int = 4;
-			var shipDirection:int = _selectedShip.direction.cardinal;
-			var shipCoordinate:Coordinate = _selectedShip.currentPos;
-			var shipSize:int = 3;
-			var coordinate:Coordinate = new Coordinate(shipCoordinate.r, shipCoordinate.c);
+		{			
+			var forwardCoordinate:Coordinate = new Coordinate(_selectedShip.currentPos.r, _selectedShip.currentPos.c);
+			var backwardsCoordinate:Coordinate = new Coordinate(_selectedShip.currentPos.r, _selectedShip.currentPos.c);
+			var backwardsDirection:Cardinal = new Cardinal(_selectedShip.direction.cardinal - 180);
 			
-			if (shipSize == 3)
+			if (_selectedShip.size == 3)
 			{
-				coordinate = calculateNextCell(shipCoordinate, shipDirection);
+				forwardCoordinate = calculateNextCell(_selectedShip.currentPos, _selectedShip.direction);
+				backwardsCoordinate = calculateNextCell(_selectedShip.currentPos, backwardsDirection);
 			}
 			
-			for (var i:int = 0; i < shipSpeed; i++)
+			for (var i:int = 0; i < _selectedShip.speed; i++)
 			{
-				coordinate = calculateNextCell(coordinate, shipDirection);
-				_gridComponent.enableCell(coordinate);
+				forwardCoordinate = calculateNextCell(forwardCoordinate, _selectedShip.direction);
+				_gridComponent.enableCell(forwardCoordinate);
+			}
+			for (var j:int = 0; j < _selectedShip.speed / 2; j++) {
+				backwardsCoordinate = calculateNextCell(backwardsCoordinate, backwardsDirection);
+				_gridComponent.enableCell(backwardsCoordinate);
 			}
 		}
 		
-		private function calculateNextCell(actualCoordinate:Coordinate, direction:int):Coordinate
+		private function calculateNextCell(actualCoordinate:Coordinate, direction:Cardinal):Coordinate
 		{
 			var newCoordinate:Coordinate = new Coordinate(actualCoordinate.r, actualCoordinate.c);
 			// si la direccion es al este
-			if (direction == Cardinal.E)
+			if (direction.cardinal == Cardinal.E)
 			{
 				newCoordinate.c = newCoordinate.c + 1;
 			}
 			// si la direccion es al oeste
-			if (direction == Cardinal.W)
+			if (direction.cardinal == Cardinal.W)
 			{
 				newCoordinate.c = newCoordinate.c - 1;
 			}
 			// si la direccion es al norte
-			if (direction == Cardinal.N)
+			if (direction.cardinal == Cardinal.N)
 			{
 				newCoordinate.r = newCoordinate.r - 1;
 			}
 			// si la direccion es al sur
-			if (direction == Cardinal.S)
+			if (direction.cardinal == Cardinal.S)
 			{
 				newCoordinate.r = newCoordinate.r + 1;
 			}
-			if (direction == Cardinal.SE)
+			if (direction.cardinal == Cardinal.SE)
 			{
 				newCoordinate.r = newCoordinate.r + 1;
 				newCoordinate.c = newCoordinate.c + 1;
 			}
-			if (direction == Cardinal.SW)
+			if (direction.cardinal == Cardinal.SW)
 			{
 				newCoordinate.r = newCoordinate.r + 1;
 				newCoordinate.c = newCoordinate.c - 1;
 			}
-			if (direction == Cardinal.NE)
+			if (direction.cardinal == Cardinal.NE)
 			{
 				newCoordinate.r = newCoordinate.r - 1;
 				newCoordinate.c = newCoordinate.c + 1;
 			}
-			if (direction == Cardinal.NW) {
+			if (direction.cardinal == Cardinal.NW) {
 				newCoordinate.r = newCoordinate.r - 1;
 				newCoordinate.c = newCoordinate.c - 1;
 			}
