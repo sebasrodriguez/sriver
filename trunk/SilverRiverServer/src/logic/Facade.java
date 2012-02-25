@@ -9,13 +9,10 @@ import logic.actions.FireAction;
 import logic.actions.MoveAction;
 import logic.actions.RotateAction;
 import logic.game.Game;
-import logic.game.Turn;
 import logic.player.Player;
 import logic.ship.*;
-
 import entities.Cardinal;
 import entities.Coordinate;
-import entities.PlayerVO;
 import entities.Weapon;
 
 
@@ -25,6 +22,7 @@ import entities.Weapon;
 public class Facade {	
 	
 	private ArrayList<Game> activeGames;
+	private Game gameWithoutBluePlayer;
 	private static Facade facade;
 	
 	/*
@@ -40,7 +38,11 @@ public class Facade {
 	/*
 	 * Constructores
 	 */
-	public Facade(){	
+	private Facade(){	
+		
+		this.activeGames = new ArrayList<Game>();
+		this.gameWithoutBluePlayer = null;
+		
 		/*Game newGame = new Game();
 		
 		newGame.setBlueActionQueue(new ArrayList<Action>());
@@ -64,40 +66,11 @@ public class Facade {
 	
 
 	
-	/*
-	 * Getters
-	 */
-	public ArrayList<Game> getActiveGames(){
-		return this.activeGames;
-	}
-	
-	/*
-	 * Setters
-	 */
-	public void setActiveGames(ArrayList<Game> activeGames){
-		this.activeGames = activeGames;
-	}
-	
-	/*
-	 * Acciones
-	 */	
-	
-	/*
-	 * Metodo privado el cual encuentra la partida a la cual hago referencia en el array de partidas activas del Facade
-	 */
-	private Game findGame(int gameId){
-		Iterator<Game> gameIterator = this.activeGames.iterator();
-		Game gameToReturn = null;
-		boolean found = false;
 		
-		while(gameIterator.hasNext() && !found){
-			gameToReturn = gameIterator.next();
-			if(gameToReturn.getId() == gameId ){
-				found = true;				
-			}			
-		}
-		return gameToReturn;
-	}	
+	/*
+	 * Metodos publicos
+	 */		
+	
 	
 	/*
 	 * Entrada: Id de la partida, Id del barco que se mueve, destino
@@ -142,40 +115,35 @@ public class Facade {
 	*/
 	public FireAction fire(int gameId, int shipFiringId, Coordinate firingPoint, Weapon weaponType){
 		
-		//NO SE COMO CALCULAR EL PUNTO EXACTO DE DISPARO!!
-		//OJO, CAMBIAR EL FIRINGPOINT POR EL CALCULO DEL PUNTO EXACTO!!! INCLUSO EN EL FIREACTION A RETORNAR
 		Game activeGame = this.findGame(gameId);
 		FireAction fireActionToReturn = null;
 		int newAmunition = 0;
 		boolean hit = false;
 		Ship affectedShip = null; 
-		Coordinate exactFiringPoint = null;
+		Coordinate exactFiringPoint = this.calculateHitPoint(activeGame.getShip(shipFiringId), firingPoint);
 		
-		
-		
-		
-		if(activeGame.getShipFiredId(firingPoint) != -1){
+		if(activeGame.getShipFiredId(exactFiringPoint) != -1){
 			//acerto	
 			hit = true;
-			int newArmor = activeGame.getShip(activeGame.getShipFiredId(firingPoint)).getArmor() - 20;
-			affectedShip = activeGame.getShip(activeGame.getShipFiredId(firingPoint));
+			//OJOOOOOOOOO con Armor - 20
+			int newArmor = activeGame.getShip(activeGame.getShipFiredId(exactFiringPoint)).getArmor() - 20;
+			affectedShip = activeGame.getShip(activeGame.getShipFiredId(exactFiringPoint));
 			affectedShip.setArmor(newArmor);	
 			if(affectedShip.getArmor() <= 0){
-				activeGame.destoyedShip(affectedShip.getId());
+				activeGame.destroyedShip(affectedShip.getId());
 			}			
 		}
 		
 		//comparo si es torpedo
-		if(weaponType.equals("TORPEDO")){
+		if(weaponType.getWeapon() == 0){
 			newAmunition = activeGame.getShip(shipFiringId).getTorpedo() - 1;
-			activeGame.getShip(shipFiringId).setTorpedo(newAmunition);
-			
+			activeGame.getShip(shipFiringId).setTorpedo(newAmunition);			
 		}else{
 			newAmunition = activeGame.getShip(shipFiringId).getAmmo() - 1;
 			activeGame.getShip(shipFiringId).setAmmo(newAmunition);
 		}
 		
-		fireActionToReturn = new FireAction(activeGame.getShip(shipFiringId), weaponType, firingPoint, hit, affectedShip);
+		fireActionToReturn = new FireAction(activeGame.getShip(shipFiringId), weaponType, exactFiringPoint, hit, affectedShip);
 		//Comparo si es igual al jugador ROJO
 		if(activeGame.getTurn().getActivePlayer().equals(activeGame.getRedPlayer())){
 			activeGame.getBlueActionQueue().add(fireActionToReturn);
@@ -267,11 +235,41 @@ public class Facade {
 	}
 	
 	/*
-	 * NO ENTIENDO EL PORQUE DE ESTE METODO
+	 *Entrada: String con el username del jugador que decidio hacer new game
+	 *Salida: Devuelve el numero de la partida (gameId) o -1 en caso de quedar esperando un segundo jugador
+	 *Procedimiento:
+	 *	Si gameWithoutBluePlayer = null entonces crea el game y retorna -1 para que el UI sepa que no es una partida activa
+	 *	sino llama al metodo addBluePlayerToGame con el jugador y retorna el id de la partida
 	 */
+	public int newGame(String username){
+		
+		if(this.gameWithoutBluePlayer == null){
+			int nextIdToUse = this.activeGames.size();
+			Player redPlayer = new Player(username);
+			
+			this.gameWithoutBluePlayer = new Game(nextIdToUse, redPlayer, null);
+			return -1;
+		}else{
+			return this.addBluePlayerToGame(username);
+			
+		}				
+	}
+		
+		
+	
+	
+	/*
+	 * NO ENTIENDO EL PORQUE DE ESTE METODO
+	
 	public ArrayList<Action> listAction(int gameId){
 		return null;
 	}
+	*/
+	
+	
+	/*
+	 * Metodos privados
+	 */
 	
 	/*
 	 * Calcula la distacia entre el barco que dispara y el punto donde el jugador hizo click
@@ -313,5 +311,46 @@ public class Facade {
 		coord.setY(y);
 		
 		return coord;
+	}
+	
+	/*
+	 * Metodo privado el cual encuentra la partida a la cual hago referencia en el array de partidas activas del Facade
+	 */
+	private Game findGame(int gameId){
+		Iterator<Game> gameIterator = this.activeGames.iterator();
+		Game gameToReturn = null;
+		boolean found = false;
+		
+		while(gameIterator.hasNext() && !found){
+			gameToReturn = gameIterator.next();
+			if(gameToReturn.getId() == gameId ){
+				found = true;				
+			}			
+		}
+		return gameToReturn;
+	}
+	
+	/*
+	 * Entrada: Nombre del segundo jugador
+	 * Salida: el id de la partida 
+	 * Procedimiento:
+	 * 	Crea el objeto Player
+	 * 	Agrega el segundo jugador a la partida 
+	 * 	La coloca en el ArrayList de partidas activas 
+	 */
+	private int addBluePlayerToGame(String username){
+		Player bluePlayer = new Player(username);		
+		Game gameToInsert = gameWithoutBluePlayer.clone();
+		gameWithoutBluePlayer = null;
+		
+		gameToInsert.setBluePlayer(bluePlayer);
+		this.activeGames.add(gameToInsert.getId(), gameToInsert);
+		
+		return gameToInsert.getId();		
+	}
+	
+	//OJO QUE HAY QUE BORRARLOOOOO
+	public Iterator<Game> devolverITerator(){
+		return this.activeGames.iterator();
 	}
 }
