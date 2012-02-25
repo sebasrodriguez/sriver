@@ -35,7 +35,8 @@ package UI
 					_gridMatrix[r][c] = new GameCell(new Coordinate(r, c));		
 					this.addChild(_gridMatrix[r][c]);
 					_gridMatrix[r][c].x = c * _cellSize;
-					_gridMatrix[r][c].y = r * _cellSize;	
+					_gridMatrix[r][c].y = r * _cellSize;
+					_gridMatrix[r][c].blocked = false;
 					_gridMatrix[r][c].addEventListener( MouseEvent.CLICK, function (e:MouseEvent):void {
 						var cellEvent:CellEvent = new CellEvent();
 						cellEvent.coordinate = e.currentTarget.coordinate;
@@ -46,10 +47,19 @@ package UI
 			
 		}
 		
-		private function blockCells(...coordinates):void {
-			for each(var c:Coordinate in coordinates) {
-				var cell:GameCell = _gridMatrix[c.r][c.c];
-				cell.blocked = true;
+		public function blockCells(...coordinates):void {
+			var cell:GameCell;
+			var c:Coordinate;
+			if (coordinates[0] is Array) {
+				for each(c in coordinates[0]) {
+					cell = _gridMatrix[c.r][c.c];
+					cell.blocked = true;
+				}
+			}else{
+				for each(c in coordinates) {
+					cell = _gridMatrix[c.r][c.c];
+					cell.blocked = true;
+				}
 			}
 		}
 		

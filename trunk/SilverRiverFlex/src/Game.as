@@ -107,6 +107,7 @@ package
 			// Crea la grilla del mapa
 			_gridComponent = new GameGrid(_board, GAME_BOARD_ROWS, GAME_BOARD_COLS);
 			_gridComponent.addEventListener(CellEvent.CLICK, selectedCellEvent);
+			_gridComponent.blockCells(_mapComponent.getInitialBlockedCoordinates());
 			
 			// Crea y ubica los barcos en el mapa
 			createAndLocateShips();
