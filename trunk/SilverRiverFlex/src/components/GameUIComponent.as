@@ -57,6 +57,7 @@ package components
 		{
 			this.x = c.x;
 			this.y = c.y;
+			this._currentPos = c;
 		}
 		
 		// Mueve un objeto a las coordenadas dadas

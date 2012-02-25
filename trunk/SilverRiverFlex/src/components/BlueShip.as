@@ -8,9 +8,9 @@ package components
 	public class BlueShip extends Ship 
 	{
 		
-		public function BlueShip(c:Coordinate) 
+		public function BlueShip(c:Coordinate, d:Cardinal) 
 		{
-			super(c);
+			super(c, d);
 			this.setBitmap(Assets.BLUESHIP_DATA);
 			fixCenter();
 		}
