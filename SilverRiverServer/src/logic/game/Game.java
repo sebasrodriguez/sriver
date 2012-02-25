@@ -5,8 +5,11 @@ import java.util.Iterator;
 
 import logic.actions.Action;
 import logic.player.Player;
+import logic.ship.BlueShip;
+import logic.ship.RedShip;
 import logic.ship.Ship;
 
+import entities.Cardinal;
 import entities.Coordinate;
 
 
@@ -24,19 +27,21 @@ public class Game
 		
 	}
 	
-	public Game(int id, Player redPlayer, Player bluePlayer, ArrayList<Action> redActionQueue, 
+	/*public Game(int id, Player redPlayer, Player bluePlayer, ArrayList<Action> redActionQueue, 
 			ArrayList<Action> blueActionQueue,ArrayList<Ship> ships, Turn turn) {
-		
+	*/
+	
+	public Game(int id, Player redPlayer, Player bluePlayer){	
 		super();
 		this.id = id;
 		this.redPlayer = redPlayer;
 		this.bluePlayer = bluePlayer;
-		this.redActionQueue = redActionQueue;
-		this.blueActionQueue = blueActionQueue;
-		this.ships = ships;
-		this.turn = turn;
+		this.redActionQueue = new ArrayList<Action>();
+		this.blueActionQueue = new ArrayList<Action>();
+		this.ships = this.createShipsArray();
+		this.turn = new Turn(redPlayer, 5);//OJO SI SACAMOS LOS MOVIMIENTOS DESDE UNA PROPERTY
 	}
-
+	
 	public int getId(){
 		return id;
 	}
@@ -136,7 +141,7 @@ public class Game
 	/*
 	 * En caso de hundimiento de barco elimina el mismo del ArrayList
 	 */
-	public void destoyedShip(int shipId){		
+	public void destroyedShip(int shipId){		
 		Ship shipToRemove = this.getShip(shipId);
 		int indexToRemove = this.ships.indexOf(shipToRemove);
 		this.ships.remove(indexToRemove);
@@ -172,5 +177,58 @@ public class Game
 	 */
 	public void clearBlueActionQueue(){
 		this.blueActionQueue.clear();
+	}
+	
+	/*
+	 * Devuelve una copia del game
+	 */
+	public Game clone(){
+		Game gameToReturn = new Game();
+		gameToReturn.id = this.id;
+		gameToReturn.redPlayer = this.redPlayer;
+		gameToReturn.bluePlayer = this.bluePlayer;
+		gameToReturn.redActionQueue = this.redActionQueue;
+		gameToReturn.blueActionQueue = this.blueActionQueue;
+		gameToReturn.ships = this.ships;
+		gameToReturn.turn = this.turn;
+		
+		return gameToReturn;
+	}
+	
+	/*
+	 * Metodos privados
+	 */
+	
+	/*
+	 * Metodo que crea devuelve un ArrayList<Ship> de los barcos con los mismos ya creados e insertados
+	 */
+	private ArrayList<Ship> createShipsArray(){
+		ArrayList<Ship> shipsToReturn = new ArrayList<Ship>();
+		
+		//barcoRojo
+		Coordinate position = new Coordinate(10,10);
+		Cardinal cardinal = new Cardinal(45);
+		Ship redShip = new RedShip(0,10,10,12,3,10,3,position, cardinal);
+		shipsToReturn.add(redShip);
+		
+		//barcoAzul1
+		position = new Coordinate(20,20);
+		cardinal = new Cardinal(90);
+		Ship blueShip1 = new BlueShip(1,10,5,12,3,10,1,position, cardinal);
+		shipsToReturn.add(blueShip1);
+		
+		//barcoAzul2
+		position = new Coordinate(25,25);
+		cardinal = new Cardinal(-45);
+		Ship blueShip2 = new BlueShip(2,10,5,6,1,5,1,position, cardinal);
+		shipsToReturn.add(blueShip2);
+		
+		//barcoAzul3
+		position = new Coordinate(32,32);
+		cardinal = new Cardinal(-90);
+		Ship blueShip3 = new BlueShip(3,10,5,6,1,5,1,position, cardinal);		
+		shipsToReturn.add(blueShip3);
+		
+		return shipsToReturn;		
 	}
 }

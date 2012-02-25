@@ -26,13 +26,13 @@ public class pruebaGame {
 		Game gamePrueba = null;
 		Player redPlayerPrueba = null;
 		Player bluePlayerPrueba = null;
-		ArrayList<Action> redActionQueuePrueba = new ArrayList<Action>();
-		ArrayList<Action> blueActionQueuePrueba = new ArrayList<Action>();
+		//ArrayList<Action> redActionQueuePrueba = new ArrayList<Action>();
+		//ArrayList<Action> blueActionQueuePrueba = new ArrayList<Action>();
 		ArrayList<Ship> shipsPrueba = new ArrayList<Ship>();
 		Iterator <Action> raqIt = null;
 		Iterator <Action> baqIt = null;
 		Iterator <Ship> sIt = null;
-		Turn turnPrueba = null;
+		//Turn turnPrueba = null;
 		Coordinate position = null;
 		Cardinal orientation;
 		
@@ -42,7 +42,7 @@ public class pruebaGame {
 		System.out.println("Creando Jugador 2 con id 1");
 		bluePlayerPrueba = new Player(1,"Jugador 2");
 		System.out.println("Creando el turno con el Jugador 1 y 5 movimientos pendientes");
-		turnPrueba = new Turn(redPlayerPrueba,5);
+		//turnPrueba = new Turn(redPlayerPrueba,5);
 		System.out.println("-------------------------------------------------------");
 		
 		System.out.println("Creando los 4 barcos y colocandolos en el ArrayList");
@@ -71,8 +71,11 @@ public class pruebaGame {
 	
 		System.out.println("Creando el Game con id 0....");
 		
-		gamePrueba= new Game(0, redPlayerPrueba, bluePlayerPrueba, redActionQueuePrueba,
+		/*gamePrueba= new Game(0, redPlayerPrueba, bluePlayerPrueba, redActionQueuePrueba,
 								blueActionQueuePrueba, shipsPrueba, turnPrueba);
+		*/
+		
+		gamePrueba = new Game(0,redPlayerPrueba, bluePlayerPrueba);
 		
 		System.out.println("-------------------------------------------------------");
 		
@@ -170,7 +173,7 @@ public class pruebaGame {
 		System.out.println("-------------------------------------------------------");
 		
 		System.out.println("Hundiendo barcos");
-		gamePrueba.destoyedShip(0);
+		gamePrueba.destroyedShip(0);
 		
 		if(gamePrueba.getShip(0) != null){
 			System.out.println("Probando el metodo Ship getShip(int ShipId) con id 0");

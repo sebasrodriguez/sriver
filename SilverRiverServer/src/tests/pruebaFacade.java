@@ -1,10 +1,11 @@
 package tests;
 
-import entities.Cardinal;
-import entities.Coordinate;
+import java.util.Iterator;
+
 import logic.Facade;
-import logic.ship.RedShip;
-import logic.ship.Ship;
+import logic.actions.NewGameAction;
+import logic.game.Game;
+import logic.player.Player;
 
 public class pruebaFacade {
 
@@ -15,7 +16,51 @@ public class pruebaFacade {
 		// TODO Auto-generated method stub
 		
 				
-		Facade facadePrueba = new Facade();
+		Facade facadePrueba = Facade.getInstance();
+	
+		
+		
+		System.out.println(facadePrueba.newGame("Jugador 1"));
+		System.out.println(facadePrueba.newGame("Jugador 2"));
+		System.out.println(facadePrueba.newGame("Jugador 3"));
+		System.out.println(facadePrueba.newGame("Jugador 4"));
+		System.out.println(facadePrueba.newGame("Jugador 5"));
+
+		Iterator<Game> pepe = facadePrueba.devolverITerator();
+		
+		while (pepe.hasNext()){
+			Game ppito = pepe.next();
+			System.out.println(ppito.getId());
+			System.out.println(ppito.getRedPlayer().getUsername());
+			System.out.println(ppito.getBluePlayer().getUsername());			
+		}
+		
+		
+		
+		
+		/*
+		facadePrueba.newGame();
+		
+		
+		facadePrueba.newGame()
+		
+		facadePrueba.move(gameId, shipId, destination)
+		facadePrueba.rotate(gameId, shipId, destination)
+		facadePrueba.fire(gameId, shipFiringId, firingPoint, weaponType)
+		facadePrueba.endTurn(gameId)
+		
+		facadePrueba.endGame(gameId)
+		
+		facadePrueba.saveGame(gameId)
+		facadePrueba.loadGame(gameId)
+		
+		
+		
+		*/
+		
+		
+		
+		
 		
 		
 		

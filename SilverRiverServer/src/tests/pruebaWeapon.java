@@ -12,10 +12,9 @@ public class pruebaWeapon {
 		// TODO Auto-generated method stub
 		
 		
-		Weapon weapon = new Weapon(3);
+		Weapon weapon = new Weapon(1);
 		
-		
-		
+			
 		switch (weapon.getWeapon()){
 			case 0:
 				System.out.println("TORPEDO");
