@@ -16,12 +16,12 @@ package events
 		
 		public function ActionEvent(type:String="actionEventModeChanged",bubbles:Boolean=false,cancelable:Boolean=false) 
 		{
-			super(type,bubbles,cancelable);			
+			super(type,bubbles,cancelable);
 		}
 		public override  function clone():Event {
             return new ActionEvent(type, bubbles, cancelable);
         }
-        public override  function toString():String {//24094949 cot - 1975 copsa
+        public override  function toString():String {
             return formatToString("type","bubbles","cancelable");
         }
 		
