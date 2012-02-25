@@ -170,7 +170,7 @@ public class pruebaGame {
 		System.out.println("-------------------------------------------------------");
 		
 		System.out.println("Hundiendo barcos");
-		gamePrueba.destoyedShip(3);
+		gamePrueba.destoyedShip(0);
 		
 		if(gamePrueba.getShip(0) != null){
 			System.out.println("Probando el metodo Ship getShip(int ShipId) con id 0");
