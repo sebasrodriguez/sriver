@@ -35,7 +35,7 @@ package UI
 					_gridMatrix[r][c] = new GameCell(new Coordinate(r, c));		
 					this.addChild(_gridMatrix[r][c]);
 					_gridMatrix[r][c].x = c * _cellSize;
-					_gridMatrix[r][c].y = r * _cellSize;					
+					_gridMatrix[r][c].y = r * _cellSize;	
 					_gridMatrix[r][c].addEventListener( MouseEvent.CLICK, function (e:MouseEvent):void {
 						var cellEvent:CellEvent = new CellEvent();
 						cellEvent.coordinate = e.currentTarget.coordinate;

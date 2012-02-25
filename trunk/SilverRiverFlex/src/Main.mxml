@@ -6,12 +6,10 @@
 			   initialize="initializeHandler(event)">
 
 	<fx:Declarations>		
-		<s:WebService id="wsRequest"
+		<!--<s:WebService id="wsRequest"
 					  wsdl="http://localhost:12137/WebSite1/FacadePublic.asmx?wsdl">
-			<mx:operation name="NewGame"
-						  result="_game.NewGameResult(event)"
-						  resultFormat="object" />			
-		</s:WebService>
+					
+		</s:WebService>-->
 	</fx:Declarations>	
 	<fx:Script>
 		<![CDATA[

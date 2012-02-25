@@ -21,8 +21,8 @@ package
 	 */
 	public class Game extends UIComponent
 	{
-		public static const GAME_BOARD_COLS:Number = 32;
-		public static const GAME_BOARD_ROWS:Number = 18;
+		public static const GAME_BOARD_COLS:Number = 64;
+		public static const GAME_BOARD_ROWS:Number = 36;
 		public static const GAME_SCROLL_SENSOR:Number = 50;
 		
 		private var _main:Main;
@@ -40,8 +40,8 @@ package
 		public function Game(main:Main)
 		{
 			_main = main;
-			main.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
-			main.wsRequest.NewGame();			
+			_main.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
+			newGame();			
 		}
 		
 		/*
@@ -89,7 +89,7 @@ package
 			}
 		}
 		
-		public function NewGameResult(event:ResultEvent):void
+		public function newGame():void
 		{
 			// Inicializa el Canvas que contiene los demas elementos
 			_board = new Canvas();
@@ -109,7 +109,7 @@ package
 			_gridComponent.addEventListener(CellEvent.CLICK, selectedCellEvent);
 			
 			// Crea y ubica los barcos en el mapa
-			createAndLocateShips(event);
+			createAndLocateShips();
 			
 			_selectedShip = null;
 			
@@ -138,12 +138,12 @@ package
 			}
 		}
 		
-		private function createAndLocateShips(event:ResultEvent):void
+		private function createAndLocateShips():void
 		{
-			var c1:Coordinate = new Coordinate(event.result.Ships[0].Position.Y, event.result.Ships[0].Position.X);
-			var c2:Coordinate = new Coordinate(event.result.Ships[1].Position.Y, event.result.Ships[1].Position.X);
-			var c3:Coordinate = new Coordinate(event.result.Ships[2].Position.Y, event.result.Ships[2].Position.X);
-			var c4:Coordinate = new Coordinate(event.result.Ships[3].Position.Y, event.result.Ships[3].Position.X);
+			var c1:Coordinate = new Coordinate(6, 2);
+			var c2:Coordinate = new Coordinate(2,4);
+			var c3:Coordinate = new Coordinate(2,2);
+			var c4:Coordinate = new Coordinate(2,6);
 			
 			_redShipComponent = new RedShip(c1);
 			_blueShipComponent1 = new BlueShip(c2);

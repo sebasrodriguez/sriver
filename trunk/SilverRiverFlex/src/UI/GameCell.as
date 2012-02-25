@@ -5,6 +5,7 @@ package UI
 	import Common.Coordinate;
 	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
+	import mx.controls.Text;
 	import mx.core.UIComponent;
 	
 	/**
@@ -25,11 +26,16 @@ package UI
 		{
 			_coordinate = c;
 			_shape = new Shape();
-			_shape.graphics.beginFill(_fillColor, 0.1);
+			/*if(c.r % 2 == 0)*/
+				_shape.graphics.beginFill(_fillColor, 0.1);
+			/*else
+				_shape.graphics.beginFill(0xff0000, 0.1);*/
 			_shape.graphics.lineStyle(1, _borderColor, 1);
 			_shape.graphics.drawRect(0, 0, _size, _size);
 			_shape.graphics.endFill();
 			addChild(_shape);
+			var t:Text = new Text();
+			t.text = "";
 		
 		}
 		
