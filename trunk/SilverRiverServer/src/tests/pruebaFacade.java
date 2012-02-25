@@ -2,6 +2,7 @@ package tests;
 
 import entities.Cardinal;
 import entities.Coordinate;
+import logic.Facade;
 import logic.ship.RedShip;
 import logic.ship.Ship;
 
@@ -12,6 +13,29 @@ public class pruebaFacade {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		
+				
+		Facade facadePrueba = new Facade();
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		/*
 		Coordinate pos = new Coordinate(10,10);
 		Cardinal orientation = new Cardinal(-45);
 		Ship ship1 = new RedShip(0,10,10,10,10,10,10,pos, orientation);
@@ -43,7 +67,7 @@ public class pruebaFacade {
 		System.out.println("Cardinal: " + cambio.getOrientation().toString());
 		
 		System.out.println("---------------------------------------------------------------");
-		
+		*/
 
 	}
 

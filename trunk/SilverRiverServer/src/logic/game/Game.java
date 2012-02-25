@@ -137,15 +137,8 @@ public class Game
 	 * En caso de hundimiento de barco elimina el mismo del ArrayList
 	 */
 	public void destoyedShip(int shipId){		
-		/*Iterator<Ship> shipIt = this.ships.iterator();
-		Ship shipToRemove = this.getShip(shipId);
-		this.ships.clear();
-		
-		while
-		*/
 		Ship shipToRemove = this.getShip(shipId);
 		int indexToRemove = this.ships.indexOf(shipToRemove);
-		System.out.println(indexToRemove);		
 		this.ships.remove(indexToRemove);
 
 	}

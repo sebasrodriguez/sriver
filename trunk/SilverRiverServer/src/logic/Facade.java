@@ -41,7 +41,7 @@ public class Facade {
 	 * Constructores
 	 */
 	public Facade(){	
-		Game newGame = new Game();
+		/*Game newGame = new Game();
 		
 		newGame.setBlueActionQueue(new ArrayList<Action>());
 		newGame.setRedActionQueue(new ArrayList<Action>());
@@ -59,14 +59,10 @@ public class Facade {
 		Turn turn = new Turn(redPlayer, 5);
 		newGame.setTurn(turn);
 		
-		this.activeGames.add(newGame);
+		this.activeGames.add(newGame);*/
 	}	
 	
-	/*
-	Facade(ArrayList<Game> activeGames){
-		this.activeGames = activeGames;
-	}
-	*/
+
 	
 	/*
 	 * Getters
@@ -153,6 +149,10 @@ public class Facade {
 		int newAmunition = 0;
 		boolean hit = false;
 		Ship affectedShip = null; 
+		Coordinate exactFiringPoint = null;
+		
+		
+		
 		
 		if(activeGame.getShipFiredId(firingPoint) != -1){
 			//acerto	
@@ -271,5 +271,47 @@ public class Facade {
 	 */
 	public ArrayList<Action> listAction(int gameId){
 		return null;
+	}
+	
+	/*
+	 * Calcula la distacia entre el barco que dispara y el punto donde el jugador hizo click
+	 * Esta distacia se vá a usar para variar que tanto se puede desviar el disparo.
+	 * A más distacia más se va a desviar el disparo.
+	*/
+	private double calculateDistance(Ship firingShip , Coordinate clickedCoordinate){
+		
+		int x1 = firingShip.getPosition().getX();
+		int y1 = firingShip.getPosition().getY();
+		int x2 = clickedCoordinate.getX();
+		int y2 = clickedCoordinate.getY();
+		
+		return  Math.hypot(x2 - x1, y2 - y1);
+	}
+	
+	
+	/*
+	 *Calcula donde pega el disparo dependiendo de la distancia entre
+	 *el barco que dispara y el objetivo.
+	 *El punto final se calcula con un número aleatorio entre x - offset e x + offset, lo mismo para las y 
+	 */
+	private Coordinate calculateHitPoint(Ship firingShip, Coordinate clickedCoordinate){
+		
+		Coordinate coord = new Coordinate();
+		//int offset = 50;
+		
+		int offset = (int)this.calculateDistance(firingShip, clickedCoordinate);
+		int max_x = clickedCoordinate.getX() + offset;
+		int max_y = clickedCoordinate.getY() + offset;
+		
+		int min_x = max_x - (offset * 2);
+		int min_y = max_y - (offset * 2);
+		
+		int x = (int)(Math.random() * (max_x - min_x)) + min_x;
+		int y = (int)(Math.random() * (max_y - min_y)) + min_y;
+		
+		coord.setX(x);
+		coord.setY(y);
+		
+		return coord;
 	}
 }
