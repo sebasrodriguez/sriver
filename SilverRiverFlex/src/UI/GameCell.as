@@ -1,10 +1,13 @@
 package UI
 {
+	import flash.display.ColorCorrection;
 	import flash.display.Shader;
 	import flash.display.Shape;
 	import Common.Coordinate;
 	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
+	import flash.geom.ColorTransform;
+	import mx.controls.Label;
 	import mx.controls.Text;
 	import mx.core.UIComponent;
 	
@@ -14,6 +17,13 @@ package UI
 	 */
 	public class GameCell extends UIComponent
 	{
+		private static const CELL_COLOR_NORMAL:uint = 0x000000;
+		private static const CELL_COLOR_BLOCKED:uint = 0xff0000;
+		private static const CELL_COLOR_AVAILABLE:uint = 0x0000ff;
+		private static const CELL_ALPHA_NORMAL:Number = 0.5;
+		private static const CELL_ALPHA_BLOCKED:Number = 0.5;
+		private static const CELL_ALPHA_AVAILABLE:Number = 0.5;
+		
 		private var _coordinate:Coordinate;
 		private var _shape:Shape;
 		private var _size:int = Coordinate.POINT_SIZE;
@@ -27,15 +37,22 @@ package UI
 			_coordinate = c;
 			_shape = new Shape();
 			/*if(c.r % 2 == 0)*/
-				_shape.graphics.beginFill(_fillColor, 0.1);
+				_shape.graphics.beginFill(_fillColor, 1);
 			/*else
 				_shape.graphics.beginFill(0xff0000, 0.1);*/
 			_shape.graphics.lineStyle(1, _borderColor, 1);
 			_shape.graphics.drawRect(0, 0, _size, _size);
 			_shape.graphics.endFill();
 			addChild(_shape);
-			var t:Text = new Text();
-			t.text = "";
+			var  t:Label = new Label();
+			t.text = "(" + _coordinate.r + "," + _coordinate.c + ")";
+			t.setStyle("color", 0x000000);
+			t.x = 0;
+			t.y = 0;
+			t.width = 50;
+			t.height = 50;
+			t.visible = true;
+			this.addChild(t);
 		
 		}
 		
@@ -46,6 +63,10 @@ package UI
 		
 		public function set available(value:Boolean):void
 		{
+			if (value) 
+				changeColor(CELL_COLOR_AVAILABLE, CELL_ALPHA_AVAILABLE);
+			else
+				changeColor(CELL_COLOR_NORMAL, CELL_ALPHA_NORMAL);
 			_available = value;
 		}
 		
@@ -56,8 +77,10 @@ package UI
 		
 		public function set blocked(value:Boolean):void
 		{
-			graphics.beginFill(_fillColor, 1);
-			graphics.endFill();
+			if (value) 
+				changeColor(CELL_COLOR_BLOCKED, CELL_ALPHA_BLOCKED);
+			else
+				changeColor(CELL_COLOR_NORMAL, CELL_ALPHA_NORMAL);
 			_blocked = value;
 		}
 		
@@ -99,6 +122,13 @@ package UI
 		public function set coordinate(value:Coordinate):void 
 		{
 			_coordinate = value;
+		}
+		
+		private function changeColor(c:uint, a:Number = 1):void {
+			var ct:ColorTransform = new ColorTransform();
+			ct.color = c;
+			this.alpha = a;
+			_shape.transform.colorTransform = ct;
 		}
 	
 	}
