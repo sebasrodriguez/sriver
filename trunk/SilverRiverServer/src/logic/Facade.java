@@ -125,8 +125,8 @@ public class Facade {
 		if(activeGame.getShipFiredId(exactFiringPoint) != -1){
 			//acerto	
 			hit = true;
-			//OJOOOOOOOOO con Armor - 20
-			int newArmor = activeGame.getShip(activeGame.getShipFiredId(exactFiringPoint)).getArmor() - 20;
+			//OJOOOOOOOOO con Armor - 1
+			int newArmor = activeGame.getShip(activeGame.getShipFiredId(exactFiringPoint)).getArmor() - 1;
 			affectedShip = activeGame.getShip(activeGame.getShipFiredId(exactFiringPoint));
 			affectedShip.setArmor(newArmor);	
 			if(affectedShip.getArmor() <= 0){
@@ -255,6 +255,21 @@ public class Facade {
 		}				
 	}
 		
+	
+	/*
+	 * Entrada: void 
+	 * Salida: -1 si gameWithoutBluePlayer != null o last GameId in activeGames
+	 * Procedimiento:
+	 * 	Si gameWithoutBluePlayer != null devuelve -1
+	 * 	sino devuelve el ultimo GameId	 * 
+	 */
+	public int checkGameId(){
+		if(gameWithoutBluePlayer != null){
+			return -1;
+		}else{
+			return this.activeGames.size() -1;
+		}		
+	}
 		
 	
 	

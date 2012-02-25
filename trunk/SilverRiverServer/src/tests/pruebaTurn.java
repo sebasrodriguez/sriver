@@ -15,8 +15,8 @@ public class pruebaTurn {
 			// TODO Auto-generated method stub
 
 			Turn turn = null;
-			Player jugadorRojo = new Player(0, "JugadorRojo");
-			Player jugadorAzul = new Player(1,"JugadorAzul");
+			Player jugadorRojo = new Player("JugadorRojo");
+			Player jugadorAzul = new Player("JugadorAzul");
 			
 			System.out.println("Creando objeto Turn con jugadorRojo...");
 			
