@@ -15,12 +15,12 @@ public class pruebaEndTurnAction {
 		Player jugadorAzul = null;		
 		
 		System.out.println("Creando el jugador 1 con Id 0 y username Jugador 1....");
-		jugadorRojo = new Player(0, "Jugador 1");
+		jugadorRojo = new Player("Jugador 1");
 		System.out.println("Creando el jugador 1 con Id 1 y username Jugador 2....");
-		jugadorAzul = new Player(1,"Jugador 2");
+		jugadorAzul = new Player("Jugador 2");
 				
-		System.out.println("JugadorRojo: " + jugadorRojo.getId() + " " + jugadorRojo.getUsername());
-		System.out.println("JugadorAzul: " + jugadorAzul.getId() + " " + jugadorAzul.getUsername());
+		System.out.println("JugadorRojo: " + jugadorRojo.getUsername());
+		System.out.println("JugadorAzul: " + jugadorAzul.getUsername());
 		
 		System.out.println("-------------------------------------------------------");
 		

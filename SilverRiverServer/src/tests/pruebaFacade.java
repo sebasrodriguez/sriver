@@ -19,26 +19,6 @@ public class pruebaFacade {
 		Facade facadePrueba = Facade.getInstance();
 	
 		
-		
-		System.out.println(facadePrueba.newGame("Jugador 1"));
-		System.out.println(facadePrueba.newGame("Jugador 2"));
-		System.out.println(facadePrueba.newGame("Jugador 3"));
-		System.out.println(facadePrueba.newGame("Jugador 4"));
-		System.out.println(facadePrueba.newGame("Jugador 5"));
-
-		Iterator<Game> pepe = facadePrueba.devolverITerator();
-		
-		while (pepe.hasNext()){
-			Game ppito = pepe.next();
-			System.out.println(ppito.getId());
-			System.out.println(ppito.getRedPlayer().getUsername());
-			System.out.println(ppito.getBluePlayer().getUsername());			
-		}
-		
-		
-		
-		
-		/*
 		facadePrueba.newGame();
 		
 		
@@ -56,7 +36,7 @@ public class pruebaFacade {
 		
 		
 		
-		*/
+		
 		
 		
 		

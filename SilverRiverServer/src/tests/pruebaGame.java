@@ -38,9 +38,9 @@ public class pruebaGame {
 		
 		
 		System.out.println("Creando Jugador 1 con id 0");
-		redPlayerPrueba = new Player(0, "Jugador 1");
+		redPlayerPrueba = new Player("Jugador 1");
 		System.out.println("Creando Jugador 2 con id 1");
-		bluePlayerPrueba = new Player(1,"Jugador 2");
+		bluePlayerPrueba = new Player("Jugador 2");
 		System.out.println("Creando el turno con el Jugador 1 y 5 movimientos pendientes");
 		//turnPrueba = new Turn(redPlayerPrueba,5);
 		System.out.println("-------------------------------------------------------");
