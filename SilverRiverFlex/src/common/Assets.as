@@ -19,13 +19,9 @@ package common
 		public static const BLUESHIP_DATA:BitmapData = (new BLUESHIP_BMP() as Bitmap).bitmapData;
 		
 		// BULLET
-		/*[Embed (source="../assets/bullet1.png")]
-		   public static const BULLET_BMP : Class;
-		 public static const BULLET_DATA : BitmapData = (new BULLET_BMP() as Bitmap).bitmapData;*/
+		[Embed (source="../../assets/bullet.png")]
+		public static const BULLET_BMP : Class;
+		public static const BULLET_DATA : BitmapData = (new BULLET_BMP() as Bitmap).bitmapData;
 		
-		// BIG SHIP
-		[Embed(source="../../assets/big_ship.png")]
-		public static const BIGSHIP_BMP:Class;
-		public static const BIGSHIP_DATA:BitmapData = (new BIGSHIP_BMP() as Bitmap).bitmapData;
 	}
 }

@@ -23,11 +23,11 @@ package components
 	{
 		public static const GAME_BOARD_COLS:Number = 64;
 		public static const GAME_BOARD_ROWS:Number = 36;
-		public static const GAME_SCROLL_SENSOR:Number = 50;
 		
 		private var _main:Main;
 		private var _board:Canvas;
 		private var _ws:WebService;
+		private var _menu:Menu;
 		
 		private var _mapComponent:Map;
 		public var _gridComponent:GameGrid;
@@ -40,7 +40,6 @@ package components
 		public function Game(main:Main)
 		{
 			_main = main;
-			_main.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 			newGame();
 		}
 		
@@ -58,36 +57,7 @@ package components
 		private function timerHandler(event:TimerEvent):void
 		{
 			// _main.wsRequest.synchronize();
-		}
-		
-		private function mouseMoveHandler(e:MouseEvent):void
-		{
-			//TODO: HACER MAS LINDO EL MOVIMIENTO
-			//para animacion
-			
-			if (e.stageX < 50)
-			{ //scroll left						
-				if (_board.x < 0)
-					_board.x += 10;
-			}
-			if (e.stageX > (_main.stage.stageWidth - 50))
-			{ //scroll right	
-				//trace("left myCanvasX " + myCanvas.x +" - myCanvasWidth - " + myCanvas.width + " - stagewidth - " + stage.stageWidth);	
-				if (_board.x > _main.stage.stageWidth - _board.width)
-					_board.x -= 10;
-			}
-			if (e.stageY < 50)
-			{ //scroll top	
-				if (_board != null)
-					if (_board.y < 0)
-						_board.y += 10;
-			}
-			if (e.stageY > (_main.stage.stageHeight - 50))
-			{ //scroll height		
-				if (_board.y > _main.stage.stageHeight - _board.height)
-					_board.y -= 10;
-			}
-		}
+		}		
 		
 		public function newGame():void
 		{
@@ -98,6 +68,7 @@ package components
 			_board.horizontalScrollPolicy = "off";
 			_board.verticalScrollPolicy = "off";
 			_main.addElement(_board);
+			new AutoScroll(_main, _board);
 			
 			// Inicializa el mapa
 			_mapComponent = new Map();
@@ -128,6 +99,26 @@ package components
 			_blueShipComponent1.show();
 			_blueShipComponent2.show();
 			_blueShipComponent3.show();
+			
+			_menu = new Menu(Menu.MENU_POSITION_BOTTOM_LEFT);
+			_menu.addEventListener(ActionEvent.MODE_CHANGED, function (event:ActionEvent):void {
+				switch(event.mode) {
+					case Menu.MENU_MODE_MOVE:
+						trace("Cambio a Move");
+						break;
+					case Menu.MENU_MODE_ROTATE:
+						trace("Cambio a Rotate");
+						break;
+					case Menu.MENU_MODE_FIRE:
+						trace("Cambio a Fire");
+						break;
+				}
+			} );
+			_menu.addEventListener(ActionEvent.ROTATION_CLICKED, function(event:ActionEvent):void {
+				trace("Rotate :" + event.rotation);
+			});
+			_main.addElement(_menu);
+			//this.addChild(_menu);
 		}
 		
 		// Evento disparado cuando se selecciona una celda de la grilla

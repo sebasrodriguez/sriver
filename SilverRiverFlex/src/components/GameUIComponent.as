@@ -36,8 +36,6 @@ package components
 		
 		public function fixCenter():void
 		{
-			/*_sprite.width *= 4/5;
-			_sprite.height *= 4/5;*/
 			_sprite.x = -(_sprite.width / 2);
 			_sprite.y = -(_sprite.height / 2);
 			
@@ -82,8 +80,8 @@ package components
 					
 					}, function():void
 					{
+						_animating = false;
 					});
-				_animating = false;
 			}
 		}
 		
