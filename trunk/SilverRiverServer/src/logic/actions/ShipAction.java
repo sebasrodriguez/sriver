@@ -1,26 +1,20 @@
 package logic.actions;
 
-import logic.ship.Ship;
+import entities.ShipVO;
 
 public abstract class ShipAction extends Action {
 
-	private Ship ship;
+	private ShipVO ship;
 	
-	/*
-	 * Constructores
-	 */
-	public ShipAction(){
-		
-	}
 	
-	public ShipAction(Ship ship2){
+	public ShipAction(ShipVO ship2){
 		this.ship = ship2;
 	}	
 	
 	/*
 	 * Getters
 	 */
-	public Ship getShip(){
+	public ShipVO getShip(){
 		return this.ship;
 	}
 }

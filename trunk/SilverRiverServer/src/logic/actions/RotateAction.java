@@ -1,20 +1,15 @@
 package logic.actions;
 
-import logic.ship.Ship;
 import entities.Cardinal;
+import entities.ShipVO;
 
 public class RotateAction extends ShipAction{
 
 	private Cardinal cardinal;
 	
-	/*
-	 * Constructores 
-	 */
-	public RotateAction(){
-		
-	}
+
 	
-	public RotateAction(Ship shipRotating, Cardinal cardinal){
+	public RotateAction(ShipVO shipRotating, Cardinal cardinal){
 		super(shipRotating);
 		this.cardinal = cardinal;
 	}
@@ -24,12 +19,5 @@ public class RotateAction extends ShipAction{
 	 */
 	public Cardinal getCardinal(){
 		return this.cardinal;
-	}
-	
-	/*
-	 * Setters
-	 */
-	public void setCardinal(Cardinal cardinal){
-		this.cardinal = cardinal;
 	}
 }

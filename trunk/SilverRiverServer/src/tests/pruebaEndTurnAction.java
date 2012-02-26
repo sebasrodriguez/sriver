@@ -31,11 +31,6 @@ public class pruebaEndTurnAction {
 		
 		System.out.println("-------------------------------------------------------");
 		
-		System.out.println("Cambiando gameId y player");
-		endTurnActionPrueba.setGameId(4);
-		endTurnActionPrueba.setPlayerTurn(jugadorAzul);
-		
-		System.out.println("Turn: " + endTurnActionPrueba.getGameId() + " " + endTurnActionPrueba.getPlayerTurn().getUsername());
 		
 		
 	}

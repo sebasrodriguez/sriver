@@ -7,7 +7,7 @@ public abstract class Action {
 
 		
 	/*
-	 * Constructores
+	 * Constructor
 	 */
 	public Action(){
 		

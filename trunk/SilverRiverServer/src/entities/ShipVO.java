@@ -1,7 +1,7 @@
 package entities;
 
 
-public class ShipVO {
+public abstract class ShipVO {
 	
 	private int id;
 	private int speed;
@@ -13,13 +13,8 @@ public class ShipVO {
 	private Coordinate position;	
 	private Cardinal orientation;	
 		
-	/*
-	 * Constructors
-	 */
-	public ShipVO(){
-		
-	}
 	
+
 	public ShipVO(int id, int speed, int armor, int ammo, int torpedo, int viewRange, int size, Coordinate position, Cardinal orientation){
 		this.id = id;
 		this.speed = speed;
@@ -33,50 +28,7 @@ public class ShipVO {
 	}
 	
 	
-	/*
-	 * Setters
-	 */
-	public void setId(int id){
-		this.id = id;
-	}
 	
-	public void setSpeed(int speed){
-		this.speed = speed;		
-	}
-	
-	public void setArmor(int armor){
-		this.armor = armor;
-	}
-	
-	public void setAmmo(int ammo){
-		this.ammo = ammo;
-	}
-	
-	public void setTorpedo(int torpedo){
-		this.torpedo = torpedo;
-	}
-	
-	public void setViewRange(int viewRange){
-		this.viewRange = viewRange;
-	}
-	
-	public void setSize(int size){
-		this.size = size;
-	}
-
-	public void setPosition(Coordinate position){
-		this.position = position;
-	}
-	
-	public void setOrientation(Cardinal orientation){
-		this.orientation = orientation;
-	}
-	
-	
-
-	/*
-	 * Getters
-	 */
 	public int getId(){
 		return this.id;		
 	}

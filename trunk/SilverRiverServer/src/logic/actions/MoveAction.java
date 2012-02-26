@@ -1,7 +1,7 @@
 package logic.actions;
 
-import logic.ship.Ship;
 import entities.Coordinate;
+import entities.ShipVO;
 
 
 public class MoveAction extends ShipAction{
@@ -9,14 +9,7 @@ public class MoveAction extends ShipAction{
 	private Coordinate position;
 	
 	
-	/*
-	 * Constructores
-	 */
-	public MoveAction(){
-		
-	}
-	
-	public MoveAction(Ship shipMoving, Coordinate position){
+	public MoveAction(ShipVO shipMoving, Coordinate position){
 		super(shipMoving);
 		this.position = position;
 	}
@@ -26,13 +19,6 @@ public class MoveAction extends ShipAction{
 	 */
 	public Coordinate getPosition(){
 		return this.position;
-	}
-	
-	/*
-	 * Setters
-	 */
-	public void setPosition(Coordinate position){
-		this.position = position;
 	}
 }
 

@@ -1,6 +1,6 @@
 package logic.actions;
 
-import logic.ship.Ship;
+import entities.ShipVO;
 
 
 public class EnterPortAction extends ShipAction {
@@ -8,14 +8,8 @@ public class EnterPortAction extends ShipAction {
 	
 	private int port;
 	
-	/*
-	 * Constructores
-	 */
-	public EnterPortAction(){
-		
-	}
-	
-	public EnterPortAction(Ship ship, int port){
+
+	public EnterPortAction(ShipVO ship, int port){
 		super(ship);
 		this.port = port;
 	}
@@ -26,12 +20,4 @@ public class EnterPortAction extends ShipAction {
 	public int getPort(){
 		return this.port;
 	}
-	
-	/*
-	 * Setters
-	 */
-	public void setPort(int port){
-		this.port = port;
-	}
-	
 }

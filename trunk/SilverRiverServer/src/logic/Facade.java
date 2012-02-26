@@ -10,8 +10,11 @@ import logic.actions.RotateAction;
 import logic.game.Game;
 import logic.player.Player;
 import logic.ship.*;
+import entities.BlueShipVO;
 import entities.Cardinal;
 import entities.Coordinate;
+import entities.RedShipVO;
+import entities.ShipVO;
 import entities.Weapon;
 
 
@@ -63,10 +66,22 @@ public class Facade {
 	public MoveAction move(int gameId, int shipId, Coordinate destination){
 		MoveAction moveActionToReturn = null;
 		Game activeGame = findGame(gameId);
+		ShipVO shipVO = null;
+		Ship aux = null;
 		
 		if(activeGame != null){
-			activeGame.getShip(shipId).setPosition(destination);
-			moveActionToReturn = new MoveAction(activeGame.getShip(shipId),destination);
+			aux = activeGame.getShip(shipId);
+			aux.setPosition(destination);
+			
+			
+			//Comparo si es id 0 entonces es barco rojo
+			if(aux.getId() == 0){			
+				shipVO = new RedShipVO(aux.getId(), aux.getSpeed(), aux.getArmor(), aux.getAmmo(), aux.getTorpedo(), aux.getViewRange(), aux.getSize(), aux.getPosition(), aux.getOrientation());				
+			}else{
+				shipVO = new BlueShipVO(aux.getId(), aux.getSpeed(), aux.getArmor(), aux.getAmmo(), aux.getTorpedo(), aux.getViewRange(), aux.getSize(), aux.getPosition(), aux.getOrientation());
+			}
+			
+			moveActionToReturn = new MoveAction(shipVO,destination);
 			
 			
 			//Comparo si es igual al jugador ROJO
@@ -101,29 +116,58 @@ public class Facade {
 		boolean hit = false;
 		Ship affectedShip = null; 
 		Coordinate exactFiringPoint = this.calculateHitPoint(activeGame.getShip(shipFiringId), firingPoint);
+		Ship aux = null;
+		ShipVO firedShipVO = null;
+		ShipVO firingShipVO = null;
+		
 		
 		if(activeGame.getShipFiredId(exactFiringPoint) != -1){
 			//acerto	
 			hit = true;
 			//OJOOOOOOOOO con Armor - 1
-			int newArmor = activeGame.getShip(activeGame.getShipFiredId(exactFiringPoint)).getArmor() - 1;
 			affectedShip = activeGame.getShip(activeGame.getShipFiredId(exactFiringPoint));
-			affectedShip.setArmor(newArmor);	
+			int newArmor = affectedShip.getArmor() - 1;
+			affectedShip.setArmor(newArmor);
+				
 			if(affectedShip.getArmor() <= 0){
 				activeGame.destroyedShip(affectedShip.getId());
+			}	
+			
+			
+			//Comapro si el barco dañado es rojo
+			if(affectedShip.getId() == 0){
+				firedShipVO = new RedShipVO(affectedShip.getId(), affectedShip.getSpeed(), affectedShip.getArmor(), affectedShip.getAmmo(), affectedShip.getTorpedo(), affectedShip.getViewRange(), affectedShip.getSize(), affectedShip.getPosition(), affectedShip.getOrientation());
+			}else{
+				firedShipVO = new BlueShipVO(affectedShip.getId(), affectedShip.getSpeed(), affectedShip.getArmor(), affectedShip.getAmmo(), affectedShip.getTorpedo(), affectedShip.getViewRange(), affectedShip.getSize(), affectedShip.getPosition(), affectedShip.getOrientation());
 			}			
 		}
 		
 		//comparo si es torpedo
 		if(weaponType.getWeapon() == 0){
-			newAmunition = activeGame.getShip(shipFiringId).getTorpedo() - 1;
-			activeGame.getShip(shipFiringId).setTorpedo(newAmunition);			
+			aux = activeGame.getShip(shipFiringId);
+			newAmunition = aux.getTorpedo() - 1;
+			aux.setTorpedo(newAmunition);						
 		}else{
-			newAmunition = activeGame.getShip(shipFiringId).getAmmo() - 1;
-			activeGame.getShip(shipFiringId).setAmmo(newAmunition);
+			aux = activeGame.getShip(shipFiringId);
+			newAmunition = aux.getAmmo() - 1;
+			aux.setAmmo(newAmunition);
 		}
 		
-		fireActionToReturn = new FireAction(activeGame.getShip(shipFiringId), weaponType, exactFiringPoint, hit, affectedShip);
+		
+		
+		
+		//Comparo si el barco que disparo es rojo
+		if(aux.getId() == 0){
+			firingShipVO = new RedShipVO(aux.getId(), aux.getSpeed(), aux.getArmor(), aux.getAmmo(), aux.getTorpedo(), aux.getViewRange(), aux.getSize(), aux.getPosition(), aux.getOrientation());
+		}else{
+			firingShipVO = new BlueShipVO(aux.getId(), aux.getSpeed(), aux.getArmor(), aux.getAmmo(), aux.getTorpedo(), aux.getViewRange(), aux.getSize(), aux.getPosition(), aux.getOrientation());
+		}
+		
+		
+		
+		fireActionToReturn = new FireAction(firingShipVO, weaponType, exactFiringPoint, hit, firedShipVO);
+		
+		
 		//Comparo si es igual al jugador ROJO
 		if(activeGame.getTurn().getActivePlayer().equals(activeGame.getRedPlayer())){
 			activeGame.getBlueActionQueue().add(fireActionToReturn);
@@ -148,11 +192,21 @@ public class Facade {
 		
 		RotateAction rotateActionToReturn = null;
 		Game activeGame = this.findGame(gameId);
+		ShipVO shipVO = null;
+		Ship aux = null;
 		
-		if(activeGame != null){
-			activeGame.getShip(shipId).setOrientation(destination);
+		if(activeGame != null){			
+			aux = activeGame.getShip(shipId);
+			aux.setOrientation(destination);
 			
-			rotateActionToReturn = new RotateAction(activeGame.getShip(shipId), destination);
+			//Comparo si es jugador rojo para saber el bando
+			if(aux.getId() == 0){			
+				shipVO = new RedShipVO(aux.getId(), aux.getSpeed(), aux.getArmor(), aux.getAmmo(), aux.getTorpedo(), aux.getViewRange(), aux.getSize(), aux.getPosition(), aux.getOrientation());				
+			}else{
+				shipVO = new BlueShipVO(aux.getId(), aux.getSpeed(), aux.getArmor(), aux.getAmmo(), aux.getTorpedo(), aux.getViewRange(), aux.getSize(), aux.getPosition(), aux.getOrientation());
+			}			
+			
+			rotateActionToReturn = new RotateAction(shipVO, destination);
 			
 			//Comparo si es igual al jugador ROJO
 			if(activeGame.getTurn().getActivePlayer().equals(activeGame.getRedPlayer())){
