@@ -75,11 +75,9 @@ package components
 			timer.start();
 		}
 		
-		private var calls:int = 0;
-		
 		private function timerHandler(event:TimerEvent):void
 		{
-			
+		
 		}
 		
 		public function consumeActions(response:ResultEvent):void
@@ -97,6 +95,26 @@ package components
 					ship = getShipById(response.result[i].ship.id);
 					rotateAction(getShipById(response.result[i].ship.id), new Cardinal(response.result[i].cardinal.direction));
 				}
+				else if (response.result[i].actionType == "FireAction")
+				{
+					trace("FireAction");
+				}
+				else if (response.result[i].actionType == "EndTurnAction")
+				{
+					trace("FireAction");
+				}
+				else if (response.result[i].actionType == "EnterPortAction")
+				{
+					trace("EndTurnAction");
+				}
+				else if (response.result[i].actionType == "LeavePortAction")
+				{
+					trace("LeavePortAction");
+				}
+				else if (response.result[i].actionType == "EndGameAction")
+				{
+					trace("EndGameAction");
+				}
 			}
 		}
 		
@@ -106,7 +124,7 @@ package components
 		}
 		
 		public function newGame():void
-		{			
+		{
 			// Inicializa el Canvas que contiene los demas elementos
 			_board = new Canvas();
 			_board.x = 0;
