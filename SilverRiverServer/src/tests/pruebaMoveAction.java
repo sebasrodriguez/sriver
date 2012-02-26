@@ -2,6 +2,8 @@ package tests;
 
 import entities.Coordinate;
 import entities.Cardinal;
+import entities.RedShipVO;
+import entities.ShipVO;
 import logic.actions.MoveAction;
 import logic.ship.RedShip;
 import logic.ship.Ship;
@@ -19,8 +21,8 @@ public class pruebaMoveAction {
 		Coordinate position = new Coordinate(20,70);
 		Cardinal orientation = new Cardinal(180);
 		
-		Ship redShip = new RedShip(3,50,60,70,80,90,100,position,orientation);
-		MoveAction moveActionPrueba = new MoveAction(redShip, position);
+		ShipVO redShipVO = new RedShipVO(3,50,60,70,80,90,100,position,orientation);
+		MoveAction moveActionPrueba = new MoveAction(redShipVO, position);
 		
 		System.out.println("---------------------------------------------------");
 		
@@ -41,8 +43,8 @@ public class pruebaMoveAction {
 		System.out.println("Se mueve el barco a la posicion (50,90)");
 		position.setX(50);
 		position.setY(90);
-		redShip.setPosition(position);		
-		moveActionPrueba.setPosition(position);
+		redShipVO = new RedShipVO(redShipVO.getId(),redShipVO.getSpeed(),redShipVO.getArmor(),redShipVO.getAmmo(),redShipVO.getTorpedo(),redShipVO.getViewRange(),redShipVO.getSize(),position,redShipVO.getOrientation());
+		moveActionPrueba = new MoveAction(redShipVO, position);		
 		System.out.println("Coordenate: " + moveActionPrueba.getPosition().getX() + "," + moveActionPrueba.getPosition().getY());moveActionPrueba.getPosition();
 		System.out.println("RedShip: ");
 		System.out.println("Id: "+ moveActionPrueba.getShip().getId());

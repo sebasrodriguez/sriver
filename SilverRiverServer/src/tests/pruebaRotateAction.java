@@ -2,6 +2,8 @@ package tests;
 
 import entities.Coordinate;
 import entities.Cardinal;
+import entities.RedShipVO;
+import entities.ShipVO;
 import logic.actions.RotateAction;
 import logic.ship.RedShip;
 import logic.ship.Ship;
@@ -21,8 +23,8 @@ public class pruebaRotateAction {
 		
 		Cardinal orientation = new Cardinal(-135);
 		
-		Ship redShip = new RedShip(3,50,60,70,80,90,100,position,orientation);
-		RotateAction rotateActionPrueba = new RotateAction(redShip, orientation);
+		ShipVO redShipVO = new RedShipVO(3,50,60,70,80,90,100,position,orientation);
+		RotateAction rotateActionPrueba = new RotateAction(redShipVO, orientation);
 		
 		System.out.println("---------------------------------------------------");
 		
@@ -43,8 +45,8 @@ public class pruebaRotateAction {
 		
 		System.out.println("Se rota el barco a la posicion NE");
 		orientation = new Cardinal(45);
-		redShip.setOrientation(orientation);		
-		rotateActionPrueba.setCardinal(orientation);		
+		redShipVO = new RedShipVO(redShipVO.getId(),redShipVO.getSpeed(),redShipVO.getArmor(),redShipVO.getAmmo(),redShipVO.getTorpedo(),redShipVO.getViewRange(),redShipVO.getSize(),redShipVO.getPosition(),orientation);
+		rotateActionPrueba = new RotateAction(redShipVO, orientation);		
 		System.out.println("Cardinal: " + rotateActionPrueba.getCardinal().toString());
 		System.out.println("RedShip: ");
 		System.out.println("Id: "+ rotateActionPrueba.getShip().getId());

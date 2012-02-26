@@ -13,10 +13,6 @@ public class GameVO {
 	private ShipVO[] ships;
 	private TurnVO turn;
 	
-	public GameVO()
-	{		
-	}
-	
 	public GameVO(int id, PlayerVO redPlayer, PlayerVO bluePlayer,
 			Action[] redActionQueue, Action[] blueActionQueue,
 			ShipVO[] ships, TurnVO turn) 
