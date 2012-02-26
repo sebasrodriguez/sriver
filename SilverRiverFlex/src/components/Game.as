@@ -1,5 +1,6 @@
 package components
 {
+	import flash.display.InteractiveObject;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.filters.GlowFilter;
@@ -11,6 +12,7 @@ package components
 	import mx.rpc.AbstractOperation;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
+	import mx.rpc.Fault;
 	import mx.rpc.soap.WebService;
 	import mx.rpc.soap.Operation;
 	import common.*;
@@ -37,6 +39,7 @@ package components
 		public var _blueShipComponent1:BlueShip;
 		public var _blueShipComponent2:BlueShip;
 		public var _blueShipComponent3:BlueShip;
+		public var _shipList:Array;
 		public var _selectedShip:Ship;
 		public var _turn:Turn;
 		public var _movesLeftLabel:Label;
@@ -72,13 +75,38 @@ package components
 			timer.start();
 		}
 		
+		private var calls:int = 0;
+		
 		private function timerHandler(event:TimerEvent):void
 		{
-			// _main.wsRequest.synchronize();
+			
+		}
+		
+		public function consumeActions(response:ResultEvent):void
+		{
+			var ship:Ship;
+			for (var i:int = 0; i < response.result.length; i++)
+			{
+				if (response.result[i].actionType == "MoveAction")
+				{
+					ship = getShipById(response.result[i].ship.id);
+					moveAction(ship, new Coordinate(response.result[i].position.y, response.result[i].position.x));
+				}
+				else if (response.result[i].actionType == "RotateAction")
+				{
+					ship = getShipById(response.result[i].ship.id);
+					rotateAction(getShipById(response.result[i].ship.id), new Cardinal(response.result[i].cardinal.direction));
+				}
+			}
+		}
+		
+		public function consumeActionsFault(result:Fault):void
+		{
+			trace("fallo");
 		}
 		
 		public function newGame():void
-		{
+		{			
 			// Inicializa el Canvas que contiene los demas elementos
 			_board = new Canvas();
 			_board.x = 0;
@@ -120,8 +148,8 @@ package components
 			
 			// TODO: los players se crean segun lo que me retorna el WS
 			// Creo los dos players
-			_redPlayer = new Player("sebas");
-			_bluePlayer = new Player("santi");
+			_redPlayer = new Player("santi");
+			_bluePlayer = new Player("sebas");
 			
 			// TODO: el turno me lo retorna el WS
 			// Creo el turno
@@ -213,6 +241,12 @@ package components
 			_blueShipComponent1.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
 			_blueShipComponent2.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
 			_blueShipComponent3.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
+			
+			_shipList = new Array();
+			_shipList.push(_redShipComponent);
+			_shipList.push(_blueShipComponent1);
+			_shipList.push(_blueShipComponent2);
+			_shipList.push(_blueShipComponent3);
 		}
 		
 		// Evento disparado cuando se selecciona un barco
@@ -325,6 +359,18 @@ package components
 			setShipCellStatus(ship, true);
 			// Actualizamos los movimientos restantes
 			updateMovesLeft();
+		}
+		
+		// Dado un id de un barco lo retorna
+		private function getShipById(shipId:int):Ship
+		{
+			var ship:Ship = null;
+			for (var i:int = 0; i < _shipList.length; i++)
+			{
+				if (_shipList[i].shipId == shipId)
+					ship = _shipList[i];
+			}
+			return ship;
 		}
 	}
 }
