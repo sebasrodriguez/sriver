@@ -7,7 +7,8 @@ public abstract class ShipAction extends Action {
 	private ShipVO ship;
 	
 	
-	public ShipAction(ShipVO ship2){
+	public ShipAction(ShipVO ship2, String type){
+		super(type);		
 		this.ship = ship2;
 	}	
 	

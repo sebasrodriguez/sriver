@@ -14,7 +14,7 @@ public class FireAction extends ShipAction {
 	
 	
 	public FireAction(ShipVO shipFiring, Weapon weaponType, Coordinate hitCoordenate, boolean hit, ShipVO affectedShip){
-		super(shipFiring);
+		super(shipFiring, "FireAction");
 		this.weaponType = weaponType;
 		this.hitCoordenate = hitCoordenate;
 		this.hit = hit;

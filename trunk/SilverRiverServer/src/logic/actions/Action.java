@@ -5,11 +5,19 @@ package logic.actions;
  */
 public abstract class Action {
 
-		
+	String actionType;
 	/*
 	 * Constructor
 	 */
-	public Action(){
+	public Action(String actionType){
+		this.actionType = actionType;
 		
 	}	
+	
+	/*
+	 * Getters
+	 */
+	public String getActionType(){
+		return this.actionType;
+	}
 }
