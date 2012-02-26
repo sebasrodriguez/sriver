@@ -11,6 +11,7 @@ package events
 	{
 		public static const MODE_CHANGED:String = "actionEventModeChanged";
 		public static const ROTATION_CLICKED:String = "actionEventRotationClicked";
+		public static const MOVE_CLICKED:String = "actionEventMoveClicked";
 		public var mode:int;
 		public var rotation:int;
 		

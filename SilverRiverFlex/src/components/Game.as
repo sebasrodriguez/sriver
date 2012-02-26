@@ -6,6 +6,7 @@ package components
 	import flash.utils.SetIntervalTimer;
 	import flash.utils.Timer;
 	import mx.containers.Canvas;
+	import mx.controls.Label;
 	import mx.core.UIComponent;
 	import mx.rpc.AbstractOperation;
 	import mx.rpc.events.FaultEvent;
@@ -23,6 +24,7 @@ package components
 	{
 		public static const GAME_BOARD_COLS:Number = 64;
 		public static const GAME_BOARD_ROWS:Number = 36;
+		public static const RED_SHIP_ID:int = 1;
 		
 		private var _main:Main;
 		private var _board:Canvas;
@@ -36,11 +38,27 @@ package components
 		public var _blueShipComponent2:BlueShip;
 		public var _blueShipComponent3:BlueShip;
 		public var _selectedShip:Ship;
+		public var _turn:Turn;
+		public var _movesLeftLabel:Label;
+		public var _myUsername:String;
+		public var _redPlayer:Player;
+		public var _bluePlayer:Player;
 		
 		public function Game(main:Main)
 		{
 			_main = main;
+			// TODO: esto se obtiene luego del login del usuario
+			_myUsername = "sebas";
 			newGame();
+			// Label de movimientos restantes
+			_movesLeftLabel = new Label();
+			_movesLeftLabel.text = _turn.movesLeft.toString();
+			_movesLeftLabel.x = 10;
+			_movesLeftLabel.y = 10;
+			_movesLeftLabel.setStyle("fontSize", 30);
+			_movesLeftLabel.setStyle("color", 0xFFCC33);
+			_movesLeftLabel.setStyle("fontStyle", "bold");
+			_board.addChild(_movesLeftLabel);
 		}
 		
 		/*
@@ -57,7 +75,7 @@ package components
 		private function timerHandler(event:TimerEvent):void
 		{
 			// _main.wsRequest.synchronize();
-		}		
+		}
 		
 		public function newGame():void
 		{
@@ -100,27 +118,39 @@ package components
 			_blueShipComponent2.show();
 			_blueShipComponent3.show();
 			
+			// TODO: los players se crean segun lo que me retorna el WS
+			// Creo los dos players
+			_redPlayer = new Player("sebas");
+			_bluePlayer = new Player("santi");
+			
+			// TODO: el turno me lo retorna el WS
+			// Creo el turno
+			_turn = new Turn(5, _redPlayer);
+			
 			_menu = new Menu(Menu.MENU_POSITION_BOTTOM_LEFT);
-			_menu.addEventListener(ActionEvent.MODE_CHANGED, function (event:ActionEvent):void {
-				switch(event.mode) {
-					case Menu.MENU_MODE_MOVE:
-						trace("Cambio a Move");
-						break;
-					case Menu.MENU_MODE_ROTATE:
-						trace("Cambio a Rotate");
-						break;
-					case Menu.MENU_MODE_FIRE:
-						trace("Cambio a Fire");
-						break;
-				}
-			} );
-			_menu.addEventListener(ActionEvent.ROTATION_CLICKED, function(event:ActionEvent):void {
-				if (_selectedShip != null) {
-					_selectedShip.rotateTo(event.rotation);
-				}
-			});
+			_menu.addEventListener(ActionEvent.MODE_CHANGED, function(event:ActionEvent):void
+				{
+					switch (event.mode)
+					{
+						case Menu.MENU_MODE_MOVE: 
+							moveMode();
+							break;
+						case Menu.MENU_MODE_ROTATE: 
+							_gridComponent.disableCells();
+							break;
+						case Menu.MENU_MODE_FIRE: 
+							trace("Cambio a Fire");
+							break;
+					}
+				});
+			_menu.addEventListener(ActionEvent.ROTATION_CLICKED, function(event:ActionEvent):void
+				{
+					if (_selectedShip != null && _turn.movesLeft > 0)
+					{
+						rotateAction(_selectedShip, new Cardinal(event.rotation));
+					}
+				});
 			_main.addElement(_menu);
-			//this.addChild(_menu);
 		}
 		
 		// Evento disparado cuando se selecciona una celda de la grilla
@@ -128,7 +158,30 @@ package components
 		{
 			if (_selectedShip != null)
 			{
-				_selectedShip.moveTo(event.coordinate);
+				// Si el modo del menu es mover se mueve el barco a la celda seleccionada
+				if (_menu.currentMenuMode() == Menu.MENU_MODE_MOVE)
+				{
+					// Si la celda seleccionada esta habilitada muevo el barco
+					if (_gridComponent.isCellEnabled(event.coordinate))
+					{
+						moveAction(_selectedShip, event.coordinate);
+					}
+				}
+				else if (_menu.currentMenuMode() == Menu.MENU_MODE_FIRE)
+				{
+					// Actualizo la cantidad de movimientos restantes del turno
+					updateMovesLeft();
+					trace("disparo");
+				}
+			}
+		}
+		
+		// Modo de mover el barco
+		private function moveMode():void
+		{
+			if (_selectedShip != null)
+			{
+				drawMovements();
 			}
 		}
 		
@@ -137,19 +190,24 @@ package components
 			var c1:Coordinate = new Coordinate(10, 12);
 			var d1:Cardinal = new Cardinal(Cardinal.S);
 			
-			var c2:Coordinate = new Coordinate(15, 10);
+			var c2:Coordinate = new Coordinate(18, 10);
 			var d2:Cardinal = new Cardinal(Cardinal.N);
 			
 			var c3:Coordinate = new Coordinate(15, 15);
-			var d3:Cardinal = new Cardinal(Cardinal.S);
+			var d3:Cardinal = new Cardinal(Cardinal.SE);
 			
 			var c4:Coordinate = new Coordinate(15, 18);
 			var d4:Cardinal = new Cardinal(Cardinal.W);
 			
-			_redShipComponent = new RedShip(c1, d1, 4, 3);
-			_blueShipComponent1 = new BlueShip(c2, d2, 4, 1);
-			_blueShipComponent2 = new BlueShip(c3, d3, 4, 1);
-			_blueShipComponent3 = new BlueShip(c4, d4, 4, 1);
+			_redShipComponent = new RedShip(1, c1, d1, 4, 3);
+			_blueShipComponent1 = new BlueShip(2, c2, d2, 4, 1);
+			_blueShipComponent2 = new BlueShip(3, c3, d3, 4, 1);
+			_blueShipComponent3 = new BlueShip(4, c4, d4, 4, 1);
+			
+			setShipCellStatus(_redShipComponent, true);
+			setShipCellStatus(_blueShipComponent1, true);
+			setShipCellStatus(_blueShipComponent2, true);
+			setShipCellStatus(_blueShipComponent3, true);
 			
 			_redShipComponent.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
 			_blueShipComponent1.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
@@ -157,94 +215,116 @@ package components
 			_blueShipComponent3.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
 		}
 		
+		// Evento disparado cuando se selecciona un barco
 		public function selectedShipEvent(event:SelectedShipEvent):void
 		{
-			if (_selectedShip != null)
-				_selectedShip.filters = null;
-			if (event.selectedShip != _selectedShip)
+			var selectedShip:Ship = event.selectedShip;
+			// El usuario selecciono el barco rojo
+			if ((selectedShip.shipId == RED_SHIP_ID && _redPlayer.username == _myUsername) || (selectedShip.shipId > RED_SHIP_ID && _bluePlayer.username == _myUsername))
 			{
-				_selectedShip = event.selectedShip;
-				var glow:GlowFilter = new GlowFilter(0xFF0000);
-				_selectedShip.filters = [glow];
-			}
-			else
-			{
-				_selectedShip.filters = null;
-				_selectedShip = null;
-			}
-			if (_selectedShip != null)
-			{
-				drawMovements();
+				if (_selectedShip != null)
+					_selectedShip.filters = null;
+				// Si hay un barco seleccionado lo marcamos en la pantalla, en caso contrario desmarcamos
+				// el que previamente estuviese marcado
+				if (selectedShip != _selectedShip)
+				{
+					_selectedShip = selectedShip;
+					var glow:GlowFilter = new GlowFilter(0xFF0000);
+					_selectedShip.filters = [glow];
+				}
+				else
+				{
+					_gridComponent.disableCells();
+					_selectedShip.filters = null;
+					_selectedShip = null;
+				}
 			}
 		}
 		
+		// Dibuja los movimientos posibles del barco
 		private function drawMovements():void
-		{			
+		{
 			var forwardCoordinate:Coordinate = new Coordinate(_selectedShip.currentPos.r, _selectedShip.currentPos.c);
 			var backwardsCoordinate:Coordinate = new Coordinate(_selectedShip.currentPos.r, _selectedShip.currentPos.c);
-			var backwardsDirection:Cardinal = new Cardinal(_selectedShip.direction.cardinal - 180);
+			var backwardsDirection:Cardinal = Helper.getOppositeDirection(_selectedShip.direction);
+			var cellEnabled:Boolean = true;
 			
-			if (_selectedShip.size == 3)
+			if (_selectedShip.size > 1)
 			{
-				forwardCoordinate = calculateNextCell(_selectedShip.currentPos, _selectedShip.direction);
-				backwardsCoordinate = calculateNextCell(_selectedShip.currentPos, backwardsDirection);
+				forwardCoordinate = Helper.calculateNextCell(_selectedShip.currentPos, _selectedShip.direction);
+				backwardsCoordinate = Helper.calculateNextCell(_selectedShip.currentPos, backwardsDirection);
 			}
 			
 			for (var i:int = 0; i < _selectedShip.speed; i++)
 			{
-				forwardCoordinate = calculateNextCell(forwardCoordinate, _selectedShip.direction);
-				_gridComponent.enableCell(forwardCoordinate);
+				forwardCoordinate = Helper.calculateNextCell(forwardCoordinate, _selectedShip.direction);
+				cellEnabled = _gridComponent.enableCell(forwardCoordinate);
+				if (!cellEnabled)
+					break;
 			}
-			for (var j:int = 0; j < _selectedShip.speed / 2; j++) {
-				backwardsCoordinate = calculateNextCell(backwardsCoordinate, backwardsDirection);
-				_gridComponent.enableCell(backwardsCoordinate);
+			for (var j:int = 0; j < _selectedShip.speed / 2; j++)
+			{
+				backwardsCoordinate = Helper.calculateNextCell(backwardsCoordinate, backwardsDirection);
+				cellEnabled = _gridComponent.enableCell(backwardsCoordinate);
+				if (!cellEnabled)
+					break;
 			}
 		}
 		
-		private function calculateNextCell(actualCoordinate:Coordinate, direction:Cardinal):Coordinate
+		// Bloquea/Desbloquea las celdas que el barco ocupa/ocupo
+		private function setShipCellStatus(ship:Ship, enabled:Boolean):void
 		{
-			var newCoordinate:Coordinate = new Coordinate(actualCoordinate.r, actualCoordinate.c);
-			// si la direccion es al este
-			if (direction.cardinal == Cardinal.E)
+			_gridComponent.setCellStatus(ship.currentPos, enabled);
+			if (ship.size > 1)
 			{
-				newCoordinate.c = newCoordinate.c + 1;
+				_gridComponent.setCellStatus(Helper.calculateNextCell(ship.currentPos, ship.direction), enabled);
+				_gridComponent.setCellStatus(Helper.calculateNextCell(ship.currentPos, Helper.getOppositeDirection(ship.direction)), enabled);
 			}
-			// si la direccion es al oeste
-			if (direction.cardinal == Cardinal.W)
+		}
+		
+		// Actualiza los movimientos del turno y refleja en el UI la cantidad de movimientos restantes
+		private function updateMovesLeft():void
+		{
+			_turn.movesLeft = _turn.movesLeft - 1;
+			_movesLeftLabel.text = _turn.movesLeft.toString();
+		}
+		
+		// Mueve el barco a la posicion dada y actualiza el estado del juego
+		private function moveAction(ship:Ship, coordinate:Coordinate):void
+		{
+			// Desbloqueamos las celdas actuales del barco
+			setShipCellStatus(ship, false);
+			// Se mueve el barco
+			ship.moveTo(coordinate);
+			// Se actualiza la posicion del barco
+			ship.setPosition(coordinate);
+			// Se deshabilita las celdas de movimiento previamente mostradas
+			_gridComponent.disableCells();
+			// Actualizo la cantidad de movimientos restantes del turno
+			updateMovesLeft();
+			// Si quedan movimientos y yo soy el usuario activo muestro las celdas de movimientos
+			if (_turn.movesLeft > 0 && _turn.activePlayer.username == _myUsername)
 			{
-				newCoordinate.c = newCoordinate.c - 1;
+				// Se muestran nuevas celdas de movimiento basadas en la nueva posicion del barco
+				drawMovements();
 			}
-			// si la direccion es al norte
-			if (direction.cardinal == Cardinal.N)
-			{
-				newCoordinate.r = newCoordinate.r - 1;
-			}
-			// si la direccion es al sur
-			if (direction.cardinal == Cardinal.S)
-			{
-				newCoordinate.r = newCoordinate.r + 1;
-			}
-			if (direction.cardinal == Cardinal.SE)
-			{
-				newCoordinate.r = newCoordinate.r + 1;
-				newCoordinate.c = newCoordinate.c + 1;
-			}
-			if (direction.cardinal == Cardinal.SW)
-			{
-				newCoordinate.r = newCoordinate.r + 1;
-				newCoordinate.c = newCoordinate.c - 1;
-			}
-			if (direction.cardinal == Cardinal.NE)
-			{
-				newCoordinate.r = newCoordinate.r - 1;
-				newCoordinate.c = newCoordinate.c + 1;
-			}
-			if (direction.cardinal == Cardinal.NW) {
-				newCoordinate.r = newCoordinate.r - 1;
-				newCoordinate.c = newCoordinate.c - 1;
-			}
-			
-			return newCoordinate;
+			// Bloqueamos la nueva posicion del barco
+			setShipCellStatus(ship, true);
+		}
+		
+		// Rota el barco a la direccion dada y actualiza el estado del juego
+		private function rotateAction(ship:Ship, direction:Cardinal):void
+		{
+			// Actualizamos las celdas bloqueadas por el barco
+			setShipCellStatus(ship, false);
+			// Rotamos el barco
+			ship.rotateTo(direction.cardinal);
+			// Seteamos la nueva direccion del barco
+			ship.direction = direction;
+			// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
+			setShipCellStatus(ship, true);
+			// Actualizamos los movimientos restantes
+			updateMovesLeft();
 		}
 	}
 }
