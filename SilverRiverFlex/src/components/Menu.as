@@ -46,10 +46,10 @@ package components
 			_shape.graphics.drawRoundRect(0, 0, 240, 200, 10, 10);
 			if (position == MENU_POSITION_BOTTOM_LEFT) {
 				left = 10;
-				bottom = 210;
+				bottom = 230;
 			}else if (position == MENU_POSITION_BOTTOM_RIGHT) {				
 				right = 10;
-				bottom = 210;
+				bottom = 230;
 			}
 			_shape.graphics.endFill();
 			addChild(_shape);
@@ -64,7 +64,8 @@ package components
 			_moveContainer.visible = false;
 			addChild(_moveContainer);
 			_rotateContainer = getContainer();
-			_rotateContainer.visible = false;		
+			_rotateContainer.visible = false;
+			_rotateContainer.x = 60;
 			addChild(_rotateContainer);
 			_fireContainer = getContainer();
 			_fireContainer.visible = false;
@@ -108,28 +109,28 @@ package components
 		
 		private function createRotationButtons():void {
 			var currentButton:Button;
-			currentButton = getSmallButton("N", MENU_SMALL_BUTTON_WIDTH * 0, 0);
+			currentButton = getSmallButton("N", MENU_SMALL_BUTTON_WIDTH * 1, MENU_SMALL_BUTTON_HEIGHT * 0);
 			currentButton.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.N); } );
 			_rotateContainer.addChild(currentButton);
-			currentButton = getSmallButton("S", MENU_SMALL_BUTTON_WIDTH * 1, 0);
+			currentButton = getSmallButton("S", MENU_SMALL_BUTTON_WIDTH * 1, MENU_SMALL_BUTTON_HEIGHT * 2);
 			currentButton.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.S); } );
 			_rotateContainer.addChild(currentButton);
-			currentButton = getSmallButton("E", MENU_SMALL_BUTTON_WIDTH * 2, 0);
+			currentButton = getSmallButton("E", MENU_SMALL_BUTTON_WIDTH * 2, MENU_SMALL_BUTTON_HEIGHT * 1);
 			currentButton.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.E); } );
 			_rotateContainer.addChild(currentButton);
-			currentButton = getSmallButton("O", MENU_SMALL_BUTTON_WIDTH * 3, 0);
+			currentButton = getSmallButton("O", MENU_SMALL_BUTTON_WIDTH * 0, MENU_SMALL_BUTTON_HEIGHT * 1);
 			currentButton.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.W);});
 			_rotateContainer.addChild(currentButton);
-			currentButton = getSmallButton("NE", MENU_SMALL_BUTTON_WIDTH * 0, 25);
+			currentButton = getSmallButton("NE", MENU_SMALL_BUTTON_WIDTH * 2, MENU_SMALL_BUTTON_HEIGHT * 0);
 			currentButton.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.NE);});
 			_rotateContainer.addChild(currentButton);
-			currentButton = getSmallButton("SE", MENU_SMALL_BUTTON_WIDTH * 1, 25);
+			currentButton = getSmallButton("SE", MENU_SMALL_BUTTON_WIDTH * 2, MENU_SMALL_BUTTON_HEIGHT * 2);
 			currentButton.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.SE);});
 			_rotateContainer.addChild(currentButton);
-			currentButton = getSmallButton("SO", MENU_SMALL_BUTTON_WIDTH * 2, 25);
+			currentButton = getSmallButton("SO", MENU_SMALL_BUTTON_WIDTH * 0, MENU_SMALL_BUTTON_HEIGHT * 2);
 			currentButton.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.SW);});
 			_rotateContainer.addChild(currentButton);
-			currentButton = getSmallButton("NO", MENU_SMALL_BUTTON_WIDTH * 3, 25);
+			currentButton = getSmallButton("NO", MENU_SMALL_BUTTON_WIDTH * 0, MENU_SMALL_BUTTON_HEIGHT * 0);
 			currentButton.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.NW);});
 			_rotateContainer.addChild(currentButton);
 		}
