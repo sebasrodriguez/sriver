@@ -10,7 +10,7 @@ public class MoveAction extends ShipAction{
 	
 	
 	public MoveAction(ShipVO shipMoving, Coordinate position){
-		super(shipMoving);
+		super(shipMoving, "MoveAction");
 		this.position = position;
 	}
 

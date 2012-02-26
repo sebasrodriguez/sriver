@@ -32,6 +32,7 @@ public class Facade {
 	private Game gameWithoutBluePlayer;
 	private static Facade facade;
 	
+		
 	/*
 	 * Devuelve la instancia del Facade (Singleton)
 	 */
@@ -450,40 +451,48 @@ public class Facade {
 		ArrayList<Action> actions = new ArrayList<Action>();
 		
 		
+		
+		
 		//Creando los barcos
-		position = new Coordinate(10,14);
-		orientation = new Cardinal(-135);
-		ShipVO redShip = new RedShipVO(0, 10, 10, 12, 3, 10, 3, position, orientation);
+		position = new Coordinate(12,10);
+		orientation = new Cardinal(Cardinal.S);
+		ShipVO redShip = new RedShipVO(1, 10, 10, 12, 3, 10, 3, position, orientation);
+		
 		position = new Coordinate(20,20);
 		orientation = new Cardinal(90);
-		ShipVO blueShip1 = new BlueShipVO(1, 5, 5, 6, 1, 5, 1, position, orientation);
+		ShipVO blueShip1 = new BlueShipVO(2, 5, 5, 6, 1, 5, 1, position, orientation);
 		position = new Coordinate(22,20);
 		orientation = new Cardinal(90);
-		ShipVO blueShip2 = new BlueShipVO(2, 5, 5, 6, 1, 5, 1, position, orientation);
+		ShipVO blueShip2 = new BlueShipVO(3, 5, 5, 6, 1, 5, 1, position, orientation);
 		position = new Coordinate(24,20);
 		orientation = new Cardinal(90);
-		ShipVO blueShip3 = new BlueShipVO(3, 5, 5, 6, 1, 5, 1, position, orientation);
+		ShipVO blueShip3 = new BlueShipVO(4, 5, 5, 6, 1, 5, 1, position, orientation);
 	
 		//MAPA (64,36)	
 	
 		//Creando las acciones		
 		
-		position = new Coordinate(10,30);				
+		position = new Coordinate(12,13);				
 		MoveAction action1 = new MoveAction(redShip, position);
 		actions.add(action1);
+		//acs[0] = action1;
 		
 		
-		orientation = new Cardinal(90);				
+		orientation = new Cardinal(Cardinal.N);				
 		RotateAction action2 = new RotateAction(redShip, orientation);
 		actions.add(action2);
+		//acs[1] = action2;
 		
 		
-		position = new Coordinate(60,30);
+		position = new Coordinate(12,9);
 		MoveAction action3 = new MoveAction(redShip, position);
 		actions.add(action3);
+		//acs[2] = action3;
 		
 		
-		return (Action[])actions.toArray();
+		Action[] acs = {action1, action2, action3};
+				
+		return acs;	
 		
 	}
 	

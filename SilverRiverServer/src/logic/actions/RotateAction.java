@@ -10,7 +10,7 @@ public class RotateAction extends ShipAction{
 
 	
 	public RotateAction(ShipVO shipRotating, Cardinal cardinal){
-		super(shipRotating);
+		super(shipRotating, "RotateAction");
 		this.cardinal = cardinal;
 	}
 	

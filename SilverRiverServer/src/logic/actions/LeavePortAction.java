@@ -9,7 +9,7 @@ public class LeavePortAction extends ShipAction{
 	
 	
 	public LeavePortAction(ShipVO ship, int port){
-		super(ship);
+		super(ship, "LeavePortAction");
 		this.port = port;
 	}
 	

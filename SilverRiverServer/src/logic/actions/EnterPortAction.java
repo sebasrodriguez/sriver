@@ -10,7 +10,7 @@ public class EnterPortAction extends ShipAction {
 	
 
 	public EnterPortAction(ShipVO ship, int port){
-		super(ship);
+		super(ship, "EnterPortAction");
 		this.port = port;
 	}
 	
