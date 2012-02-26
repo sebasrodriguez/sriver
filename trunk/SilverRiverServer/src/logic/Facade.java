@@ -3,18 +3,23 @@ package logic;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import logic.actions.Action;
 import logic.actions.EndTurnAction;
 import logic.actions.FireAction;
 import logic.actions.MoveAction;
 import logic.actions.RotateAction;
 import logic.game.Game;
+import logic.game.Turn;
 import logic.player.Player;
 import logic.ship.*;
 import entities.BlueShipVO;
 import entities.Cardinal;
 import entities.Coordinate;
+import entities.GameVO;
+import entities.PlayerVO;
 import entities.RedShipVO;
 import entities.ShipVO;
+import entities.TurnVO;
 import entities.Weapon;
 
 
@@ -435,6 +440,53 @@ public class Facade {
 	public Iterator<Game> devolverITerator(){
 		return this.activeGames.iterator();
 	}
+	
+	
+	//PRUEBAS CON LA UI
+	public Action[] pruebaActions(){
+		
+		Coordinate position = null;
+		Cardinal orientation = null;
+		ArrayList<Action> actions = new ArrayList<Action>();
+		
+		
+		//Creando los barcos
+		position = new Coordinate(10,14);
+		orientation = new Cardinal(-135);
+		ShipVO redShip = new RedShipVO(0, 10, 10, 12, 3, 10, 3, position, orientation);
+		position = new Coordinate(20,20);
+		orientation = new Cardinal(90);
+		ShipVO blueShip1 = new BlueShipVO(1, 5, 5, 6, 1, 5, 1, position, orientation);
+		position = new Coordinate(22,20);
+		orientation = new Cardinal(90);
+		ShipVO blueShip2 = new BlueShipVO(2, 5, 5, 6, 1, 5, 1, position, orientation);
+		position = new Coordinate(24,20);
+		orientation = new Cardinal(90);
+		ShipVO blueShip3 = new BlueShipVO(3, 5, 5, 6, 1, 5, 1, position, orientation);
+	
+		//MAPA (64,36)	
+	
+		//Creando las acciones		
+		
+		position = new Coordinate(10,30);				
+		MoveAction action1 = new MoveAction(redShip, position);
+		actions.add(action1);
+		
+		
+		orientation = new Cardinal(90);				
+		RotateAction action2 = new RotateAction(redShip, orientation);
+		actions.add(action2);
+		
+		
+		position = new Coordinate(60,30);
+		MoveAction action3 = new MoveAction(redShip, position);
+		actions.add(action3);
+		
+		
+		return (Action[])actions.toArray();
+		
+	}
+	
 	
 	
 }

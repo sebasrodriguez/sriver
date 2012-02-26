@@ -1,5 +1,7 @@
 package entities;
 
+import java.util.ArrayList;
+
 import logic.actions.Action;
 
 
@@ -14,15 +16,15 @@ public class GameVO {
 	private TurnVO turn;
 	
 	public GameVO(int id, PlayerVO redPlayer, PlayerVO bluePlayer,
-			Action[] redActionQueue, Action[] blueActionQueue,
-			ShipVO[] ships, TurnVO turn) 
+			ArrayList<Action> redActionQueue, ArrayList<Action> blueActionQueue,
+			ArrayList<ShipVO> ships, TurnVO turn) 
 	{		
 		this.id = id;
 		this.redPlayer = redPlayer;
 		this.bluePlayer = bluePlayer;
-		this.redActionQueue = redActionQueue;
-		this.blueActionQueue = blueActionQueue;
-		this.ships = ships;
+		this.redActionQueue = (Action[]) redActionQueue.toArray();
+		this.blueActionQueue = (Action[]) blueActionQueue.toArray();
+		this.ships = (ShipVO[]) ships.toArray();
 		this.turn = turn;
 	}
 

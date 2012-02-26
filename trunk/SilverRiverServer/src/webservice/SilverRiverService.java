@@ -1,6 +1,7 @@
 package webservice;
 
 import logic.Facade;
+import logic.actions.Action;
 import logic.actions.EndTurnAction;
 import logic.actions.FireAction;
 import logic.actions.MoveAction;
@@ -45,6 +46,9 @@ public class SilverRiverService {
 		return Facade.getInstance().checkGameId();
 	}
 	
+	public Action[] pruebaActions(){
+		return Facade.getInstance().pruebaActions();
+	}
 	
 	
 }
