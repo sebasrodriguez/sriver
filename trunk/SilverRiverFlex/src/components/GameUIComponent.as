@@ -4,6 +4,7 @@ package components
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import mx.core.UIComponent;
+	import mx.effects.Move;
 	import mx.effects.Rotate;
 	import mx.effects.Tween;
 	import mx.messaging.errors.NoChannelAvailableError;
@@ -38,7 +39,7 @@ package components
 		{
 			_sprite.x = -(_sprite.width / 2);
 			_sprite.y = -(_sprite.height / 2);
-			
+		
 		}
 		
 		public function show():void
@@ -61,43 +62,32 @@ package components
 		// Mueve un objeto a las coordenadas dadas
 		public function moveTo(c:Coordinate):void
 		{
-			if (!_animating)
-			{
-				var xdelta:Number = c.x - this.x;
-				var ydelta:Number = c.y - this.y;
-				var distance:Number = Math.sqrt(Math.pow(xdelta, 2) + Math.pow(ydelta, 2));
-				
-				var time:Number = distance / 50 * 700;
-				var angle:Number = Math.tan(xdelta / ydelta);
-				var ox:Number = this.x;
-				var oy:Number = this.y;
-				
-				_animating = true;
-				new Tween(this, 0, distance, time, 20, function(newX:Number):void
-					{
-						this.listener.x = ox + xdelta * (newX / distance);
-						this.listener.y = oy + ydelta * (newX / distance);
-					
-					}, function():void
-					{
-						_animating = false;
-					});
-			}
+			var xdelta:Number = c.x - this.x;
+			var ydelta:Number = c.y - this.y;
+			var distance:Number = Math.sqrt(Math.pow(xdelta, 2) + Math.pow(ydelta, 2));
+			
+			var time:Number = distance / 50 * 700;
+			var angle:Number = Math.tan(xdelta / ydelta);
+			var ox:Number = this.x;
+			var oy:Number = this.y;
+			
+			new Tween(this, 0, distance, time, 20, function(newX:Number):void
+				{
+					this.listener.x = ox + xdelta * (newX / distance);
+					this.listener.y = oy + ydelta * (newX / distance);
+				}, function():void
+				{
+				});
 		}
 		
 		// Rota un objeto la cantidad de grados dada
 		public function rotateTo(degrees:int):void
 		{
-			if (!_animating)
-			{
-				_animating = true;
-				var rotate:Rotate = new Rotate(this);
-				rotate.angleFrom = this.rotation;
-				rotate.angleTo = degrees;
-				rotate.duration = 500;
-				rotate.play();
-				_animating = false;
-			}
+			var rotate:Rotate = new Rotate(this);
+			rotate.angleFrom = this.rotation;
+			rotate.angleTo = degrees;
+			rotate.duration = 500;			
+			rotate.play();
 		}
 		
 		public function get currentPos():Coordinate

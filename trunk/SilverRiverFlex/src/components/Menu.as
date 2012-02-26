@@ -178,6 +178,10 @@ package components
 			_fireContainer.visible = false;
 		}
 		
+		public function currentMenuMode():int {
+			return _currenMode;
+		}
+		
 	}
 
 }

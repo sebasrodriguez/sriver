@@ -18,6 +18,7 @@ package components
 		private var _rows:int;
 		private var _cols:int;
 		private var _gridMatrix:Array;
+		private var _enabledCells:Array;
 		private var _cellSize:Number;
 		
 		public function GameGrid(container:Canvas, rows:int, cols:int)
@@ -26,6 +27,7 @@ package components
 			_rows = rows;
 			_cols = cols;
 			_cellSize = Coordinate.POINT_SIZE;
+			_enabledCells = new Array();
 			//build grid
 			
 			_gridMatrix = new Array();
@@ -72,6 +74,10 @@ package components
 			}
 		}
 		
+		public function setCellStatus(coordinate:Coordinate, blocked: Boolean):void {
+			_gridMatrix[coordinate.r][coordinate.c].blocked = blocked;
+		}		
+		
 		public function enableCell(coordinate:Coordinate):Boolean
 		{
 			var enabled:Boolean = false;
@@ -80,9 +86,22 @@ package components
 			{
 				cell.available = true;
 				enabled = true;
+				_enabledCells.push(coordinate);
 			}
 			
 			return enabled;
+		}
+		
+		public function disableCells():void {
+			for (var i:int = 0; i < _enabledCells.length; i++) 
+			{
+				_gridMatrix[_enabledCells[i].r][_enabledCells[i].c].available = false;
+			}
+			_enabledCells = new Array();
+		}
+		
+		public function isCellEnabled(coordinate:Coordinate):Boolean {
+			return _gridMatrix[coordinate.r][coordinate.c].available;
 		}
 	
 	/*public function getSquareFromXY(x:Number, y:Number):Shape {
