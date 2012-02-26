@@ -7,6 +7,7 @@ package components
 	import mx.effects.Move;
 	import mx.effects.Rotate;
 	import mx.effects.Tween;
+	import mx.events.EffectEvent;
 	import mx.messaging.errors.NoChannelAvailableError;
 	
 	/**
@@ -62,6 +63,7 @@ package components
 		// Mueve un objeto a las coordenadas dadas
 		public function moveTo(c:Coordinate):void
 		{
+			_animating = true;
 			var xdelta:Number = c.x - this.x;
 			var ydelta:Number = c.y - this.y;
 			var distance:Number = Math.sqrt(Math.pow(xdelta, 2) + Math.pow(ydelta, 2));
@@ -77,16 +79,23 @@ package components
 					this.listener.y = oy + ydelta * (newX / distance);
 				}, function():void
 				{
+					_animating = false;
 				});
 		}
 		
 		// Rota un objeto la cantidad de grados dada
 		public function rotateTo(degrees:int):void
 		{
+			_animating = true;
 			var rotate:Rotate = new Rotate(this);
 			rotate.angleFrom = this.rotation;
 			rotate.angleTo = degrees;
 			rotate.duration = 500;			
+			rotate.addEventListener(EffectEvent.EFFECT_END, function():void
+				{
+					_animating = false;
+				});
+			
 			rotate.play();
 		}
 		
@@ -104,7 +113,11 @@ package components
 		{
 			_sprite = value;
 		}
-	
+		
+		public function get isAnimating():Boolean
+		{
+			return _animating;
+		}	
 	}
 
 }
