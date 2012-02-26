@@ -2,38 +2,14 @@ package entities;
 
 public class PlayerVO {
 
-	private int id;
 	private String username;
 	
-	public PlayerVO()
-	{
-	}
-	
-	public PlayerVO(int id, String username)
-	{
-		this.id = id;
+	public PlayerVO(String username){		
 		this.username = username;
 	}
 	
-	/* Setters y Getters */
-	
-	public int getId()
-	{
-		return this.id;
-	}
-	
-	public void setId(int id)
-	{
-		this.id = id;
-	}
-	
-	public String getUsername()
-	{
+		
+	public String getUsername(){
 		return this.username;
-	}
-	
-	public void setUsername(String user)
-	{
-		this.username = user;
-	}
+	}	
 }
