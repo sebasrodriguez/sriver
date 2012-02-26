@@ -115,7 +115,9 @@ package components
 				}
 			} );
 			_menu.addEventListener(ActionEvent.ROTATION_CLICKED, function(event:ActionEvent):void {
-				trace("Rotate :" + event.rotation);
+				if (_selectedShip != null) {
+					_selectedShip.rotateTo(event.rotation);
+				}
 			});
 			_main.addElement(_menu);
 			//this.addChild(_menu);
