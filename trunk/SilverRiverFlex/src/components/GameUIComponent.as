@@ -61,7 +61,7 @@ package components
 		}
 		
 		// Mueve un objeto a las coordenadas dadas
-		public function moveTo(c:Coordinate):void
+		public function moveTo(c:Coordinate, func:Function):void
 		{
 			_animating = true;
 			var xdelta:Number = c.x - this.x;
@@ -79,20 +79,28 @@ package components
 					this.listener.y = oy + ydelta * (newX / distance);
 				}, function():void
 				{
+					if (func != null)
+					{
+						func.call();
+					}
 					_animating = false;
 				});
 		}
 		
 		// Rota un objeto la cantidad de grados dada
-		public function rotateTo(degrees:int):void
+		public function rotateTo(degrees:int, func:Function):void
 		{
 			_animating = true;
 			var rotate:Rotate = new Rotate(this);
 			rotate.angleFrom = this.rotation;
 			rotate.angleTo = degrees;
-			rotate.duration = 500;			
+			rotate.duration = 500;
 			rotate.addEventListener(EffectEvent.EFFECT_END, function():void
 				{
+					if (func != null)
+					{
+						func.call();
+					}
 					_animating = false;
 				});
 			
@@ -117,7 +125,7 @@ package components
 		public function get isAnimating():Boolean
 		{
 			return _animating;
-		}	
+		}
 	}
 
 }
