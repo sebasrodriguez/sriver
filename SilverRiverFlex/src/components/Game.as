@@ -6,6 +6,8 @@ package components
 	import flash.filters.GlowFilter;
 	import flash.utils.SetIntervalTimer;
 	import flash.utils.Timer;
+	import mx.collections.ArrayCollection;
+	import mx.collections.ArrayList;
 	import mx.containers.Canvas;
 	import mx.controls.Label;
 	import mx.core.UIComponent;
@@ -31,9 +33,12 @@ package components
 		private var _main:Main;
 		private var _board:Canvas;
 		private var _ws:WebService;
-		private var _menu:Menu;
-		
+		private var _menu:Menu;		
 		private var _mapComponent:Map;
+		private var _iter:int = 0;
+		private var _actions:ResultEvent;
+		private var _actionQueue:ArrayList;
+		
 		public var _gridComponent:GameGrid;
 		public var _redShipComponent:RedShip;
 		public var _blueShipComponent1:BlueShip;
@@ -45,13 +50,14 @@ package components
 		public var _movesLeftLabel:Label;
 		public var _myUsername:String;
 		public var _redPlayer:Player;
-		public var _bluePlayer:Player;
+		public var _bluePlayer:Player;		
 		
 		public function Game(main:Main)
 		{
 			_main = main;
 			// TODO: esto se obtiene luego del login del usuario
 			_myUsername = "sebas";
+			_actionQueue = new ArrayList();
 			newGame();
 			// Label de movimientos restantes
 			_movesLeftLabel = new Label();
@@ -82,41 +88,51 @@ package components
 		
 		public function consumeActions(response:ResultEvent):void
 		{
-			var ship:Ship;
-			for (var i:int = 0; i < response.result.length; i++)
+			// Agregamos las nuevas acciones a ejecutar a la cola de acciones
+			for (var i:int = 0; i < response.result.length; i++) 
 			{
-				if (response.result[i].actionType == "MoveAction")
+				_actionQueue.addItem(response.result[i]);
+			}
+			consumeNextAction();
+		}
+		
+		public function consumeNextAction():void
+		{
+			if (_actionQueue != null && _actionQueue.length > 0) {
+				var ship:Ship;
+				if (_actionQueue.source[0].actionType == "MoveAction")
 				{
-					ship = getShipById(response.result[i].ship.id);
-					moveAction(ship, new Coordinate(response.result[i].position.y, response.result[i].position.x));
+					ship = getShipById(_actionQueue.source[0].ship.id);
+					moveAction(ship, new Coordinate(_actionQueue.source[0].position.y, _actionQueue.source[0].position.x), consumeNextAction);
 				}
-				else if (response.result[i].actionType == "RotateAction")
+				else if (_actionQueue.source[0].actionType == "RotateAction")
 				{
-					ship = getShipById(response.result[i].ship.id);
-					rotateAction(getShipById(response.result[i].ship.id), new Cardinal(response.result[i].cardinal.direction));
+					ship = getShipById(_actionQueue.source[0].ship.id);
+					rotateAction(getShipById(_actionQueue.source[0].ship.id), new Cardinal(_actionQueue.source[0].cardinal.direction), consumeNextAction);
 				}
-				else if (response.result[i].actionType == "FireAction")
+				else if (_actionQueue.source[0].actionType == "FireAction")
 				{
 					trace("FireAction");
 				}
-				else if (response.result[i].actionType == "EndTurnAction")
+				else if (_actionQueue.source[0].actionType == "EndTurnAction")
 				{
 					trace("FireAction");
 				}
-				else if (response.result[i].actionType == "EnterPortAction")
+				else if (_actionQueue.source[0].actionType == "EnterPortAction")
 				{
 					trace("EndTurnAction");
 				}
-				else if (response.result[i].actionType == "LeavePortAction")
+				else if (_actionQueue.source[0].actionType == "LeavePortAction")
 				{
 					trace("LeavePortAction");
 				}
-				else if (response.result[i].actionType == "EndGameAction")
+				else if (_actionQueue.source[0].actionType == "EndGameAction")
 				{
 					trace("EndGameAction");
 				}
-			}
-		}		
+				_actionQueue.removeItemAt(0);
+			}			
+		}
 		
 		public function newGame():void
 		{
@@ -194,7 +210,7 @@ package components
 			_main.addElement(_menu);
 			
 			// consume actions
-			_main.wsRequest.pruebaActions();
+			// _main.wsRequest.pruebaActions();
 		}
 		
 		// Evento disparado cuando se selecciona una celda de la grilla
@@ -340,12 +356,12 @@ package components
 		}
 		
 		// Mueve el barco a la posicion dada y actualiza el estado del juego
-		private function moveAction(ship:Ship, coordinate:Coordinate):void
+		private function moveAction(ship:Ship, coordinate:Coordinate, func:Function = null):void
 		{
 			// Desbloqueamos las celdas actuales del barco
 			setShipCellStatus(ship, false);
 			// Se mueve el barco
-			ship.moveTo(coordinate);
+			ship.moveTo(coordinate, func);
 			// Se actualiza la posicion del barco
 			ship.setPosition(coordinate);
 			// Se deshabilita las celdas de movimiento previamente mostradas
@@ -363,12 +379,12 @@ package components
 		}
 		
 		// Rota el barco a la direccion dada y actualiza el estado del juego
-		private function rotateAction(ship:Ship, direction:Cardinal):void
+		private function rotateAction(ship:Ship, direction:Cardinal, func:Function = null):void
 		{
 			// Actualizamos las celdas bloqueadas por el barco
 			setShipCellStatus(ship, false);
 			// Rotamos el barco
-			ship.rotateTo(direction.cardinal);
+			ship.rotateTo(direction.cardinal, func);
 			// Seteamos la nueva direccion del barco
 			ship.direction = direction;
 			// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
@@ -390,7 +406,8 @@ package components
 		}
 		
 		// Si el usuario activo soy yo mismo retorno false, de lo contrario retorno true
-		private function isAutomaticMode() : Boolean {
+		private function isAutomaticMode():Boolean
+		{
 			return !(_turn.activePlayer.username == _myUsername);
 		}
 	}
