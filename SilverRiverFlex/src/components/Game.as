@@ -116,12 +116,7 @@ package components
 					trace("EndGameAction");
 				}
 			}
-		}
-		
-		public function consumeActionsFault(result:Fault):void
-		{
-			trace("fallo");
-		}
+		}		
 		
 		public function newGame():void
 		{
@@ -197,6 +192,9 @@ package components
 					}
 				});
 			_main.addElement(_menu);
+			
+			// consume actions
+			_main.wsRequest.pruebaActions();
 		}
 		
 		// Evento disparado cuando se selecciona una celda de la grilla
@@ -355,7 +353,7 @@ package components
 			// Actualizo la cantidad de movimientos restantes del turno
 			updateMovesLeft();
 			// Si quedan movimientos y yo soy el usuario activo muestro las celdas de movimientos
-			if (_turn.movesLeft > 0 && _turn.activePlayer.username == _myUsername)
+			if (_turn.movesLeft > 0 && !isAutomaticMode())
 			{
 				// Se muestran nuevas celdas de movimiento basadas en la nueva posicion del barco
 				drawMovements();
@@ -389,6 +387,11 @@ package components
 					ship = _shipList[i];
 			}
 			return ship;
+		}
+		
+		// Si el usuario activo soy yo mismo retorno false, de lo contrario retorno true
+		private function isAutomaticMode() : Boolean {
+			return !(_turn.activePlayer.username == _myUsername);
 		}
 	}
 }
