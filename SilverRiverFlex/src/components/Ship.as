@@ -2,7 +2,10 @@ package components
 {
 	import common.*;
 	import events.*;
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.events.MouseEvent;
+	import mx.containers.Canvas;
 	
 	/**
 	 * ...
@@ -66,6 +69,35 @@ package components
 		public function set size(value:int):void
 		{
 			_size = value;
+		}
+		
+		public function fireBullet(c:Coordinate, func:Function):void {
+			var board:DisplayObjectContainer = this.parent;
+			var bullet:Bullet = new Bullet(currentPos);
+			board.addChild(bullet);
+			bullet.rotation = Helper.getAngleToCoordinate(currentPos, c);
+			bullet.show();
+			bullet.moveTo(c, FunctionUtil.createDelegate(function (bullet:Bullet):void {
+				bullet.hide();
+				bullet = null;
+				if( func != null)
+					func.call();
+			},bullet), 10);
+		}
+		
+		public function fireTorpedo(func:Function):void {
+			var board:DisplayObjectContainer = this.parent;
+			var torpedo:Torpedo = new Torpedo(currentPos);
+			board.addChild(torpedo);
+			torpedo.rotation = this.rotation;
+			torpedo.show();
+			trace(currentPos.c - currentPos.r);
+			torpedo.moveTo(new Coordinate(0,0), FunctionUtil.createDelegate(function (torpedo:Torpedo):void {
+				torpedo.hide();
+				torpedo = null;
+				if( func != null)
+					func.call();
+			},torpedo), 10);
 		}
 	}
 

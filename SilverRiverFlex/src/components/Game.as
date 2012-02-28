@@ -28,7 +28,7 @@ package components
 	{
 		public static const GAME_BOARD_COLS:Number = 64;
 		public static const GAME_BOARD_ROWS:Number = 36;
-		public static const RED_SHIP_ID:int = 1;
+		public static const RED_SHIP_ID:int = 0;
 		
 		private var _main:Main;
 		private var _board:Canvas;
@@ -70,6 +70,7 @@ package components
 			_movesLeftLabel.setStyle("fontSize", 30);
 			_movesLeftLabel.setStyle("color", 0xFFCC33);
 			_movesLeftLabel.setStyle("fontStyle", "bold");
+
 			_main.addElement(_movesLeftLabel);
 			_timeLeftLabel = new Label();
 			_timeLeftLabel.text = _turn.timeLeft.toString();
@@ -260,9 +261,8 @@ package components
 				}
 				else if (_menu.currentMenuMode() == Menu.MENU_MODE_FIRE)
 				{
-					// Actualizo la cantidad de movimientos restantes del turno
-					updateMovesLeft();
-					trace("disparo");
+					//que el webservice devuelva el radom con la coordenada
+					fireAction(_selectedShip, event.coordinate, _menu.currentFireMode);
 				}
 			}
 		}
@@ -424,6 +424,16 @@ package components
 			updateMovesLeft();
 		}
 		
+		// Dispadra un projectil desde un barco dado
+		private function fireAction(ship:Ship, target:Coordinate, projectile:int, func:Function = null):void {
+			if(projectile == Projectile.WEAPON_TYPE_BULLET){
+				ship.fireBullet(target, func);
+			}else {
+				ship.fireTorpedo(func);
+			}
+			updateMovesLeft();
+			
+		}
 		// Dado un id de un barco lo retorna
 		private function getShipById(shipId:int):Ship
 		{

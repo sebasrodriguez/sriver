@@ -80,6 +80,13 @@ package common
 			
 			return newCoordinate;
 		}
+		
+		public static function getAngleToCoordinate(a:Coordinate, b:Coordinate):Number {
+			var xdelta:Number = b.x - a.x;
+			var ydelta:Number = b.y - a.y;			
+			var angle:Number = Math.atan2(ydelta , xdelta) / (Math.PI /180);
+			return angle;
+		}
 	}
 
 }

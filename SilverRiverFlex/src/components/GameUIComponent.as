@@ -61,15 +61,14 @@ package components
 		}
 		
 		// Mueve un objeto a las coordenadas dadas
-		public function moveTo(c:Coordinate, func:Function):void
+		public function moveTo(c:Coordinate, func:Function, speed:Number = 1):void
 		{
 			_animating = true;
 			var xdelta:Number = c.x - this.x;
 			var ydelta:Number = c.y - this.y;
 			var distance:Number = Math.sqrt(Math.pow(xdelta, 2) + Math.pow(ydelta, 2));
 			
-			var time:Number = distance / 50 * 700;
-			var angle:Number = Math.tan(xdelta / ydelta);
+			var time:Number = (distance * 30) / speed;
 			var ox:Number = this.x;
 			var oy:Number = this.y;
 			

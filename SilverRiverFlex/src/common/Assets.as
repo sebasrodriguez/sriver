@@ -23,5 +23,10 @@ package common
 		public static const BULLET_BMP : Class;
 		public static const BULLET_DATA : BitmapData = (new BULLET_BMP() as Bitmap).bitmapData;
 		
+		// TORPEDO
+		[Embed (source="../../assets/torpedo.png")]
+		public static const TORPEDO_BMP : Class;
+		public static const TORPEDO_DATA : BitmapData = (new TORPEDO_BMP() as Bitmap).bitmapData;
+		
 	}
 }

@@ -4,15 +4,16 @@ package components
 	 * ...
 	 * @author pablo
 	 */
+	import common.*;
 	public class Torpedo extends Projectile 
 	{
 		
-		public function Torpedo() 
+		public function Torpedo(c:Coordinate = null) 
 		{
-			super();
-			//this.setBitmap(Assets.BLUESHIP_DATA);
-			
+			super(c);
+			this.setBitmap(Assets.TORPEDO_DATA);
 			fixCenter();
+			this.alpha = 0.6;
 		}
 		
 	}
