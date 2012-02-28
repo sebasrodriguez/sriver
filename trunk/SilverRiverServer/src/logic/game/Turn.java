@@ -1,41 +1,39 @@
 package logic.game;
 
+import entities.PlayerVO;
+import entities.TurnVO;
 import logic.player.Player;
 
-public class Turn 
-{
+public class Turn{
+	
 	private Player activePlayer;
 	private int movesLeft;
+	private int timeLeft;
 	
-	public Turn()
-	{
+	public Turn(){
 		
 	}
 	
-	public Turn(Player activePlayer, int movesLeft) 
-	{
-		super();
+	//public Turn(Player activePlayer, int movesLeft){
+	public Turn(Player activePlayer){	
 		this.activePlayer = activePlayer;
-		this.movesLeft = movesLeft;
+		this.movesLeft = 5;
+		this.timeLeft = 60;
 	}
 
-	public Player getActivePlayer()
-	{
+	public Player getActivePlayer(){
 		return activePlayer;
 	}
 
-	public void setActivePlayer(Player activePlayer) 
-	{
+	public void setActivePlayer(Player activePlayer){
 		this.activePlayer = activePlayer;
 	}
 
-	public int getMovesLeft() 
-	{
+	public int getMovesLeft(){
 		return movesLeft;
 	}
 
-	public void setMovesLeft(int movesLeft) 
-	{
+	public void setMovesLeft(int movesLeft){
 		this.movesLeft = movesLeft;
 	}
 	
@@ -46,7 +44,7 @@ public class Turn
 	 */
 	public void endTurn(Player nextPlayer){
 		this.activePlayer = nextPlayer;
-		this.movesLeft = 5; //OJO QUE SI SACAMOS ESTE NUMERO DE UNA PROPERTY, NO DEJARLO HARDCODE!!!		
+		this.movesLeft = 5;	
 	}
 	
 	/*
@@ -54,5 +52,12 @@ public class Turn
 	 */
 	public void consumeMovement(){
 		this.movesLeft = this.movesLeft - 1;
+	}
+	
+	public TurnVO mapToValueObject(){
+		PlayerVO playerVO = this.activePlayer.mapToValueObject();
+		TurnVO turnVOToReturn = new TurnVO(playerVO,this.movesLeft,this.timeLeft);
+		
+		return turnVOToReturn;
 	}
 }

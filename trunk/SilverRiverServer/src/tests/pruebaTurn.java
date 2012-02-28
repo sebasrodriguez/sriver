@@ -20,7 +20,7 @@ public class pruebaTurn {
 			
 			System.out.println("Creando objeto Turn con jugadorRojo...");
 			
-			turn = new Turn(jugadorRojo, 5);
+			turn = new Turn(jugadorRojo);
 			
 			System.out.println("Turn: " + turn.getActivePlayer().getUsername() + " " + turn.getMovesLeft());
 			

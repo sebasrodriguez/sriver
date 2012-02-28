@@ -2,6 +2,7 @@ package logic.ship;
 
 import entities.Cardinal;
 import entities.Coordinate;
+import entities.ShipVO;
 import entities.Weapon;
 
 public abstract class Ship {
@@ -152,4 +153,9 @@ public abstract class Ship {
 	public void damaged(int damage){
 		this.armor = this.armor - damage;
 	}
+	
+	/*
+	 * Metodo que se retorna a si mismo como un ShipVO
+	 */
+	public abstract ShipVO mapToValueObject();
 }
