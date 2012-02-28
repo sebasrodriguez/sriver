@@ -81,33 +81,33 @@ package components
 		private function createModeButtons():void {
 			_moveButton = getButton("Mover", 0, 0);
 			_moveButton.addEventListener(MouseEvent.CLICK, function ():void { 
-				if (_currenMode != MENU_MODE_MOVE) {
+				//if (_currenMode != MENU_MODE_MOVE) {
 					hideContainers();
 					_moveContainer.visible = true;
 					dispatchModeChanged(MENU_MODE_MOVE);
 					_currenMode = MENU_MODE_MOVE;
-				}
+				//}
 				
 			});
 			addChild(_moveButton);
 			_rotateButton = getButton("Rotar", MENU_BIG_BUTTON_WIDTH * 1, 0);
 			_rotateButton.addEventListener(MouseEvent.CLICK, function ():void {
-				if(_currenMode != MENU_MODE_ROTATE){
+				//if(_currenMode != MENU_MODE_ROTATE){
 					hideContainers();
 					_rotateContainer.visible = true;
 					dispatchModeChanged(MENU_MODE_ROTATE);
 					_currenMode = MENU_MODE_ROTATE;
-				}				
+				//}				
 			});
 			addChild(_rotateButton);
 			_fireButton = getButton("Disparar", MENU_BIG_BUTTON_WIDTH * 2, 0);
 			_fireButton.addEventListener(MouseEvent.CLICK, function ():void {
-				if(_currenMode != MENU_MODE_FIRE){
+				//if(_currenMode != MENU_MODE_FIRE){
 					hideContainers();
 					_fireContainer.visible = true;
 					dispatchModeChanged(MENU_MODE_FIRE);
 					_currenMode = MENU_MODE_FIRE;
-				}
+				//}
 				
 			});
 			addChild(_fireButton);

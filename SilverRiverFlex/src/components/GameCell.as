@@ -19,10 +19,12 @@ package components
 	{
 		private static const CELL_COLOR_NORMAL:uint = 0x000000;
 		private static const CELL_COLOR_BLOCKED:uint = 0xff0000;
+		private static const CELL_COLOR_GOAL:uint = 0x00ffff;
 		private static const CELL_COLOR_AVAILABLE:uint = 0x0000ff;
-		private static const CELL_ALPHA_NORMAL:Number = 0.5;
-		private static const CELL_ALPHA_BLOCKED:Number = 0.5;
-		private static const CELL_ALPHA_AVAILABLE:Number = 0.5;
+		private static const CELL_ALPHA_NORMAL:Number = 0.3;
+		private static const CELL_ALPHA_BLOCKED:Number = 0.3;
+		private static const CELL_ALPHA_GOAL:Number = 0.3;
+		private static const CELL_ALPHA_AVAILABLE:Number = 0.3;
 		
 		private var _coordinate:Coordinate;
 		private var _shape:Shape;
@@ -31,6 +33,7 @@ package components
 		private var _borderColor:uint = 0x000000;
 		private var _available:Boolean = false;
 		private var _blocked:Boolean = false;
+		private var _goalCell:Boolean = false;
 		
 		public function GameCell(c:Coordinate)
 		{
@@ -122,6 +125,20 @@ package components
 		public function set coordinate(value:Coordinate):void
 		{
 			_coordinate = value;
+		}
+		
+		public function get goalCell():Boolean 
+		{
+			return _goalCell;
+		}
+		
+		public function set goalCell(value:Boolean):void 
+		{
+			if (value)
+				changeColor(CELL_COLOR_GOAL, CELL_ALPHA_GOAL);
+			else
+				changeColor(CELL_COLOR_NORMAL, CELL_ALPHA_NORMAL);
+			_goalCell = value;
 		}
 		
 		private function changeColor(c:uint, a:Number = 1):void
