@@ -22,10 +22,30 @@ public class GameVO {
 		this.id = id;
 		this.redPlayer = redPlayer;
 		this.bluePlayer = bluePlayer;
-		this.redActionQueue = (Action[]) redActionQueue.toArray();
-		this.blueActionQueue = (Action[]) blueActionQueue.toArray();
-		this.ships = (ShipVO[]) ships.toArray();
+		this.redActionQueue = this.convertToArray(redActionQueue);
+		this.blueActionQueue = this.convertToArray(blueActionQueue);
+		this.ships = this.convertToShipArray(ships);
 		this.turn = turn;
+	}
+	
+	private Action[] convertToArray(ArrayList<Action>actions){
+		Action[] actionsArr = new Action[actions.size()];
+		
+		for(int i=0; i < actions.size(); i++){			
+			actionsArr[i] = actions.get(i);
+		}
+		
+		return actionsArr;		
+	}
+	
+	private ShipVO[] convertToShipArray(ArrayList<ShipVO>ships){
+		ShipVO[] shipsArr = new ShipVO[ships.size()];
+		
+		for(int i=0; i < ships.size(); i++){			
+			shipsArr[i] = ships.get(i);
+		}
+		
+		return shipsArr;		
 	}
 
 	public int getId() 
