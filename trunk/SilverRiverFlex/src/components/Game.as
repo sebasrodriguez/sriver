@@ -146,6 +146,7 @@ package components
 			_gridComponent = new GameGrid(_board, GAME_BOARD_ROWS, GAME_BOARD_COLS);
 			_gridComponent.addEventListener(CellEvent.CLICK, selectedCellEvent);
 			_gridComponent.blockCells(_mapComponent.getInitialBlockedCoordinates());
+			_gridComponent.goalCells(_mapComponent.getGoalCoordinates());
 			
 			// Agrega los barcos al mapa
 			addShipsToUI();

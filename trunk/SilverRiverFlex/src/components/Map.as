@@ -61,6 +61,23 @@ package components
 			return arr;
 		}
 		
+		public function getGoalCoordinates():Array {
+			var arr:Array = new Array();
+			var f:int, c:int;
+			//zona sureste
+			for (f = 33; f < 36; f ++) {
+				for (c = 61; c < 64; c ++) {
+					arr.push(new Coordinate(f, c));
+				}
+			}
+			//zona suroeste
+			for (f = 33; f < 36; f ++) {
+				for (c = 15; c < 18; c ++) {
+					arr.push(new Coordinate(f, c));
+				}
+			}
+			return arr;
+		}
 	}
 
 }

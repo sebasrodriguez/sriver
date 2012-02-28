@@ -74,6 +74,28 @@ package components
 			}
 		}
 		
+		
+		public function goalCells(... coordinates):void
+		{
+			var cell:GameCell;
+			var c:Coordinate;
+			if (coordinates[0] is Array)
+			{
+				for each (c in coordinates[0])
+				{
+					cell = _gridMatrix[c.r][c.c];
+					cell.goalCell = true;
+				}
+			}
+			else
+			{
+				for each (c in coordinates)
+				{
+					cell = _gridMatrix[c.r][c.c];
+					cell.goalCell = true;
+				}
+			}
+		}
 		public function setCellStatus(coordinate:Coordinate, blocked: Boolean):void {
 			_gridMatrix[coordinate.r][coordinate.c].blocked = blocked;
 		}		
