@@ -1,5 +1,7 @@
 package logic.player;
 
+import entities.PlayerVO;
+
 public class Player
 {
 	
@@ -25,5 +27,11 @@ public class Player
 	public void setUsername(String user)
 	{
 		this.username = user;
+	}
+	
+	public PlayerVO mapToValueObject(){
+		PlayerVO playerVOToReturn = new PlayerVO(this.username);
+		return playerVOToReturn;
+				
 	}
 }

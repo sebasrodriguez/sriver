@@ -11,6 +11,10 @@ import logic.ship.Ship;
 
 import entities.Cardinal;
 import entities.Coordinate;
+import entities.GameVO;
+import entities.PlayerVO;
+import entities.ShipVO;
+import entities.TurnVO;
 
 
 public class Game 
@@ -39,7 +43,7 @@ public class Game
 		this.redActionQueue = new ArrayList<Action>();
 		this.blueActionQueue = new ArrayList<Action>();
 		this.ships = this.createShipsArray();
-		this.turn = new Turn(redPlayer, 5);//OJO SI SACAMOS LOS MOVIMIENTOS DESDE UNA PROPERTY
+		this.turn = new Turn(redPlayer);
 	}
 	
 	public int getId(){
@@ -195,6 +199,23 @@ public class Game
 		return gameToReturn;
 	}
 	
+	
+	public GameVO mapToValueObject(){
+		PlayerVO redPlayerVO = this.redPlayer.mapToValueObject();
+		PlayerVO bluePlayerVO = this.bluePlayer.mapToValueObject();
+		TurnVO turnVO = this.turn.mapToValueObject();
+		ArrayList<ShipVO> shipsVO = new ArrayList<ShipVO>();
+		
+		shipsVO = this.convertShipsToShipsVO();
+		
+		GameVO gameVOToreturn = new GameVO(this.id, redPlayerVO, bluePlayerVO, redActionQueue, blueActionQueue, shipsVO, turnVO);
+		
+		return gameVOToreturn;
+	}
+	
+	
+	
+	
 	/*
 	 * Metodos privados
 	 */
@@ -231,4 +252,19 @@ public class Game
 		
 		return shipsToReturn;		
 	}
+	
+	/*
+	 * Metodo que el ArrayList<Ship> lo transforma en un ArrayList<ShipVO>
+	 */
+	private ArrayList<ShipVO> convertShipsToShipsVO(){
+		ArrayList<ShipVO> shipsVOToReturn = new ArrayList<ShipVO>();
+		Iterator<Ship> shipsIt = this.ships.iterator();
+		
+		while(shipsIt.hasNext()){
+			shipsVOToReturn.add(shipsIt.next().mapToValueObject());
+		}
+		
+		return shipsVOToReturn;
+	}
+	
 }

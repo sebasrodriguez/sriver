@@ -97,8 +97,7 @@ public class Facade {
 				activeGame.getRedActionQueue().add(moveActionToReturn);
 			}
 		}		
-		activeGame.getTurn().consumeMovement();
-		this.checkTurn(gameId);
+		activeGame.getTurn().consumeMovement();		
 		return moveActionToReturn;	
 	}
 	
@@ -182,7 +181,6 @@ public class Facade {
 		}
 		
 		activeGame.getTurn().consumeMovement();
-		this.checkTurn(gameId);
 		return fireActionToReturn;
 	}
 	
@@ -221,8 +219,7 @@ public class Facade {
 				activeGame.getRedActionQueue().add(rotateActionToReturn);
 			}			
 		}
-		activeGame.getTurn().consumeMovement();
-		this.checkTurn(gameId);
+		activeGame.getTurn().consumeMovement();		
 		return rotateActionToReturn;		
 	}
 	
@@ -320,6 +317,45 @@ public class Facade {
 		
 	
 	
+	/*
+	 * Entrada: gameId y username
+	 * Salida: el action[] queue de ese jugador
+	 * Procedimiento:
+	 * 	Si ese jugador es redPlayer entonces retorno el redActionQueue y la vacia
+	 * 	sino retonra el blueActionQueue y la vacia 	
+	 */
+	public Action[] getActions(int gameId, String username){
+		
+		Game activeGame = findGame(gameId);
+		Action[] actionToReturn;
+		
+		//comparo si es redPlayer
+		if(activeGame.getRedPlayer().getUsername() == username){
+			actionToReturn = (Action[])activeGame.getRedActionQueue().toArray().clone();
+			activeGame.getRedActionQueue().clear();
+		}else{
+			actionToReturn = (Action[])activeGame.getBlueActionQueue().toArray().clone();
+			activeGame.getBlueActionQueue().clear();
+		}
+		
+		return actionToReturn;		
+	}
+	
+	
+	
+	/*
+	 * Entrada: gameId
+	 * Salida: retorna un gameVO
+	 * Procedimiento:
+	 * 	Busca el game que corresponde a ese gameId
+	 * 	Retorna el gameVO de ese gameId
+	 */
+	public GameVO getGame(int gameId){
+		Game aux = this.findGame(gameId);		
+		
+		return aux.mapToValueObject();		
+		
+	}
 	
 	
 	/*
@@ -405,19 +441,7 @@ public class Facade {
 		return gameToInsert.getId();		
 	}
 	
-	/*
-	 * Entrada: Id del game
-	 * Salida: void
-	 * Procedimiento:
-	 * 	Si al jugador se le acabaron todos los movimientos entonces invoca al endTurn()
-	 */
-	private void checkTurn(int gameId){
-		Game activeGame = this.findGame(gameId);
-		
-		if(activeGame.getTurn().getMovesLeft() <= 0){
-			this.endTurn(gameId);
-		}		
-	}
+
 	
 	/*
 	 * Entrada:void

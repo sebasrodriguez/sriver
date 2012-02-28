@@ -33,68 +33,35 @@ public class GameVO {
 		return id;
 	}
 
-	public void setId(int id) 
-	{
-		this.id = id;
-	}
-
 	public PlayerVO getRedPlayer() 
 	{
 		return redPlayer;
 	}
-
-	public void setRedPlayer(PlayerVO redPlayer) 
-	{
-		this.redPlayer = redPlayer;
-	}
-
+	
 	public PlayerVO getBluePlayer() 
 	{
 		return bluePlayer;
 	}
-
-	public void setBluePlayer(PlayerVO bluePlayer) 
-	{
-		this.bluePlayer = bluePlayer;
-	}
-
-	public Action[] getRedActionQueue() 
-	{
-		return redActionQueue;
-	}
-
-	public void setRedActionQueue(Action[] redActionQueue) 
-	{
-		this.redActionQueue = redActionQueue;
-	}
-
+	
 	public Action[] getBlueActionQueue() 
 	{
 		return blueActionQueue;
 	}
 
-	public void setBlueActionQueue(Action[] blueActionQueue) 
+	
+	public Action[] getRedActionQueue() 
 	{
-		this.blueActionQueue = blueActionQueue;
+		return redActionQueue;
 	}
 
+	
 	public ShipVO[] getShips() 
 	{
 		return ships;
 	}
-
-	public void setShips(ShipVO[] ships) 
-	{
-		this.ships = ships;
-	}
-
+	
 	public TurnVO getTurn() 
 	{
 		return turn;
-	}
-
-	public void setTurn(TurnVO turn) 
-	{
-		this.turn = turn;
-	}
+	}	
 }
