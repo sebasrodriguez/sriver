@@ -29,6 +29,9 @@ package components
 		public static const MENU_SMALL_BUTTON_WIDTH:Number = 40;
 		public static const MENU_SMALL_BUTTON_HEIGHT:Number = 25;
 		
+		public static const MENU_FIRE_MODE_BULLET:int = 0;
+		public static const MENU_FIRE_MODE_TORPEDO:int = 1;
+		
 		private var _shape:Shape;
 		private var _moveButton:Button;
 		private var _rotateButton:Button;
@@ -36,8 +39,9 @@ package components
 		private var _moveContainer:Container;
 		private var _rotateContainer:Container;
 		private var _fireContainer:Container;
-		private var _currenMode:int = -1;
+		private var _currenMode:int = MENU_MODE_MOVE;
 		private var _rotateButtons:Array;
+		private var _currentFireMode:int = MENU_FIRE_MODE_BULLET;
 		
 		public function Menu(position:int) 
 		{
@@ -57,6 +61,7 @@ package components
 			createModeButtons();
 			createContainers();
 			createRotationButtons();
+			createFireButtons();
 			
 		}
 		private function createContainers():void {
@@ -69,6 +74,7 @@ package components
 			addChild(_rotateContainer);
 			_fireContainer = getContainer();
 			_fireContainer.visible = false;
+			_fireContainer.x = 60;
 			addChild(_fireContainer);
 		}
 		
@@ -134,6 +140,30 @@ package components
 			currentButton.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.NW);});
 			_rotateContainer.addChild(currentButton);
 		}
+		
+		private function createFireButtons():void {
+			var currentButton:Button;
+			currentButton = getButton("Cañon", MENU_BIG_BUTTON_WIDTH * 0, MENU_BIG_BUTTON_HEIGHT * 0);
+			currentButton.addEventListener(MouseEvent.CLICK, function ():void { 
+				_currentFireMode = MENU_FIRE_MODE_BULLET;
+				dispatchFireMode(MENU_FIRE_MODE_BULLET); 
+			} );
+			_fireContainer.addChild(currentButton);
+			currentButton = getButton("Torpedo", MENU_BIG_BUTTON_WIDTH * 1, MENU_BIG_BUTTON_HEIGHT * 0);
+			currentButton.addEventListener(MouseEvent.CLICK, function ():void {
+				_currentFireMode = MENU_FIRE_MODE_TORPEDO;
+				dispatchFireMode(MENU_FIRE_MODE_TORPEDO); 
+			} );
+			_fireContainer.addChild(currentButton);			
+		}
+		
+		private function dispatchFireMode(fireMode:int):void {
+			var fireModeEvent:ActionEvent = new ActionEvent(ActionEvent.FIRE_MODE_CHANGED);
+			fireModeEvent.mode = MENU_MODE_ROTATE;
+			fireModeEvent.fireMode = fireMode
+			dispatchEvent(fireModeEvent);
+		}
+		
 		private function dispatchModeChanged(mode:int):void {
 			var modeEvent:ActionEvent = new ActionEvent();
 				modeEvent.mode = mode;
@@ -180,6 +210,16 @@ package components
 		
 		public function currentMenuMode():int {
 			return _currenMode;
+		}
+		
+		public function get currentFireMode():int 
+		{
+			return _currentFireMode;
+		}
+		
+		public function set currentFireMode(value:int):void 
+		{
+			_currentFireMode = value;
 		}
 		
 	}

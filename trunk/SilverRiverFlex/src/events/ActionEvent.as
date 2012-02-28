@@ -12,8 +12,10 @@ package events
 		public static const MODE_CHANGED:String = "actionEventModeChanged";
 		public static const ROTATION_CLICKED:String = "actionEventRotationClicked";
 		public static const MOVE_CLICKED:String = "actionEventMoveClicked";
+		public static const FIRE_MODE_CHANGED:String = "actionEventFireModeChanged";
 		public var mode:int;
 		public var rotation:int;
+		public var fireMode:int;
 		
 		public function ActionEvent(type:String="actionEventModeChanged",bubbles:Boolean=false,cancelable:Boolean=false) 
 		{

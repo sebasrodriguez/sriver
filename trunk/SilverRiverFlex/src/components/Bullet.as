@@ -1,5 +1,6 @@
 package components
 {
+	import common.*;
 	/**
 	 * ...
 	 * @author pablo
@@ -7,10 +8,10 @@ package components
 	public class Bullet extends Projectile 
 	{
 		
-		public function Bullet() 
+		public function Bullet(c:Coordinate = null) 
 		{						
-			super();
-			//this.setBitmap(Assets.BLUESHIP_DATA);
+			super(c);
+			this.setBitmap(Assets.BULLET_DATA);
 			fixCenter();
 		}
 		
