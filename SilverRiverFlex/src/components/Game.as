@@ -33,11 +33,12 @@ package components
 		private var _main:Main;
 		private var _board:Canvas;
 		private var _ws:WebService;
-		private var _menu:Menu;		
+		private var _menu:Menu;
 		private var _mapComponent:Map;
 		private var _iter:int = 0;
 		private var _actions:ResultEvent;
 		private var _actionQueue:ArrayList;
+		private var _shouldDecreaseTime:Boolean;
 		
 		public var _gridComponent:GameGrid;
 		public var _redShipComponent:RedShip;
@@ -48,9 +49,10 @@ package components
 		public var _selectedShip:Ship;
 		public var _turn:Turn;
 		public var _movesLeftLabel:Label;
+		public var _timeLeftLabel:Label;
 		public var _myUsername:String;
 		public var _redPlayer:Player;
-		public var _bluePlayer:Player;		
+		public var _bluePlayer:Player;
 		
 		public function Game(main:Main)
 		{
@@ -58,6 +60,7 @@ package components
 			// TODO: esto se obtiene luego del login del usuario
 			_myUsername = "sebas";
 			_actionQueue = new ArrayList();
+			_shouldDecreaseTime = false;
 			newGame();
 			// Label de movimientos restantes
 			_movesLeftLabel = new Label();
@@ -67,7 +70,16 @@ package components
 			_movesLeftLabel.setStyle("fontSize", 30);
 			_movesLeftLabel.setStyle("color", 0xFFCC33);
 			_movesLeftLabel.setStyle("fontStyle", "bold");
-			_board.addChild(_movesLeftLabel);
+			_main.addElement(_movesLeftLabel);
+			_timeLeftLabel = new Label();
+			_timeLeftLabel.text = _turn.timeLeft.toString();
+			_timeLeftLabel.x = 10;
+			_timeLeftLabel.y = 40;
+			_timeLeftLabel.setStyle("fontSize", 30);
+			_timeLeftLabel.setStyle("color", 0xFFCC33);
+			_timeLeftLabel.setStyle("fontStyle", "bold");
+			_main.addElement(_timeLeftLabel);
+			startSyncronizing();
 		}
 		
 		/*
@@ -83,13 +95,30 @@ package components
 		
 		private function timerHandler(event:TimerEvent):void
 		{
+			updateTimeLeft();
+		}
 		
+		private function updateTimeLeft():void
+		{
+			if (_shouldDecreaseTime)
+			{
+				_turn.timeLeft--;
+				if (_turn.timeLeft <= 0)
+				{
+					_timeLeftLabel.text = "llamar WS con EndTurnAction";
+				}
+				else
+				{
+					_timeLeftLabel.text = _turn.timeLeft.toString();
+				}
+			}
+			_shouldDecreaseTime = !_shouldDecreaseTime;
 		}
 		
 		public function consumeActions(response:ResultEvent):void
 		{
 			// Agregamos las nuevas acciones a ejecutar a la cola de acciones
-			for (var i:int = 0; i < response.result.length; i++) 
+			for (var i:int = 0; i < response.result.length; i++)
 			{
 				_actionQueue.addItem(response.result[i]);
 			}
@@ -98,7 +127,8 @@ package components
 		
 		public function consumeNextAction():void
 		{
-			if (_actionQueue != null && _actionQueue.length > 0) {
+			if (_actionQueue != null && _actionQueue.length > 0)
+			{
 				var ship:Ship;
 				if (_actionQueue.source[0].actionType == "MoveAction")
 				{
@@ -131,7 +161,7 @@ package components
 					trace("EndGameAction");
 				}
 				_actionQueue.removeItemAt(0);
-			}			
+			}
 		}
 		
 		public function newGame():void
@@ -182,11 +212,12 @@ package components
 			
 			// TODO: el turno me lo retorna el WS
 			// Creo el turno
-			_turn = new Turn(5, _redPlayer);
+			_turn = new Turn(10, _bluePlayer, 60);
 			
 			_menu = new Menu(Menu.MENU_POSITION_BOTTOM_LEFT);
 			_menu.addEventListener(ActionEvent.MODE_CHANGED, function(event:ActionEvent):void
 				{
+					trace("evento disparado");
 					switch (event.mode)
 					{
 						case Menu.MENU_MODE_MOVE: 
@@ -208,7 +239,7 @@ package components
 					}
 				});
 			_main.addElement(_menu);
-			
+		
 			// consume actions
 			// _main.wsRequest.pruebaActions();
 		}
@@ -369,7 +400,7 @@ package components
 			// Actualizo la cantidad de movimientos restantes del turno
 			updateMovesLeft();
 			// Si quedan movimientos y yo soy el usuario activo muestro las celdas de movimientos
-			if (_turn.movesLeft > 0 && !isAutomaticMode())
+			if (_turn.movesLeft > 0 && isActivePlayer())
 			{
 				// Se muestran nuevas celdas de movimiento basadas en la nueva posicion del barco
 				drawMovements();
@@ -405,10 +436,10 @@ package components
 			return ship;
 		}
 		
-		// Si el usuario activo soy yo mismo retorno false, de lo contrario retorno true
-		private function isAutomaticMode():Boolean
+		// Si el usuario activo soy yo mismo retorno true, de lo contrario retorno false
+		private function isActivePlayer():Boolean
 		{
-			return !(_turn.activePlayer.username == _myUsername);
+			return _turn.activePlayer.username == _myUsername;
 		}
 	}
 }
