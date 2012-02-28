@@ -8,6 +8,9 @@
 	<fx:Declarations>		
 		<s:WebService id="wsRequest"
 					  wsdl="http://localhost:8080/SilverRiverServer/services/SilverRiverService?wsdl">	
+					  <s:operation name="newGame" resultFormat="object" result="_game.newGameHandler(event);"  />
+					  <s:operation name="checkGameId" resultFormat="object" result="_game.checkGameIdHandler(event);"  />
+					  <s:operation name="getGame" resultFormat="object" result="_game.getGameHandler(event);"  />
 					  <s:operation name="pruebaActions" resultFormat="object" result="_game.consumeActions(event);"  />
 		</s:WebService>
 	</fx:Declarations>	
@@ -27,7 +30,7 @@
 			
 			private function initializeHandler(e:Event):void
 			{				
-				_game = new Game(this);
+				_game = new Game(this, "pablo");
 			}			
 			
 			private function creationCompleteHandler(e:Event):void

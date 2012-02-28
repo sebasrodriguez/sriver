@@ -31,14 +31,15 @@ package components
 		public static const RED_SHIP_ID:int = 0;
 		
 		private var _main:Main;
-		private var _board:Canvas;
-		private var _ws:WebService;
+		private var _board:Canvas;		
 		private var _menu:Menu;
 		private var _mapComponent:Map;
 		private var _iter:int = 0;
 		private var _actions:ResultEvent;
 		private var _actionQueue:ArrayList;
 		private var _shouldDecreaseTime:Boolean;
+		private var _gameMode:GameMode;
+		private var _componentsToShow:ArrayList;
 		
 		public var _gridComponent:GameGrid;
 		public var _redShipComponent:RedShip;
@@ -54,14 +55,118 @@ package components
 		public var _redPlayer:Player;
 		public var _bluePlayer:Player;
 		
-		public function Game(main:Main)
+		public function Game(main:Main, username:String)
 		{
+			// initialize variables
 			_main = main;
-			// TODO: esto se obtiene luego del login del usuario
-			_myUsername = "sebas";
+			_gameMode = new GameMode(GameMode.NEWGAME);			
+			_myUsername = username;
 			_actionQueue = new ArrayList();
 			_shouldDecreaseTime = false;
-			newGame();
+			
+			_main.wsRequest.newGame(username);
+		}
+		
+		public function newGameHandler(response:ResultEvent):void
+		{
+			var gameId:int = response.result as int;
+			if (gameId >= 0)
+			{				
+				_main.wsRequest.getGame(gameId);
+				_gameMode.gameMode = GameMode.GETTING_GAME;
+			}
+			else
+			{
+				trace("wait for another player");
+				startSyncronizing();
+				_gameMode.gameMode = GameMode.WAITING_FOR_PLAYER;
+			}
+		}
+		
+		public function checkGameIdHandler(response:ResultEvent):void
+		{
+			var gameId:int = response.result as int;
+			if (gameId >= 0)
+			{
+				trace("getting new game");
+				_main.wsRequest.getGame(gameId);
+				_gameMode.gameMode = GameMode.GETTING_GAME;
+			}
+			else
+			{				
+				trace("still waiting for another player");				
+			}
+		}
+		
+		private function initializeGame(game:Object):void
+		{			
+			var redShip:Object = game.ships[0];
+			var blueShip1:Object = game.ships[1];
+			var blueShip2:Object = game.ships[2];
+			var blueShip3:Object = game.ships[3];
+			var turn:Object = game.turn;
+			_bluePlayer = new Player(game.bluePlayer.username);
+			_redPlayer = new Player(game.redPlayer.username);
+			trace(_redPlayer.username + " vs " + _bluePlayer.username);
+			
+			_redShipComponent = new RedShip(redShip.id, new Coordinate(redShip.position.y, redShip.position.x), new Cardinal(redShip.orientation.direction), redShip.speed, redShip.size);
+			_blueShipComponent1 = new BlueShip(blueShip1.id, new Coordinate(blueShip1.position.y, blueShip1.position.x), new Cardinal(blueShip1.orientation.direction), blueShip1.speed, blueShip1.size);
+			_blueShipComponent2 = new BlueShip(blueShip2.id, new Coordinate(blueShip2.position.y, blueShip2.position.x), new Cardinal(blueShip2.orientation.direction), blueShip2.speed, blueShip2.size);
+			_blueShipComponent3 = new BlueShip(blueShip3.id, new Coordinate(blueShip3.position.y, blueShip3.position.x), new Cardinal(blueShip3.orientation.direction), blueShip3.speed, blueShip3.size);
+			
+			_shipList = new Array(_redShipComponent, _blueShipComponent1, _blueShipComponent2, _blueShipComponent3);		
+			_turn = new Turn(turn.movesLeft, _redPlayer, turn.timeLeft);
+			if (isActivePlayer()) 
+			{
+				_gameMode.gameMode = GameMode.PLAYING;
+			}
+			else 
+			{
+				_gameMode.gameMode = GameMode.WAITING_PLAYER_TURN;
+			}
+		}
+		
+		private function loadUserInterface():void
+		{
+			// Inicializa el Canvas que contiene los demas elementos
+			_board = new Canvas();
+			_board.x = 0;
+			_board.y = 0;
+			_board.horizontalScrollPolicy = "off";
+			_board.verticalScrollPolicy = "off";
+			_main.addElement(_board);
+			new AutoScroll(_main, _board);
+			
+			// Inicializa el mapa
+			_mapComponent = new Map();
+			_board.width = _mapComponent.sprite.width;
+			_board.height = _mapComponent.sprite.height;
+			
+			// Crea la grilla del mapa
+			_gridComponent = new GameGrid(_board, GAME_BOARD_ROWS, GAME_BOARD_COLS);
+			_gridComponent.addEventListener(CellEvent.CLICK, selectedCellEvent);
+			_gridComponent.blockCells(_mapComponent.getInitialBlockedCoordinates());
+			
+			// Agrega los barcos al mapa
+			addShipsToUI();
+			
+			_selectedShip = null;
+			
+			// Agrega los componentes al objeto Canvas
+			_board.addChild(_mapComponent);
+			_board.addChild(_gridComponent);	
+			_board.addChild(_redShipComponent);
+			_board.addChild(_blueShipComponent1);
+			_board.addChild(_blueShipComponent2);
+			_board.addChild(_blueShipComponent3);
+			
+			// Muestra los componentes en pantalla
+			_mapComponent.show();
+			_redShipComponent.show();
+			_blueShipComponent1.show();
+			_blueShipComponent2.show();
+			_blueShipComponent3.show();			
+			
 			// Label de movimientos restantes
 			_movesLeftLabel = new Label();
 			_movesLeftLabel.text = _turn.movesLeft.toString();
@@ -70,8 +175,8 @@ package components
 			_movesLeftLabel.setStyle("fontSize", 30);
 			_movesLeftLabel.setStyle("color", 0xFFCC33);
 			_movesLeftLabel.setStyle("fontStyle", "bold");
-
 			_main.addElement(_movesLeftLabel);
+			// Label de tiempo restante
 			_timeLeftLabel = new Label();
 			_timeLeftLabel.text = _turn.timeLeft.toString();
 			_timeLeftLabel.x = 10;
@@ -80,7 +185,38 @@ package components
 			_timeLeftLabel.setStyle("color", 0xFFCC33);
 			_timeLeftLabel.setStyle("fontStyle", "bold");
 			_main.addElement(_timeLeftLabel);
-			startSyncronizing();
+			
+			_menu = new Menu(Menu.MENU_POSITION_BOTTOM_LEFT);
+			_menu.addEventListener(ActionEvent.MODE_CHANGED, function(event:ActionEvent):void
+				{
+					trace("evento disparado");
+					switch (event.mode)
+					{
+						case Menu.MENU_MODE_MOVE: 
+							moveMode();
+							break;
+						case Menu.MENU_MODE_ROTATE: 
+							_gridComponent.disableCells();
+							break;
+						case Menu.MENU_MODE_FIRE: 
+							trace("Cambio a Fire");
+							break;
+					}
+				});
+			_menu.addEventListener(ActionEvent.ROTATION_CLICKED, function(event:ActionEvent):void
+				{
+					if (_selectedShip != null && _turn.movesLeft > 0)
+					{
+						rotateAction(_selectedShip, new Cardinal(event.rotation));
+					}
+				});
+			_main.addElement(_menu);
+		}
+		
+		public function getGameHandler(response:ResultEvent):void
+		{
+			initializeGame(response.result);
+			loadUserInterface();
 		}
 		
 		/*
@@ -96,7 +232,17 @@ package components
 		
 		private function timerHandler(event:TimerEvent):void
 		{
-			updateTimeLeft();
+			if (_gameMode.gameMode == GameMode.WAITING_FOR_PLAYER)
+			{
+				_main.wsRequest.checkGameId();
+			}
+			else if (_gameMode.gameMode == GameMode.PLAYING)
+			{
+				trace("user is playing");
+			}
+			
+			if(_gameMode.gameMode == GameMode.PLAYING || _gameMode.gameMode == GameMode.WAITING_PLAYER_TURN)
+				updateTimeLeft();
 		}
 		
 		private function updateTimeLeft():void
@@ -165,86 +311,6 @@ package components
 			}
 		}
 		
-		public function newGame():void
-		{
-			// Inicializa el Canvas que contiene los demas elementos
-			_board = new Canvas();
-			_board.x = 0;
-			_board.y = 0;
-			_board.horizontalScrollPolicy = "off";
-			_board.verticalScrollPolicy = "off";
-			_main.addElement(_board);
-			new AutoScroll(_main, _board);
-			
-			// Inicializa el mapa
-			_mapComponent = new Map();
-			_board.width = _mapComponent.sprite.width;
-			_board.height = _mapComponent.sprite.height;
-			
-			// Crea la grilla del mapa
-			_gridComponent = new GameGrid(_board, GAME_BOARD_ROWS, GAME_BOARD_COLS);
-			_gridComponent.addEventListener(CellEvent.CLICK, selectedCellEvent);
-			_gridComponent.blockCells(_mapComponent.getInitialBlockedCoordinates());
-			
-			// Crea y ubica los barcos en el mapa
-			createAndLocateShips();
-			
-			_selectedShip = null;
-			
-			// Agrega los componentes al objeto Canvas
-			_board.addChild(_mapComponent);
-			_board.addChild(_gridComponent);
-			_board.addChild(_redShipComponent);
-			_board.addChild(_blueShipComponent1);
-			_board.addChild(_blueShipComponent2);
-			_board.addChild(_blueShipComponent3);
-			
-			// Muestra los componentes en pantalla
-			_mapComponent.show();
-			_redShipComponent.show();
-			_blueShipComponent1.show();
-			_blueShipComponent2.show();
-			_blueShipComponent3.show();
-			
-			// TODO: los players se crean segun lo que me retorna el WS
-			// Creo los dos players
-			_redPlayer = new Player("santi");
-			_bluePlayer = new Player("sebas");
-			
-			// TODO: el turno me lo retorna el WS
-			// Creo el turno
-			_turn = new Turn(10, _bluePlayer, 60);
-			
-			_menu = new Menu(Menu.MENU_POSITION_BOTTOM_LEFT);
-			_menu.addEventListener(ActionEvent.MODE_CHANGED, function(event:ActionEvent):void
-				{
-					trace("evento disparado");
-					switch (event.mode)
-					{
-						case Menu.MENU_MODE_MOVE: 
-							moveMode();
-							break;
-						case Menu.MENU_MODE_ROTATE: 
-							_gridComponent.disableCells();
-							break;
-						case Menu.MENU_MODE_FIRE: 
-							trace("Cambio a Fire");
-							break;
-					}
-				});
-			_menu.addEventListener(ActionEvent.ROTATION_CLICKED, function(event:ActionEvent):void
-				{
-					if (_selectedShip != null && _turn.movesLeft > 0)
-					{
-						rotateAction(_selectedShip, new Cardinal(event.rotation));
-					}
-				});
-			_main.addElement(_menu);
-		
-			// consume actions
-			// _main.wsRequest.pruebaActions();
-		}
-		
 		// Evento disparado cuando se selecciona una celda de la grilla
 		private function selectedCellEvent(event:CellEvent):void
 		{
@@ -276,25 +342,8 @@ package components
 			}
 		}
 		
-		private function createAndLocateShips():void
-		{
-			var c1:Coordinate = new Coordinate(10, 12);
-			var d1:Cardinal = new Cardinal(Cardinal.S);
-			
-			var c2:Coordinate = new Coordinate(18, 10);
-			var d2:Cardinal = new Cardinal(Cardinal.N);
-			
-			var c3:Coordinate = new Coordinate(15, 15);
-			var d3:Cardinal = new Cardinal(Cardinal.SE);
-			
-			var c4:Coordinate = new Coordinate(15, 18);
-			var d4:Cardinal = new Cardinal(Cardinal.W);
-			
-			_redShipComponent = new RedShip(1, c1, d1, 4, 3);
-			_blueShipComponent1 = new BlueShip(2, c2, d2, 4, 1);
-			_blueShipComponent2 = new BlueShip(3, c3, d3, 4, 1);
-			_blueShipComponent3 = new BlueShip(4, c4, d4, 4, 1);
-			
+		private function addShipsToUI():void
+		{			
 			setShipCellStatus(_redShipComponent, true);
 			setShipCellStatus(_blueShipComponent1, true);
 			setShipCellStatus(_blueShipComponent2, true);
@@ -303,13 +352,7 @@ package components
 			_redShipComponent.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
 			_blueShipComponent1.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
 			_blueShipComponent2.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
-			_blueShipComponent3.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
-			
-			_shipList = new Array();
-			_shipList.push(_redShipComponent);
-			_shipList.push(_blueShipComponent1);
-			_shipList.push(_blueShipComponent2);
-			_shipList.push(_blueShipComponent3);
+			_blueShipComponent3.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);							
 		}
 		
 		// Evento disparado cuando se selecciona un barco
