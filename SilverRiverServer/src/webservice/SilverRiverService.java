@@ -46,6 +46,10 @@ public class SilverRiverService {
 		return Facade.getInstance().checkGameId();
 	}
 	
+	public GameVO getGame(int gameId){		
+		return Facade.getInstance().getGame(gameId);
+	}
+	
 	public Action[] pruebaActions(){
 		return Facade.getInstance().pruebaActions();
 	}
