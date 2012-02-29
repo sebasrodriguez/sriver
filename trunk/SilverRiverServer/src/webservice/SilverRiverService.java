@@ -1,12 +1,12 @@
 package webservice;
 
+import entities.*;
 import logic.Facade;
 import logic.actions.Action;
 import logic.actions.EndTurnAction;
 import logic.actions.FireAction;
 import logic.actions.MoveAction;
 import logic.actions.RotateAction;
-import logic.entities.*;
 
 public class SilverRiverService {	
 

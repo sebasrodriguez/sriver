@@ -2,13 +2,14 @@ package logic.tests;
 
 import java.util.Iterator;
 
+import entities.Cardinal;
+import entities.Coordinate;
+import entities.Weapon;
+
 import logic.Facade;
 import logic.actions.FireAction;
 import logic.actions.MoveAction;
 import logic.actions.RotateAction;
-import logic.entities.Cardinal;
-import logic.entities.Coordinate;
-import logic.entities.Weapon;
 import logic.game.Game;
 import logic.ship.Ship;
 

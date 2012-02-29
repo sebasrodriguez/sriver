@@ -1,8 +1,8 @@
 package logic.ship;
 
-import logic.entities.Cardinal;
-import logic.entities.Coordinate;
-import logic.entities.RedShipVO;
+import entities.Cardinal;
+import entities.Coordinate;
+import entities.RedShipVO;
 
 
 /*

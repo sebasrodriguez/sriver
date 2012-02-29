@@ -1,6 +1,6 @@
 package logic.tests;
 
-import logic.entities.Cardinal;
+import entities.Cardinal;
 
 public class pruebaCardinal {
 

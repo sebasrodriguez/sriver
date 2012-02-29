@@ -1,6 +1,6 @@
 package logic.actions;
 
-import logic.entities.ShipVO;
+import entities.ShipVO;
 
 
 public class EnterPortAction extends ShipAction {

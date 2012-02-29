@@ -4,13 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import entities.Cardinal;
+import entities.Coordinate;
+import entities.GameVO;
+import entities.PlayerVO;
+import entities.ShipVO;
+import entities.TurnVO;
+
 import logic.actions.Action;
-import logic.entities.Cardinal;
-import logic.entities.Coordinate;
-import logic.entities.GameVO;
-import logic.entities.PlayerVO;
-import logic.entities.ShipVO;
-import logic.entities.TurnVO;
 import logic.player.Player;
 import logic.ship.BlueShip;
 import logic.ship.RedShip;

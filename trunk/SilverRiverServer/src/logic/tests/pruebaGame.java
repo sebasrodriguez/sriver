@@ -3,10 +3,11 @@ package logic.tests;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import entities.Cardinal;
+import entities.Coordinate;
+
 
 import logic.actions.Action;
-import logic.entities.Cardinal;
-import logic.entities.Coordinate;
 import logic.game.Game;
 import logic.player.Player;
 import logic.ship.BlueShip;
