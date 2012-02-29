@@ -3,24 +3,23 @@ package logic;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import data.Data;
+
 import logic.actions.Action;
 import logic.actions.EndTurnAction;
 import logic.actions.FireAction;
 import logic.actions.MoveAction;
 import logic.actions.RotateAction;
+import logic.entities.BlueShipVO;
+import logic.entities.Cardinal;
+import logic.entities.Coordinate;
+import logic.entities.GameVO;
+import logic.entities.RedShipVO;
+import logic.entities.ShipVO;
+import logic.entities.Weapon;
 import logic.game.Game;
-import logic.game.Turn;
 import logic.player.Player;
 import logic.ship.*;
-import entities.BlueShipVO;
-import entities.Cardinal;
-import entities.Coordinate;
-import entities.GameVO;
-import entities.PlayerVO;
-import entities.RedShipVO;
-import entities.ShipVO;
-import entities.TurnVO;
-import entities.Weapon;
 
 
 /*
@@ -256,14 +255,32 @@ public class Facade {
 	 */
 	public void saveGame(int gameId){
 		
+		Data data = new Data();
+		Game gameToSave = this.findGame(gameId);		
+		
+		data.saveGame(gameToSave);		
 	}
 	
 	/*
-	 * TENGO DUDAS CON ESTE METODO DE COMO DEBERIA SER
-	 * NO DEBERIA RECIBIR LA COMBINACION DE JUGADORES PARA SABER REALMENTE CUAL RECUPERAR?
+	 * Entrada: los nombres de los dos usuarios que conforman la partida a buscar
+	 * Salida: Id de la partida o -1 en caso de no existir la misma en la BD
+	 * Procedimiento:
+	 * 	Si existe la partida, la guarda en el ArrayList y devuelve el id 
+	 * 	sino devuelve -1
 	 */
-	public void loadGame(int gameId){
+	public int loadGame(String redPlayerUsername, String bluePlayerUsername){
 		
+		Data data = new Data();
+		
+		Game gameLoaded = data.loadGame(redPlayerUsername, bluePlayerUsername);
+		if(gameLoaded != null){
+			this.activeGames.add(gameLoaded);
+			return gameLoaded.getId();
+		}else{
+			return -1;
+		}
+		
+	
 	}
 	
 	/*

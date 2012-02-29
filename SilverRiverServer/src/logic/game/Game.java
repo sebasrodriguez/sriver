@@ -1,24 +1,26 @@
 package logic.game;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import logic.actions.Action;
+import logic.entities.Cardinal;
+import logic.entities.Coordinate;
+import logic.entities.GameVO;
+import logic.entities.PlayerVO;
+import logic.entities.ShipVO;
+import logic.entities.TurnVO;
 import logic.player.Player;
 import logic.ship.BlueShip;
 import logic.ship.RedShip;
 import logic.ship.Ship;
 
-import entities.Cardinal;
-import entities.Coordinate;
-import entities.GameVO;
-import entities.PlayerVO;
-import entities.ShipVO;
-import entities.TurnVO;
 
 
-public class Game 
+public class Game implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private Player redPlayer;
 	private Player bluePlayer;

@@ -1,6 +1,6 @@
 package logic.actions;
 
-import entities.PlayerVO;;
+import logic.entities.PlayerVO;
 
 public class NewGameAction extends GameAction {
 	

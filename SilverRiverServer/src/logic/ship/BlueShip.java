@@ -1,8 +1,8 @@
 package logic.ship;
 
-import entities.BlueShipVO;
-import entities.Cardinal;
-import entities.Coordinate;
+import logic.entities.BlueShipVO;
+import logic.entities.Cardinal;
+import logic.entities.Coordinate;
 
 public class BlueShip extends Ship {
 

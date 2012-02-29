@@ -6,7 +6,7 @@ import logic.actions.EndTurnAction;
 import logic.actions.FireAction;
 import logic.actions.MoveAction;
 import logic.actions.RotateAction;
-import entities.*;
+import logic.entities.*;
 
 public class SilverRiverService {	
 
@@ -30,8 +30,8 @@ public class SilverRiverService {
 		 Facade.getInstance().saveGame(gameId);
 	}
 	
-	public void loadGame(int gameId){
-		Facade.getInstance().loadGame(gameId);
+	public void loadGame(String redPlayerUsername, String bluePlayerUsername){
+		Facade.getInstance().loadGame(redPlayerUsername, bluePlayerUsername);
 	}
 	
 	public void endGame(int gameId){
