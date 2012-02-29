@@ -18,14 +18,16 @@ package components
 		private var _direction:Cardinal;
 		private var _speed:int;
 		private var _size:int;
+		private var _ammo:int;
+		private var _armor:int;		
 		
 		public function Ship(id:int, c:Coordinate, d:Cardinal, s:int, size:int)
 		{
 			super(c);
 			_id = id;
 			_direction = d;
-			_ship = this;
-			_speed = s;
+			_ship = this;			
+			_speed = (s * 4) / 10;			
 			_size = size;
 			this.rotation = d.cardinal;
 			this.addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void

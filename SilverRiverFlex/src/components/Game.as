@@ -28,10 +28,9 @@ package components
 	{
 		public static const GAME_BOARD_COLS:Number = 64;
 		public static const GAME_BOARD_ROWS:Number = 36;
-		public static const RED_SHIP_ID:int = 0;
 		
 		private var _main:Main;
-		private var _board:Canvas;		
+		private var _board:Canvas;
 		private var _menu:Menu;
 		private var _mapComponent:Map;
 		private var _iter:int = 0;
@@ -40,6 +39,12 @@ package components
 		private var _shouldDecreaseTime:Boolean;
 		private var _gameMode:GameMode;
 		private var _componentsToShow:ArrayList;
+		// Controles UI
+		private var _movesLeftLabel:Label;
+		private var _timeLeftLabel:Label;
+		private var _waitingPlayerLabel:Label;
+		private var _activePlayerLabel:Label;
+		private var _myUsernameLabel:Label;
 		
 		public var _gridComponent:GameGrid;
 		public var _redShipComponent:RedShip;
@@ -49,17 +54,16 @@ package components
 		public var _shipList:Array;
 		public var _selectedShip:Ship;
 		public var _turn:Turn;
-		public var _movesLeftLabel:Label;
-		public var _timeLeftLabel:Label;
 		public var _myUsername:String;
 		public var _redPlayer:Player;
 		public var _bluePlayer:Player;
+		private var _gameId:int;
 		
 		public function Game(main:Main, username:String)
 		{
 			// initialize variables
 			_main = main;
-			_gameMode = new GameMode(GameMode.NEWGAME);			
+			_gameMode = new GameMode(GameMode.NEWGAME);
 			_myUsername = username;
 			_actionQueue = new ArrayList();
 			_shouldDecreaseTime = false;
@@ -71,15 +75,25 @@ package components
 		{
 			var gameId:int = response.result as int;
 			if (gameId >= 0)
-			{				
-				_main.wsRequest.getGame(gameId);
+			{
+				_gameId = gameId;
 				_gameMode.gameMode = GameMode.GETTING_GAME;
+				startSyncronizing();
+				_main.wsRequest.getGame(gameId);
 			}
 			else
 			{
 				trace("wait for another player");
-				startSyncronizing();
+				_waitingPlayerLabel = new Label();
+				_waitingPlayerLabel.text = "Esperando un segundo jugador...";
+				_waitingPlayerLabel.x = _main.width / 3;
+				_waitingPlayerLabel.y = _main.height / 3;
+				_waitingPlayerLabel.setStyle("fontSize", 30);
+				_waitingPlayerLabel.setStyle("color", 0x000000);
+				_waitingPlayerLabel.setStyle("fontStyle", "bold");
+				_main.addElement(_waitingPlayerLabel);
 				_gameMode.gameMode = GameMode.WAITING_FOR_PLAYER;
+				startSyncronizing();
 			}
 		}
 		
@@ -88,18 +102,19 @@ package components
 			var gameId:int = response.result as int;
 			if (gameId >= 0)
 			{
+				_gameId = gameId;
 				trace("getting new game");
 				_main.wsRequest.getGame(gameId);
 				_gameMode.gameMode = GameMode.GETTING_GAME;
 			}
 			else
-			{				
-				trace("still waiting for another player");				
+			{
+				trace("still waiting for another player");
 			}
 		}
 		
 		private function initializeGame(game:Object):void
-		{			
+		{
 			var redShip:Object = game.ships[0];
 			var blueShip1:Object = game.ships[1];
 			var blueShip2:Object = game.ships[2];
@@ -114,13 +129,13 @@ package components
 			_blueShipComponent2 = new BlueShip(blueShip2.id, new Coordinate(blueShip2.position.y, blueShip2.position.x), new Cardinal(blueShip2.orientation.direction), blueShip2.speed, blueShip2.size);
 			_blueShipComponent3 = new BlueShip(blueShip3.id, new Coordinate(blueShip3.position.y, blueShip3.position.x), new Cardinal(blueShip3.orientation.direction), blueShip3.speed, blueShip3.size);
 			
-			_shipList = new Array(_redShipComponent, _blueShipComponent1, _blueShipComponent2, _blueShipComponent3);		
+			_shipList = new Array(_redShipComponent, _blueShipComponent1, _blueShipComponent2, _blueShipComponent3);
 			_turn = new Turn(turn.movesLeft, _redPlayer, turn.timeLeft);
-			if (isActivePlayer()) 
+			if (isActivePlayer())
 			{
 				_gameMode.gameMode = GameMode.PLAYING;
 			}
-			else 
+			else
 			{
 				_gameMode.gameMode = GameMode.WAITING_PLAYER_TURN;
 			}
@@ -155,7 +170,7 @@ package components
 			
 			// Agrega los componentes al objeto Canvas
 			_board.addChild(_mapComponent);
-			_board.addChild(_gridComponent);	
+			_board.addChild(_gridComponent);
 			_board.addChild(_redShipComponent);
 			_board.addChild(_blueShipComponent1);
 			_board.addChild(_blueShipComponent2);
@@ -166,26 +181,47 @@ package components
 			_redShipComponent.show();
 			_blueShipComponent1.show();
 			_blueShipComponent2.show();
-			_blueShipComponent3.show();			
+			_blueShipComponent3.show();
 			
 			// Label de movimientos restantes
 			_movesLeftLabel = new Label();
-			_movesLeftLabel.text = _turn.movesLeft.toString();
+			_movesLeftLabel.text = "Movimientos restantes: " + _turn.movesLeft.toString();
 			_movesLeftLabel.x = 10;
 			_movesLeftLabel.y = 10;
-			_movesLeftLabel.setStyle("fontSize", 30);
+			_movesLeftLabel.setStyle("fontSize", 20);
 			_movesLeftLabel.setStyle("color", 0xFFCC33);
 			_movesLeftLabel.setStyle("fontStyle", "bold");
 			_main.addElement(_movesLeftLabel);
+			
 			// Label de tiempo restante
 			_timeLeftLabel = new Label();
-			_timeLeftLabel.text = _turn.timeLeft.toString();
+			_timeLeftLabel.text = "Tiempo restante: " + _turn.timeLeft.toString();
 			_timeLeftLabel.x = 10;
-			_timeLeftLabel.y = 40;
-			_timeLeftLabel.setStyle("fontSize", 30);
+			_timeLeftLabel.y = 30;
+			_timeLeftLabel.setStyle("fontSize", 20);
 			_timeLeftLabel.setStyle("color", 0xFFCC33);
 			_timeLeftLabel.setStyle("fontStyle", "bold");
 			_main.addElement(_timeLeftLabel);
+			
+			// Label de jugador
+			_myUsernameLabel = new Label();
+			_myUsernameLabel.text = "Jugador: " + _myUsername;
+			_myUsernameLabel.x = 10;
+			_myUsernameLabel.y = 50;
+			_myUsernameLabel.setStyle("fontSize", 20);
+			_myUsernameLabel.setStyle("color", 0xFFCC33);
+			_myUsernameLabel.setStyle("fontStyle", "bold");
+			_main.addElement(_myUsernameLabel);
+			
+			// Label de jugador activo
+			_activePlayerLabel = new Label();
+			_activePlayerLabel.text = "Jugador activo: " + _turn.activePlayer.username;
+			_activePlayerLabel.x = 10;
+			_activePlayerLabel.y = 70;
+			_activePlayerLabel.setStyle("fontSize", 20);
+			_activePlayerLabel.setStyle("color", 0xFFCC33);
+			_activePlayerLabel.setStyle("fontStyle", "bold");
+			_main.addElement(_activePlayerLabel);
 			
 			_menu = new Menu(Menu.MENU_POSITION_BOTTOM_LEFT);
 			_menu.addEventListener(ActionEvent.MODE_CHANGED, function(event:ActionEvent):void
@@ -220,6 +256,26 @@ package components
 			loadUserInterface();
 		}
 		
+		public function moveHandler(response:ResultEvent):void
+		{
+			trace("el server se actualizo con la nueva posicion del barco");
+		}
+		
+		public function rotateHandler(response:ResultEvent):void
+		{
+			trace("el server se actualizo con la nueva direccion del barco");
+		}
+		
+		public function endTurnHandler(response:ResultEvent):void
+		{
+			trace("nuevo turno obtenido del servidor");
+		}
+		
+		public function endTurnFaultHandler(response:FaultEvent):void
+		{
+			trace("error al invocar WS");
+		}
+		
 		/*
 		 * inicia la ssincronizacion con el server, ejecuta un timer cada 500 milisegundos
 		 *
@@ -241,8 +297,12 @@ package components
 			{
 				trace("user is playing");
 			}
+			else if (_gameMode.gameMode == GameMode.WAITING_PLAYER_TURN)
+			{				
+				_main.wsRequest.getActions(_gameId, _myUsername);
+			}
 			
-			if(_gameMode.gameMode == GameMode.PLAYING || _gameMode.gameMode == GameMode.WAITING_PLAYER_TURN)
+			if (_gameMode.gameMode == GameMode.PLAYING || _gameMode.gameMode == GameMode.WAITING_PLAYER_TURN)
 				updateTimeLeft();
 		}
 		
@@ -251,26 +311,25 @@ package components
 			if (_shouldDecreaseTime)
 			{
 				_turn.timeLeft--;
-				if (_turn.timeLeft <= 0)
+				_timeLeftLabel.text = "Tiempo restante: " + _turn.timeLeft.toString();
+				if (_turn.timeLeft <= 0 && isActivePlayer())
 				{
-					_timeLeftLabel.text = "llamar WS con EndTurnAction";
-				}
-				else
-				{
-					_timeLeftLabel.text = _turn.timeLeft.toString();
+					trace("CAMBIO DE TURNO");
+					// endTurnAction();
 				}
 			}
 			_shouldDecreaseTime = !_shouldDecreaseTime;
 		}
 		
-		public function consumeActions(response:ResultEvent):void
-		{
-			// Agregamos las nuevas acciones a ejecutar a la cola de acciones
-			for (var i:int = 0; i < response.result.length; i++)
-			{
-				_actionQueue.addItem(response.result[i]);
+		public function consumeActionsHandler(response:ResultEvent):void
+		{				
+			if (response.result != null)
+			{				
+				// Agregamos las nuevas acciones a ejecutar a la cola de acciones
+				_actionQueue.addItem(response.result);
+				
+				consumeNextAction();
 			}
-			consumeNextAction();
 		}
 		
 		public function consumeNextAction():void
@@ -294,11 +353,12 @@ package components
 				}
 				else if (_actionQueue.source[0].actionType == "EndTurnAction")
 				{
-					trace("FireAction");
+					trace("the other user turn has ended");
+					endTurnAction();
 				}
 				else if (_actionQueue.source[0].actionType == "EnterPortAction")
 				{
-					trace("EndTurnAction");
+					trace("EnterPortAction");
 				}
 				else if (_actionQueue.source[0].actionType == "LeavePortAction")
 				{
@@ -344,7 +404,7 @@ package components
 		}
 		
 		private function addShipsToUI():void
-		{			
+		{
 			setShipCellStatus(_redShipComponent, true);
 			setShipCellStatus(_blueShipComponent1, true);
 			setShipCellStatus(_blueShipComponent2, true);
@@ -353,7 +413,7 @@ package components
 			_redShipComponent.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
 			_blueShipComponent1.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
 			_blueShipComponent2.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
-			_blueShipComponent3.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);							
+			_blueShipComponent3.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
 		}
 		
 		// Evento disparado cuando se selecciona un barco
@@ -361,7 +421,7 @@ package components
 		{
 			var selectedShip:Ship = event.selectedShip;
 			// El usuario selecciono el barco rojo
-			if ((selectedShip.shipId == RED_SHIP_ID && _redPlayer.username == _myUsername) || (selectedShip.shipId > RED_SHIP_ID && _bluePlayer.username == _myUsername))
+			if ((selectedShip is RedShip && _redPlayer.username == _myUsername) || (selectedShip is BlueShip && _bluePlayer.username == _myUsername))
 			{
 				if (_selectedShip != null)
 					_selectedShip.filters = null;
@@ -427,12 +487,20 @@ package components
 		private function updateMovesLeft():void
 		{
 			_turn.movesLeft = _turn.movesLeft - 1;
-			_movesLeftLabel.text = _turn.movesLeft.toString();
+			_movesLeftLabel.text = "Movimientos restantes: " + _turn.movesLeft.toString();
 		}
 		
 		// Mueve el barco a la posicion dada y actualiza el estado del juego
 		private function moveAction(ship:Ship, coordinate:Coordinate, func:Function = null):void
 		{
+			if (isActivePlayer())
+			{
+				var coor:Object = new Object();
+				coor.x = coordinate.c;
+				coor.y = coordinate.r;
+				// Llamamos al servidor para avisarle que el barco se movio
+				_main.wsRequest.move(_gameId, ship.shipId, coor);
+			}
 			// Desbloqueamos las celdas actuales del barco
 			setShipCellStatus(ship, false);
 			// Se mueve el barco
@@ -456,6 +524,11 @@ package components
 		// Rota el barco a la direccion dada y actualiza el estado del juego
 		private function rotateAction(ship:Ship, direction:Cardinal, func:Function = null):void
 		{
+			if (isActivePlayer())
+			{
+				// Llamamos al web service para actualizar la direccion del barco				
+				_main.wsRequest.rotate(_gameId, ship.shipId, direction.cardinal);
+			}
 			// Actualizamos las celdas bloqueadas por el barco
 			setShipCellStatus(ship, false);
 			// Rotamos el barco
@@ -468,17 +541,42 @@ package components
 			updateMovesLeft();
 		}
 		
+		// Cambia el control del jugador actual al jugador que estaba esperando
+		private function endTurnAction():void
+		{
+			// Si soy el usuario activo envio al servidor el cambio de turno
+			if (isActivePlayer())
+			{				
+				_main.wsRequest.endTurn(_gameId);
+			}
+			// Cambia el turno y reseteo contadores
+			_turn.switchTurn(_redPlayer, _bluePlayer);
+			// Actualizo el contador de tiempo/movimientos y jugador actual
+			_movesLeftLabel.text = "Movimientos restantes: " + _turn.movesLeft.toString();
+			_timeLeftLabel.text = "Tiempo restante: " + _turn.timeLeft.toString();
+			_activePlayerLabel.text = "Jugador activo: " + _turn.activePlayer.username;
+			if (isActivePlayer())
+				_gameMode.gameMode = GameMode.PLAYING
+			else
+				_gameMode.gameMode = GameMode.WAITING_PLAYER_TURN;
+		}
+		
 		// Dispadra un projectil desde un barco dado
-		private function fireAction(ship:Ship, target:Coordinate, projectile:int, func:Function = null):void {
-			if(projectile == Projectile.WEAPON_TYPE_BULLET){
+		private function fireAction(ship:Ship, target:Coordinate, projectile:int, func:Function = null):void
+		{
+			if (projectile == Projectile.WEAPON_TYPE_BULLET)
+			{
 				ship.fireBullet(target, func);
-			}else {
+			}
+			else
+			{
 				ship.fireTorpedo(func);
 			}
 			updateMovesLeft();
-			
+		
 		}
-		// Dado un id de un barco lo retorna
+		
+		// Dado un id de un barco lo retorna/
 		private function getShipById(shipId:int):Ship
 		{
 			var ship:Ship = null;

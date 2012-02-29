@@ -3,6 +3,8 @@ package components
 	
 	public class Turn
 	{
+		private var _totalTime:int;
+		private var _totalMoves:int;
 		private var _timeLeft:int;
 		private var _movesLeft:int;
 		private var _activePlayer:Player;
@@ -10,6 +12,8 @@ package components
 		public function Turn(movesLeft:int, activePlayer:Player, timeLeft:int)
 		{
 			_movesLeft = movesLeft;
+			_totalTime = timeLeft;
+			_totalMoves = movesLeft;
 			_activePlayer = activePlayer;
 			_timeLeft = timeLeft;
 		}
@@ -37,6 +41,16 @@ package components
 		public function set timeLeft(value:int):void
 		{
 			_timeLeft = value;
+		}
+		
+		public function switchTurn(redPlayer:Player, bluePlayer:Player):void
+		{
+			_timeLeft = _totalTime;
+			_movesLeft = _totalMoves;
+			if (_activePlayer.username == redPlayer.username)
+				_activePlayer = bluePlayer;
+			else
+				_activePlayer = redPlayer;
 		}
 	}
 
