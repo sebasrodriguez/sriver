@@ -1,7 +1,7 @@
 package logic.actions;
 
-import entities.Coordinate;
-import entities.ShipVO;
+import logic.entities.Coordinate;
+import logic.entities.ShipVO;
 
 
 public class MoveAction extends ShipAction{

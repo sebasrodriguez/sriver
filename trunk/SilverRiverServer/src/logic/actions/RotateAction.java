@@ -1,7 +1,7 @@
 package logic.actions;
 
-import entities.Cardinal;
-import entities.ShipVO;
+import logic.entities.Cardinal;
+import logic.entities.ShipVO;
 
 public class RotateAction extends ShipAction{
 

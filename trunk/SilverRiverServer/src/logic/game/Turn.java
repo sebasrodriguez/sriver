@@ -1,7 +1,7 @@
 package logic.game;
 
-import entities.PlayerVO;
-import entities.TurnVO;
+import logic.entities.PlayerVO;
+import logic.entities.TurnVO;
 import logic.player.Player;
 
 public class Turn{
