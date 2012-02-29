@@ -4,19 +4,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import data.Data;
+import entities.BlueShipVO;
+import entities.Cardinal;
+import entities.Coordinate;
+import entities.GameVO;
+import entities.RedShipVO;
+import entities.ShipVO;
+import entities.Weapon;
 
 import logic.actions.Action;
 import logic.actions.EndTurnAction;
 import logic.actions.FireAction;
 import logic.actions.MoveAction;
 import logic.actions.RotateAction;
-import logic.entities.BlueShipVO;
-import logic.entities.Cardinal;
-import logic.entities.Coordinate;
-import logic.entities.GameVO;
-import logic.entities.RedShipVO;
-import logic.entities.ShipVO;
-import logic.entities.Weapon;
 import logic.game.Game;
 import logic.player.Player;
 import logic.ship.*;

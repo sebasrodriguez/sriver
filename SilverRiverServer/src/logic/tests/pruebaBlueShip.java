@@ -1,7 +1,7 @@
 package logic.tests;
 
-import logic.entities.Cardinal;
-import logic.entities.Coordinate;
+import entities.Cardinal;
+import entities.Coordinate;
 import logic.ship.BlueShip;
 import logic.ship.Ship;
 

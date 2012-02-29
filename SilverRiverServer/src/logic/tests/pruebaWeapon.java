@@ -1,7 +1,7 @@
 package logic.tests;
 
 
-import logic.entities.Weapon;
+import entities.Weapon;
 
 public class pruebaWeapon {
 

@@ -1,8 +1,8 @@
 package logic.actions;
 
-import logic.entities.Coordinate;
-import logic.entities.ShipVO;
-import logic.entities.Weapon;
+import entities.Coordinate;
+import entities.ShipVO;
+import entities.Weapon;
 
 public class FireAction extends ShipAction {
 	

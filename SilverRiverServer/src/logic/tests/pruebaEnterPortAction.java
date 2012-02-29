@@ -1,10 +1,10 @@
 package logic.tests;
 
+import entities.Cardinal;
+import entities.Coordinate;
+import entities.RedShipVO;
+import entities.ShipVO;
 import logic.actions.EnterPortAction;
-import logic.entities.Cardinal;
-import logic.entities.Coordinate;
-import logic.entities.RedShipVO;
-import logic.entities.ShipVO;
 import logic.ship.RedShip;
 import logic.ship.Ship;
 

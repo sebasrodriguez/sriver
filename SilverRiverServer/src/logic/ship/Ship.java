@@ -1,9 +1,9 @@
 package logic.ship;
 
-import logic.entities.Cardinal;
-import logic.entities.Coordinate;
-import logic.entities.ShipVO;
-import logic.entities.Weapon;
+import entities.Cardinal;
+import entities.Coordinate;
+import entities.ShipVO;
+import entities.Weapon;
 
 public abstract class Ship {
 

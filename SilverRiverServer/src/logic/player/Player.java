@@ -1,6 +1,6 @@
 package logic.player;
 
-import logic.entities.PlayerVO;
+import entities.PlayerVO;
 
 public class Player
 {

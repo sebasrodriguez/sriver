@@ -1,6 +1,6 @@
 package logic.tests;
 
-import logic.entities.Coordinate;
+import entities.Coordinate;
 
 public class pruebaCoordenate {
 
