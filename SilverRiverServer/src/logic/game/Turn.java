@@ -18,7 +18,7 @@ public class Turn{
 	public Turn(Player activePlayer){	
 		this.activePlayer = activePlayer;
 		this.movesLeft = 5;
-		this.timeLeft = 60;
+		this.timeLeft = 60;		
 	}
 
 	public Player getActivePlayer(){
