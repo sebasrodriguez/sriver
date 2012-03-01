@@ -162,6 +162,7 @@ package components
 			_gridComponent.addEventListener(CellEvent.CLICK, selectedCellEvent);
 			_gridComponent.blockCells(_mapComponent.getInitialBlockedCoordinates());
 			_gridComponent.goalCells(_mapComponent.getGoalCoordinates());
+			_gridComponent.portCells(_mapComponent.getPortCoordinates());
 			
 			// Agrega los barcos al mapa
 			addShipsToUI();
@@ -504,7 +505,15 @@ package components
 			// Desbloqueamos las celdas actuales del barco
 			setShipCellStatus(ship, false);
 			// Se mueve el barco
-			ship.moveTo(coordinate, func);
+			ship.moveTo(coordinate, function ():void {
+				//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
+				if (checkPort())
+					trace("esta en puerto");
+				if (checkGoal())
+					trace("ganoooooooooo");
+				if(func != null)
+					func.call();
+			});
 			// Se actualiza la posicion del barco
 			ship.setPosition(coordinate);
 			// Se deshabilita las celdas de movimiento previamente mostradas
@@ -532,7 +541,15 @@ package components
 			// Actualizamos las celdas bloqueadas por el barco
 			setShipCellStatus(ship, false);
 			// Rotamos el barco
-			ship.rotateTo(direction.cardinal, func);
+			ship.rotateTo(direction.cardinal, function ():void {
+				//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
+				if (checkPort())
+					_activePlayerLabel.text = "en el puerto";
+				if (checkGoal())
+					_activePlayerLabel.text = "ganoo";
+				if(func != null)
+					func.call();
+			});
 			// Seteamos la nueva direccion del barco
 			ship.direction = direction;
 			// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
@@ -592,6 +609,22 @@ package components
 		private function isActivePlayer():Boolean
 		{
 			return _turn.activePlayer.username == _myUsername;
+		}
+		
+		// Chequea si esta en puerto
+		private function checkPort():Boolean {
+			return _mapComponent.areSubCoordinates(_selectedShip.coordenates, _mapComponent.getPortCoordinates());
+		}
+		
+		// Chequea si gano
+		private function checkGoal():Boolean {
+			var result:Boolean = false;
+			
+			if(_selectedShip == _redShipComponent)
+				result = _mapComponent.areSubCoordinates(_selectedShip.coordenates, _mapComponent.getPortCoordinates());
+			else
+				result = false;
+			return result;
 		}
 	}
 }

@@ -78,6 +78,43 @@ package components
 			}
 			return arr;
 		}
+		
+		public function getPortCoordinates():Array {
+			var arr:Array = new Array();
+			var f:int, c:int;
+			//zona sureste
+			for (f = 7; f < 9; f ++) {
+				for (c = 19; c < 22; c ++) {
+					arr.push(new Coordinate(f, c));
+				}
+			}
+			//zona suroeste
+			for (f = 14; f < 17; f ++) {
+				for (c = 10; c < 12; c ++) {
+					arr.push(new Coordinate(f, c));
+				}
+			}
+			return arr;
+		}
+		
+		public function areSubCoordinates(sub:Array, coord:Array):Boolean {
+			var result:Boolean = false;
+			var score:int = 0;
+			var i:int = 0;
+			var j:int = 0;
+			while (!result && i < coord.length) {
+				if (sub[j].equals(coord[i])) {
+					j ++
+					if (j == sub.length) {
+						result = true;
+					}
+				}else {
+					i ++;
+				}
+			}
+			return result;
+		}
+		
 	}
 
 }

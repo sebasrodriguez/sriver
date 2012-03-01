@@ -32,6 +32,34 @@ package common
 		{
 			_cardinal = value;
 		}
+		//retorna una coordenada desfasaje que permite conocer las coordenadas de la recta de una direccion dada
+		public static function getOffsetCoodinate(a:int):Coordinate {
+			var offsetX:Number;
+			var offsetY:Number;
+			switch(a) {
+				case N:
+				case S:
+					offsetX = 0;
+					offsetY = 1;
+					break;
+				case E:
+				case W:
+					offsetX = 1;
+					offsetY = 0;
+					break;
+				case NE:
+				case SW:
+					offsetX = 1;
+					offsetY = 1;
+					break;
+				case NW:
+				case SE:
+					offsetX = -1;
+					offsetY = -1;
+					break;					
+				}
+			return new Coordinate(offsetY, offsetX);
+		}
 	}
 
 }
