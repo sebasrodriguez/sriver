@@ -18,11 +18,13 @@ public class SilverRiverService {
 		return Facade.getInstance().fire(gameId, shipFiringId, firingPoint, weaponType);
 	}
 	
-	public RotateAction rotate(int gameId, int shipId, Cardinal destination){
+	public RotateAction rotate(int gameId, int shipId, int degrees){
+		Cardinal destination = new Cardinal(degrees);
 		return Facade.getInstance().rotate(gameId, shipId, destination);
 	}
 	
 	public EndTurnAction endTurn(int gameId){
+		System.out.println(gameId);
 		return Facade.getInstance().endTurn(gameId);
 	}
 	
@@ -49,6 +51,10 @@ public class SilverRiverService {
 	public GameVO getGame(int gameId){		
 		return Facade.getInstance().getGame(gameId);
 	}
+	
+	public Action[] getActions(int gameId, String username){		
+		return Facade.getInstance().getActions(gameId, username);
+	}	
 	
 	public Action[] pruebaActions(){
 		return Facade.getInstance().pruebaActions();
