@@ -216,8 +216,52 @@ public class Game implements Serializable
 		return gameVOToreturn;
 	}
 	
+	/*
+	 * Metodo que retorna el redActionQueue como un Action[]
+	 */
+	public Action[] redActionQueueMapToArray(){		
+		Iterator<Action> raqIt = this.redActionQueue.iterator();
+		Action[] actionsToReturn = new Action[this.redActionQueue.size()];
+		int i = 0;
+		
+		while(raqIt.hasNext()){
+			actionsToReturn[i] = raqIt.next();
+			i++;
+		}
+		
+		return actionsToReturn;		
+	}
 	
+	/*
+	 *Metodo que retorna el blueActionQueue como un Action[]
+	 */
+	public Action[] blueActionQueueMapToArray(){		
+		Iterator<Action> raqIt = this.blueActionQueue.iterator();
+		Action[] actionsToReturn = new Action[this.blueActionQueue.size()];
+		int i = 0;
+		
+		while(raqIt.hasNext()){
+			actionsToReturn[i] = raqIt.next();
+			i++;
+		}
+		
+		return actionsToReturn;		
+	}
 	
+	/*
+	 * Metodo que retorna el ships como un Ship[]
+	 */
+	public Ship[] shipsMapToArray(){
+		Iterator<Ship> shIt = this.ships.iterator();
+		Ship[] shipsToReturn = new Ship[this.ships.size()];
+		int i = 0;
+		
+		while(shIt.hasNext()){
+			shipsToReturn[i] = shIt.next();
+			i++;
+		}
+		return shipsToReturn;
+	}
 	
 	/*
 	 * Metodos privados
@@ -268,6 +312,5 @@ public class Game implements Serializable
 		}
 		
 		return shipsVOToReturn;
-	}
-	
+	}	
 }

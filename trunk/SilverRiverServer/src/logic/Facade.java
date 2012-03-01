@@ -348,10 +348,10 @@ public class Facade {
 		
 		//comparo si es redPlayer
 		if(activeGame.getRedPlayer().getUsername() == username){
-			actionToReturn = (Action[])activeGame.getRedActionQueue().toArray().clone();
+			actionToReturn = activeGame.redActionQueueMapToArray();
 			activeGame.getRedActionQueue().clear();
 		}else{
-			actionToReturn = (Action[])activeGame.getBlueActionQueue().toArray().clone();
+			actionToReturn = activeGame.blueActionQueueMapToArray();
 			activeGame.getBlueActionQueue().clear();
 		}
 		
