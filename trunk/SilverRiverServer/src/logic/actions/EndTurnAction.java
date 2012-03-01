@@ -8,7 +8,7 @@ public class EndTurnAction extends GameAction {
 	
 
 	public EndTurnAction(int gameId, Player playerTurn){
-		super(gameId);
+		super(gameId, "EndTurnAction");
 		this.playerTurn = playerTurn;
 	}
 	
