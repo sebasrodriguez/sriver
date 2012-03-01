@@ -51,6 +51,7 @@ package components
 				_activePlayer = bluePlayer;
 			else
 				_activePlayer = redPlayer;
+			trace("active player = " + _activePlayer.username);
 		}
 	}
 
