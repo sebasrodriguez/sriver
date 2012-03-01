@@ -20,10 +20,12 @@ package components
 		private static const CELL_COLOR_NORMAL:uint = 0x000000;
 		private static const CELL_COLOR_BLOCKED:uint = 0xff0000;
 		private static const CELL_COLOR_GOAL:uint = 0x00ffff;
+		private static const CELL_COLOR_PORT:uint = 0xffff00;
 		private static const CELL_COLOR_AVAILABLE:uint = 0x0000ff;
 		private static const CELL_ALPHA_NORMAL:Number = 0.3;
 		private static const CELL_ALPHA_BLOCKED:Number = 0.3;
 		private static const CELL_ALPHA_GOAL:Number = 0.3;
+		private static const CELL_ALPHA_PORT:Number = 0.3;
 		private static const CELL_ALPHA_AVAILABLE:Number = 0.3;
 		
 		private var _coordinate:Coordinate;
@@ -34,6 +36,7 @@ package components
 		private var _available:Boolean = false;
 		private var _blocked:Boolean = false;
 		private var _goalCell:Boolean = false;
+		private var _portCell:Boolean = false;
 		
 		public function GameCell(c:Coordinate)
 		{
@@ -139,6 +142,19 @@ package components
 			else
 				changeColor(CELL_COLOR_NORMAL, CELL_ALPHA_NORMAL);
 			_goalCell = value;
+		}
+		
+		public function get portCell():Boolean 
+		{
+			return _portCell;
+		}
+		
+		public function set portCell(value:Boolean):void 
+		{if (value)
+				changeColor(CELL_COLOR_PORT, CELL_ALPHA_PORT);
+			else
+				changeColor(CELL_COLOR_NORMAL, CELL_ALPHA_NORMAL);
+			_portCell = value;
 		}
 		
 		private function changeColor(c:uint, a:Number = 1):void

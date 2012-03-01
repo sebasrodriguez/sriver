@@ -19,7 +19,8 @@ package components
 		private var _speed:int;
 		private var _size:int;
 		private var _ammo:int;
-		private var _armor:int;		
+		private var _armor:int;
+		private var _coordenates:Array;
 		
 		public function Ship(id:int, c:Coordinate, d:Cardinal, s:int, size:int)
 		{
@@ -30,6 +31,7 @@ package components
 			_speed = (s * 4) / 10;			
 			_size = size;
 			this.rotation = d.cardinal;
+			updateCoordinates();
 			this.addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void
 				{
 					var selectedShipEvent:SelectedShipEvent = new SelectedShipEvent();
@@ -73,6 +75,30 @@ package components
 			_size = value;
 		}
 		
+		public function get coordenates():Array 
+		{
+			return _coordenates;
+		}
+		
+		public function set coordenates(value:Array):void 
+		{
+			_coordenates = value;
+		}
+		
+		public function updateCoordinates():void {
+			var arr:Array = new Array();
+			var midsize:Number = Math.floor(_size / 2);
+			var offset:Coordinate = Cardinal.getOffsetCoodinate(_direction.cardinal);
+			arr.push(this.currentPos);
+			//TODO:RECHEQUEAR FUNCION
+			for (var i:int = 1; i <= midsize; i ++) {
+				arr.push(new Coordinate(this.currentPos.r + offset.r, this.currentPos.c + offset.c));
+				arr.push(new Coordinate(this.currentPos.r - offset.r, this.currentPos.c - offset.c));
+			}
+			arr.push(this.currentPos);
+			_coordenates = arr;
+		}
+		
 		public function fireBullet(c:Coordinate, func:Function):void {
 			var board:DisplayObjectContainer = this.parent;
 			var bullet:Bullet = new Bullet(currentPos);
@@ -100,6 +126,22 @@ package components
 				if( func != null)
 					func.call();
 			},torpedo), 10);
+		}
+		
+		public override function moveTo(c:Coordinate, func:Function, speed:Number = 1):void{
+			super.moveTo(c, function():void {
+				updateCoordinates();
+				if(func != null)
+					func.call();
+			}, speed);
+		}
+		
+		public override function rotateTo(degrees:int, func:Function):void{
+			super.rotateTo(degrees, function():void {
+				updateCoordinates();
+				if(func != null)
+					func.call();
+			});
 		}
 	}
 
