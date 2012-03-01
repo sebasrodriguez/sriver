@@ -6,8 +6,8 @@ public class GameAction extends Action{
 	private int gameId;
 	
 	
-	public GameAction(int gameId){
-		super("GameAction");
+	public GameAction(int gameId, String type){
+		super(type);
 		this.gameId = gameId;
 	}
 	
