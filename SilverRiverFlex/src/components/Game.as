@@ -83,7 +83,6 @@ package components
 			}
 			else
 			{
-				trace("wait for another player");
 				_waitingPlayerLabel = new Label();
 				_waitingPlayerLabel.text = "Esperando un segundo jugador...";
 				_waitingPlayerLabel.x = _main.width / 3;
@@ -227,7 +226,6 @@ package components
 			_menu = new Menu(Menu.MENU_POSITION_BOTTOM_LEFT);
 			_menu.addEventListener(ActionEvent.MODE_CHANGED, function(event:ActionEvent):void
 				{
-					trace("evento disparado");
 					switch (event.mode)
 					{
 						case Menu.MENU_MODE_MOVE: 
@@ -270,6 +268,7 @@ package components
 		public function endTurnHandler(response:ResultEvent):void
 		{
 			trace("nuevo turno obtenido del servidor");
+			trace("usuario activo: " + response.result.playerTurn.username);
 		}
 		
 		public function endTurnFaultHandler(response:FaultEvent):void
@@ -296,10 +295,11 @@ package components
 			}
 			else if (_gameMode.gameMode == GameMode.PLAYING)
 			{
-				trace("user is playing");
+				trace("Soy user " + _turn.activePlayer.username + " y estoy jugando");
 			}
 			else if (_gameMode.gameMode == GameMode.WAITING_PLAYER_TURN)
-			{				
+			{
+				trace("El user " + _turn.activePlayer.username + " esta jugando");
 				_main.wsRequest.getActions(_gameId, _myUsername);
 			}
 			
@@ -316,21 +316,27 @@ package components
 				if (_turn.timeLeft <= 0 && isActivePlayer())
 				{
 					trace("CAMBIO DE TURNO");
-					// endTurnAction();
+					endTurnAction();
 				}
 			}
 			_shouldDecreaseTime = !_shouldDecreaseTime;
 		}
 		
 		public function consumeActionsHandler(response:ResultEvent):void
-		{				
+		{
 			if (response.result != null)
-			{				
+			{
+				trace("tengo una accion en la cola");
 				// Agregamos las nuevas acciones a ejecutar a la cola de acciones
 				_actionQueue.addItem(response.result);
 				
 				consumeNextAction();
 			}
+		}
+		
+		public function consumeActionsFaultHandler(response:FaultEvent):void
+		{
+			trace("fallo llamada a consumir acciones");
 		}
 		
 		public function consumeNextAction():void
@@ -354,6 +360,7 @@ package components
 				}
 				else if (_actionQueue.source[0].actionType == "EndTurnAction")
 				{
+					_movesLeftLabel.text = "the other user turn has ended";
 					trace("the other user turn has ended");
 					endTurnAction();
 				}
@@ -563,22 +570,28 @@ package components
 		{
 			// Si soy el usuario activo envio al servidor el cambio de turno
 			if (isActivePlayer())
-			{				
+			{
 				_main.wsRequest.endTurn(_gameId);
 			}
 			// Cambia el turno y reseteo contadores
 			_turn.switchTurn(_redPlayer, _bluePlayer);
 			// Actualizo el contador de tiempo/movimientos y jugador actual
-			_movesLeftLabel.text = "Movimientos restantes: " + _turn.movesLeft.toString();
+			// _movesLeftLabel.text = "Movimientos restantes: " + _turn.movesLeft.toString();
 			_timeLeftLabel.text = "Tiempo restante: " + _turn.timeLeft.toString();
 			_activePlayerLabel.text = "Jugador activo: " + _turn.activePlayer.username;
 			if (isActivePlayer())
-				_gameMode.gameMode = GameMode.PLAYING
+			{
+				_gameMode.gameMode = GameMode.PLAYING;
+				_movesLeftLabel.text = "soy el activo";
+			}
 			else
+			{
 				_gameMode.gameMode = GameMode.WAITING_PLAYER_TURN;
+				_movesLeftLabel.text = "el otro es activo";
+			}
 		}
 		
-		// Dispadra un projectil desde un barco dado
+		// Dispara un projectil desde un barco dado
 		private function fireAction(ship:Ship, target:Coordinate, projectile:int, func:Function = null):void
 		{
 			if (projectile == Projectile.WEAPON_TYPE_BULLET)
