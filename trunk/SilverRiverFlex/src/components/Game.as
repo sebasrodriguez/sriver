@@ -191,7 +191,8 @@ package components
 					switch (event.mode)
 					{
 						case Menu.MENU_MODE_MOVE: 
-							moveMode();
+							if (_selectedShip != null)
+								enableMovement(_selectedShip);
 							break;
 						case Menu.MENU_MODE_ROTATE: 
 							_gridComponent.disableCells();
@@ -320,7 +321,7 @@ package components
 			}
 			else
 			{
-				trace("no hay nada en la cola para consumir");
+				//trace("no hay nada en la cola para consumir");
 			}
 		}
 		
@@ -400,14 +401,6 @@ package components
 			}
 		}
 		
-		// Modo de mover el barco
-		private function moveMode():void
-		{
-			if (_selectedShip != null)
-			{
-				enableMovement(_selectedShip);
-			}
-		}
 		
 		private function addShipsToUI():void
 		{
@@ -450,18 +443,15 @@ package components
 		
 		public function enableMovement(ship:Ship):void {
 			var nomore:Boolean = false;
-			var offset:int = Math.ceil(ship.size / 2);
+			var offset:Number = Math.floor(ship.size / 2);
 			var i:int = 0;
 			var currentPos:Coordinate = ship.currentPos;
 			var offsetPos:Coordinate;
 			var realSpeed:Number = 2 / 5 * ship.speed;
 			while (!nomore && i < realSpeed ){
 				currentPos = Helper.calculateNextCell(currentPos, ship.direction);
-				offsetPos = Helper.calculateNextCell(currentPos, ship.direction, offset);
-				trace(currentPos);
-				trace(offsetPos);
-				if (!_gridComponent.getCell(offsetPos).blocked) {					
-					trace("quiere habilitar adelante:" +currentPos);
+				offsetPos = Helper.calculateNextCell(currentPos, ship.direction, offset);				
+				if (!_gridComponent.getCell(offsetPos).blocked || ship.itsMe(offsetPos)) {
 					_gridComponent.enableCell(currentPos);
 				}else
 					nomore = true;
@@ -470,9 +460,12 @@ package components
 			currentPos = ship.currentPos;
 			i = 0;
 			nomore = false;
-			while (!nomore && i < realSpeed ){
+			trace(realSpeed / 2);
+			while (!nomore && i < realSpeed / 2 ){
 				currentPos = Helper.calculateNextCell(currentPos, Helper.getOppositeDirection(ship.direction));
 				offsetPos = Helper.calculateNextCell(currentPos, Helper.getOppositeDirection(ship.direction), offset);
+				trace("currentPos: "+currentPos);
+				trace("offsetPos: "+offsetPos);
 				if (!_gridComponent.getCell(offsetPos).blocked) {
 					trace("quiere habilitar reversa:" +currentPos);
 					_gridComponent.enableCell(currentPos);
@@ -481,37 +474,7 @@ package components
 				i ++;
 			}
 		}
-		
-		// Dibuja los movimientos posibles del barco
-		private function drawMovements():void
-		{
-			var forwardCoordinate:Coordinate = new Coordinate(_selectedShip.currentPos.r, _selectedShip.currentPos.c);
-			var backwardsCoordinate:Coordinate = new Coordinate(_selectedShip.currentPos.r, _selectedShip.currentPos.c);
-			var backwardsDirection:Cardinal = Helper.getOppositeDirection(_selectedShip.direction);
-			var cellEnabled:Boolean = true;
 			
-			if (_selectedShip.size > 1)
-			{
-				forwardCoordinate = Helper.calculateNextCell(_selectedShip.currentPos, _selectedShip.direction);
-				backwardsCoordinate = Helper.calculateNextCell(_selectedShip.currentPos, backwardsDirection);
-			}
-			
-			for (var i:int = 0; i < _selectedShip.speed; i++)
-			{
-				forwardCoordinate = Helper.calculateNextCell(forwardCoordinate, _selectedShip.direction);
-				cellEnabled = _gridComponent.enableCell(forwardCoordinate);
-				if (!cellEnabled)
-					break;
-			}
-			for (var j:int = 0; j < _selectedShip.speed / 2; j++)
-			{
-				backwardsCoordinate = Helper.calculateNextCell(backwardsCoordinate, backwardsDirection);
-				cellEnabled = _gridComponent.enableCell(backwardsCoordinate);
-				if (!cellEnabled)
-					break;
-			}
-		}
-		
 		// Bloquea/Desbloquea las celdas que el barco ocupa/ocupo
 		private function setShipCellStatus(ship:Ship, enabled:Boolean):void
 		{
@@ -559,7 +522,7 @@ package components
 					if (_turn.hasMovesLeft() && isActivePlayer())
 					{
 						// Se muestran nuevas celdas de movimiento basadas en la nueva posicion del barco
-						drawMovements();
+						enableMovement(ship);
 					}
 					// Bloqueamos la nueva posicion del barco
 					setShipCellStatus(ship, true);

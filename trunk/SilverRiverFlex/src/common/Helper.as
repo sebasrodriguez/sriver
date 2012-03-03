@@ -34,7 +34,7 @@ package common
 			return oppositeDirection;
 		}		
 		
-		public static function calculateNextCell(actualCoordinate:Coordinate, direction:Cardinal, distance:int = 1):Coordinate
+		public static function calculateNextCell(actualCoordinate:Coordinate, direction:Cardinal, distance:Number = 1):Coordinate
 		{
 			var newCoordinate:Coordinate = new Coordinate(actualCoordinate.r, actualCoordinate.c);
 			// si la direccion es al este
