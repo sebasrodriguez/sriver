@@ -540,6 +540,10 @@ package components
 				// Llamamos al servidor para avisarle que el barco se movio
 				_main.wsRequest.move(_gameId, ship.shipId, coor);
 			}
+			// Se deshabilita las celdas de movimiento previamente mostradas
+			_gridComponent.disableCells();
+			// Actualizo la cantidad de movimientos restantes del turno
+			_turn.decreaseMovesLeft();
 			// Desbloqueamos las celdas actuales del barco
 			setShipCellStatus(ship, false);
 			// Se mueve el barco
@@ -550,23 +554,17 @@ package components
 						trace("esta en puerto");
 					if (checkGoal())
 						trace("ganoooooooooo");
+					// Si quedan movimientos y yo soy el usuario activo muestro las celdas de movimientos
+					if (_turn.hasMovesLeft() && isActivePlayer())
+					{
+						// Se muestran nuevas celdas de movimiento basadas en la nueva posicion del barco
+						drawMovements();
+					}
+					// Bloqueamos la nueva posicion del barco
+					setShipCellStatus(ship, true);
 					if (func != null)
 						func.call();
-				});
-			// Se actualiza la posicion del barco
-			ship.setPosition(coordinate);
-			// Se deshabilita las celdas de movimiento previamente mostradas
-			_gridComponent.disableCells();
-			// Actualizo la cantidad de movimientos restantes del turno
-			updateMovesLeft();
-			// Si quedan movimientos y yo soy el usuario activo muestro las celdas de movimientos
-			if (_turn.movesLeft > 0 && isActivePlayer())
-			{
-				// Se muestran nuevas celdas de movimiento basadas en la nueva posicion del barco
-				drawMovements();
-			}
-			// Bloqueamos la nueva posicion del barco
-			setShipCellStatus(ship, true);
+				}, 10);
 		}
 		
 		// Rota el barco a la direccion dada y actualiza el estado del juego
