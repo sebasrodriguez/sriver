@@ -133,9 +133,9 @@ public class Facade {
 			int newArmor = affectedShip.getArmor() - 1;
 			affectedShip.setArmor(newArmor);
 				
-			if(affectedShip.getArmor() <= 0){
+			/*if(affectedShip.getArmor() <= 0){
 				activeGame.destroyedShip(affectedShip.getId());
-			}	
+			}	*/
 			
 			
 			//Comapro si el barco dañado es rojo

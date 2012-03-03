@@ -172,7 +172,7 @@ public class pruebaGame {
 		System.out.println("ShipFiredId: "+ gamePrueba.getShipFiredId(position));
 		System.out.println("-------------------------------------------------------");
 		
-		System.out.println("Hundiendo barcos");
+		/*System.out.println("Hundiendo barcos");
 		gamePrueba.destroyedShip(0);
 		
 		if(gamePrueba.getShip(0) != null){
@@ -192,7 +192,7 @@ public class pruebaGame {
 			System.out.println("Ship: " + gamePrueba.getShip(3).toString());
 		}
 		System.out.println("-------------------------------------------------------");
-		
+		*/
 
 	}
 

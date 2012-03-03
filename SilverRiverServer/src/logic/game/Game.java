@@ -148,12 +148,12 @@ public class Game implements Serializable
 	/*
 	 * En caso de hundimiento de barco elimina el mismo del ArrayList
 	 */
-	public void destroyedShip(int shipId){		
+	/*public void destroyedShip(int shipId){		
 		Ship shipToRemove = this.getShip(shipId);
 		int indexToRemove = this.ships.indexOf(shipToRemove);
 		this.ships.remove(indexToRemove);
 
-	}
+	}*/
 	
 	/*
 	 * Inserta la accion en la cola del jugador rojo
