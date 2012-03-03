@@ -1,9 +1,11 @@
 package entities;
 
+import java.io.Serializable;
+
 /*
  * Contiene las coordenadas (ubicacion en el mapa) del barco
  */
-public class Coordinate {
+public class Coordinate implements Serializable {
 
 	private int x;
 	private int y;

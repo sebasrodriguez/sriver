@@ -1,5 +1,6 @@
 package data;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,7 +34,7 @@ public class Data {
 			String password = prop.getProperty("dbPassword");
 			String url = prop.getProperty("dbUrl");
 			String driver = prop.getProperty("dbDriver");
-			Class.forName(driver);
+			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection(url, username, password);
 			Queries query = new Queries();
 			

@@ -1,6 +1,8 @@
 package entities;
 
-public class Cardinal{
+import java.io.Serializable;
+
+public class Cardinal implements Serializable{
 	
 	public static final int N = -90;
 	public static final int NE = -45;

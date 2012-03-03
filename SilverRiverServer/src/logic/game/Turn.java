@@ -1,10 +1,12 @@
 package logic.game;
 
+import java.io.Serializable;
+
 import entities.PlayerVO;
 import entities.TurnVO;
 import logic.player.Player;
 
-public class Turn{
+public class Turn implements Serializable{
 	
 	private Player activePlayer;
 	private int movesLeft;

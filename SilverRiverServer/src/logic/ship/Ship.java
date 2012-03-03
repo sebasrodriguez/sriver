@@ -1,11 +1,13 @@
 package logic.ship;
 
+import java.io.Serializable;
+
 import entities.Cardinal;
 import entities.Coordinate;
 import entities.ShipVO;
 import entities.Weapon;
 
-public abstract class Ship {
+public abstract class Ship  implements Serializable{
 
 	
 	private int id;

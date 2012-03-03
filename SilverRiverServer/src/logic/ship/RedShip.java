@@ -1,5 +1,7 @@
 package logic.ship;
 
+import java.io.Serializable;
+
 import entities.Cardinal;
 import entities.Coordinate;
 import entities.RedShipVO;
@@ -9,7 +11,7 @@ import entities.RedShipVO;
  * Esta clase queda vacia para implementar los opcionales
  * El mantener esta clase aunque este vacia nos sirve para saber de que bando es
  */
-public class RedShip extends Ship {
+public class RedShip extends Ship  implements Serializable{
 	
 	
 	/*
