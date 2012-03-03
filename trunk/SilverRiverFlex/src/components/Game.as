@@ -38,6 +38,7 @@ package components
 		private var _actionQueue:ArrayList;
 		private var _shouldDecreaseTime:Boolean;
 		private var _gameMode:GameMode;
+		private var _scrollControl:AutoScroll;
 		private var _componentsToShow:ArrayList;
 		// Controles UI		
 		private var _waitingPlayerLabel:Label;
@@ -54,6 +55,7 @@ package components
 		public var _myUsername:String;
 		public var _redPlayer:Player;
 		public var _bluePlayer:Player;
+		public var _me:Player;
 		private var _gameId:int;
 		
 		public function Game(main:Main, username:String)
@@ -63,8 +65,6 @@ package components
 			_gameMode = new GameMode(GameMode.NEWGAME);
 			_myUsername = username;
 			_actionQueue = new ArrayList();
-			_shouldDecreaseTime = false;
-			
 			_main.wsRequest.newGame(username);
 		}
 		
@@ -113,6 +113,11 @@ package components
 			var turn:Object = game.turn;
 			_bluePlayer = new Player(game.bluePlayer.username);
 			_redPlayer = new Player(game.redPlayer.username);
+			if (_redPlayer.username == _myUsername) 
+				_me = _redPlayer;
+			if (_bluePlayer.username == _myUsername) 
+				_me = _bluePlayer;
+			trace(_redPlayer.username + " vs " + _bluePlayer.username);
 			
 			_redShipComponent = new RedShip(redShip.id, new Coordinate(10, 15), new Cardinal(redShip.orientation.direction), redShip.speed, redShip.size);
 			_blueShipComponent1 = new BlueShip(blueShip1.id, new Coordinate(14, 15), new Cardinal(blueShip1.orientation.direction), blueShip1.speed, blueShip1.size);
@@ -124,8 +129,15 @@ package components
 			   _blueShipComponent2 = new BlueShip(blueShip2.id, new Coordinate(blueShip2.position.y, blueShip2.position.x), new Cardinal(blueShip2.orientation.direction), blueShip2.speed, blueShip2.size);
 			   _blueShipComponent3 = new BlueShip(blueShip3.id, new Coordinate(blueShip3.position.y, blueShip3.position.x), new Cardinal(blueShip3.orientation.direction), blueShip3.speed, blueShip3.size);
 			 */
-			_shipList = new Array(_redShipComponent, _blueShipComponent1, _blueShipComponent2, _blueShipComponent3);
+			_shipList = new Array(_redShipComponent, _blueShipComponent1, _blueShipComponent2, _blueShipComponent3);			
+			_redPlayer.addShip(_redShipComponent);
+			_bluePlayer.addShip(_blueShipComponent1);
+			_bluePlayer.addShip(_blueShipComponent2);
+			_bluePlayer.addShip(_blueShipComponent3);
+			
+			//centerOnShip(_me.getShip());
 			_turn = new Turn(turn.movesLeft, _redPlayer, turn.timeLeft);
+			
 			if (isActivePlayer())
 			{
 				_gameMode.gameMode = GameMode.PLAYING;
@@ -145,7 +157,7 @@ package components
 			_board.horizontalScrollPolicy = "off";
 			_board.verticalScrollPolicy = "off";
 			_main.addElement(_board);
-			new AutoScroll(_main, _board);
+			_scrollControl = new AutoScroll(_main, _board);
 			
 			// Inicializa el mapa
 			_mapComponent = new Map();
@@ -417,7 +429,7 @@ package components
 		{
 			var ship:Ship = event.selectedShip;
 			// El usuario selecciono el barco rojo
-			if ((ship is RedShip && _redPlayer.username == _myUsername) || (ship is BlueShip && _bluePlayer.username == _myUsername))
+			if (_me.isMyShip(ship))
 			{
 				//si el barco es distinto al seleccionado, desseleccionamos el anterior y seleccionamos el nuevo
 				if (_selectedShip != ship) {
@@ -664,7 +676,7 @@ package components
 		}
 		//centra la pantalla en el seleccionado
 		public function centerOnShip(ship:Ship):void {
-			
+			_scrollControl.centerMapToXY(ship.currentPos.x, ship.currentPos.y);
 		}
 	}
 }
