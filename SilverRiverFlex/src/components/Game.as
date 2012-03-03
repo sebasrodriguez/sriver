@@ -260,6 +260,24 @@ package components
 			trace("el server se actualizo con la nueva posicion del barco");
 		}
 		
+		public function fireHandler(response:ResultEvent):void
+		{
+			trace("el disparo del server");
+			var coordinate:Coordinate = new Coordinate(response.result.hitCoordinate.y, response.result.hitCoordinate.x);
+			var affectedShip:Ship = null;
+			if (response.result.affectedShip != null)
+				affectedShip = getShipById(response.result.affectedShip.id);
+			if (response.result.hit == true)
+			{
+				
+			}
+			else
+			{
+				
+			}
+			fireAction(_selectedShip, affectedShip, response.result.hit, coordinate, response.result.weaponType.weapon);
+		}
+		
 		public function rotateHandler(response:ResultEvent):void
 		{
 			trace("el server se actualizo con la nueva direccion del barco");
@@ -295,11 +313,11 @@ package components
 			}
 			else if (_gameMode.gameMode == GameMode.PLAYING)
 			{
-				trace("Soy user " + _turn.activePlayer.username + " y estoy jugando");
+				// trace("Soy user " + _turn.activePlayer.username + " y estoy jugando");
 			}
 			else if (_gameMode.gameMode == GameMode.WAITING_PLAYER_TURN)
 			{
-				trace("El user " + _turn.activePlayer.username + " esta jugando");
+				// trace("El user " + _turn.activePlayer.username + " esta jugando");
 				_main.wsRequest.getActions(_gameId, _myUsername);
 			}
 			
@@ -332,6 +350,10 @@ package components
 				
 				consumeNextAction();
 			}
+			else
+			{
+				trace("no hay nada en la cola para consumir");
+			}
 		}
 		
 		public function consumeActionsFaultHandler(response:FaultEvent):void
@@ -343,36 +365,41 @@ package components
 		{
 			if (_actionQueue != null && _actionQueue.length > 0)
 			{
+				var action:Object = _actionQueue.source[0];
 				var ship:Ship;
-				if (_actionQueue.source[0].actionType == "MoveAction")
+				if (action.actionType == "MoveAction")
 				{
-					ship = getShipById(_actionQueue.source[0].ship.id);
-					moveAction(ship, new Coordinate(_actionQueue.source[0].position.y, _actionQueue.source[0].position.x), consumeNextAction);
+					ship = getShipById(action.ship.id);
+					moveAction(ship, new Coordinate(action.position.y, action.position.x), consumeNextAction);
 				}
-				else if (_actionQueue.source[0].actionType == "RotateAction")
+				else if (action.actionType == "RotateAction")
 				{
-					ship = getShipById(_actionQueue.source[0].ship.id);
-					rotateAction(getShipById(_actionQueue.source[0].ship.id), new Cardinal(_actionQueue.source[0].cardinal.direction), consumeNextAction);
+					ship = getShipById(action.ship.id);
+					rotateAction(ship, new Cardinal(action.cardinal.direction), consumeNextAction);
 				}
-				else if (_actionQueue.source[0].actionType == "FireAction")
+				else if (action.actionType == "FireAction")
 				{
-					trace("FireAction");
+					ship = getShipById(action.ship.id);
+					var affectedShip:Ship = null;
+					if (action.hit && action.affectedShip != null)
+						affectedShip = getShipById(action.affectedShip.id);
+					
+					fireAction(ship, affectedShip, action.hit, new Coordinate(action.position.y, action.position.x), action.weaponType.weapon, consumeNextAction);
 				}
-				else if (_actionQueue.source[0].actionType == "EndTurnAction")
+				else if (action.actionType == "EndTurnAction")
 				{
-					_movesLeftLabel.text = "the other user turn has ended";
-					trace("the other user turn has ended");
+					// TODO: solucionar problema con los turnos
 					endTurnAction();
 				}
-				else if (_actionQueue.source[0].actionType == "EnterPortAction")
+				else if (action.actionType == "EnterPortAction")
 				{
 					trace("EnterPortAction");
 				}
-				else if (_actionQueue.source[0].actionType == "LeavePortAction")
+				else if (action.actionType == "LeavePortAction")
 				{
 					trace("LeavePortAction");
 				}
-				else if (_actionQueue.source[0].actionType == "EndGameAction")
+				else if (action.actionType == "EndGameAction")
 				{
 					trace("EndGameAction");
 				}
@@ -396,8 +423,12 @@ package components
 				}
 				else if (_menu.currentMenuMode() == Menu.MENU_MODE_FIRE)
 				{
-					//que el webservice devuelva el radom con la coordenada
-					fireAction(_selectedShip, event.coordinate, _menu.currentFireMode);
+					var coor:Object = new Object();
+					coor.x = event.coordinate.c;
+					coor.y = event.coordinate.r;
+					// Llamamos al webservice con la accion de disparo
+					_main.wsRequest.fire(_gameId, _selectedShip.shipId, coor, _menu.currentFireMode);
+						// 	fireAction(_selectedShip, event.coordinate, _menu.currentFireMode);
 				}
 			}
 		}
@@ -512,15 +543,16 @@ package components
 			// Desbloqueamos las celdas actuales del barco
 			setShipCellStatus(ship, false);
 			// Se mueve el barco
-			ship.moveTo(coordinate, function ():void {
-				//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
-				if (checkPort())
-					trace("esta en puerto");
-				if (checkGoal())
-					trace("ganoooooooooo");
-				if(func != null)
-					func.call();
-			});
+			ship.moveTo(coordinate, function():void
+				{
+					//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
+					if (checkPort())
+						trace("esta en puerto");
+					if (checkGoal())
+						trace("ganoooooooooo");
+					if (func != null)
+						func.call();
+				});
 			// Se actualiza la posicion del barco
 			ship.setPosition(coordinate);
 			// Se deshabilita las celdas de movimiento previamente mostradas
@@ -548,15 +580,16 @@ package components
 			// Actualizamos las celdas bloqueadas por el barco
 			setShipCellStatus(ship, false);
 			// Rotamos el barco
-			ship.rotateTo(direction.cardinal, function ():void {
-				//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
-				if (checkPort())
-					_activePlayerLabel.text = "en el puerto";
-				if (checkGoal())
-					_activePlayerLabel.text = "ganoo";
-				if(func != null)
-					func.call();
-			});
+			ship.rotateTo(direction.cardinal, function():void
+				{
+					//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
+					if (checkPort())
+						_activePlayerLabel.text = "en el puerto";
+					if (checkGoal())
+						_activePlayerLabel.text = "ganoo";
+					if (func != null)
+						func.call();
+				});
 			// Seteamos la nueva direccion del barco
 			ship.direction = direction;
 			// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
@@ -592,18 +625,21 @@ package components
 		}
 		
 		// Dispara un projectil desde un barco dado
-		private function fireAction(ship:Ship, target:Coordinate, projectile:int, func:Function = null):void
+		private function fireAction(firingShip:Ship, affectedShip:Ship, hit:Boolean, target:Coordinate, projectile:int, func:Function = null):void
 		{
 			if (projectile == Projectile.WEAPON_TYPE_BULLET)
 			{
-				ship.fireBullet(target, func);
+				firingShip.fireBullet(target, func);
 			}
 			else
 			{
-				ship.fireTorpedo(func);
+				firingShip.fireTorpedo(func);
+			}
+			if (hit && affectedShip != null)
+			{
+				
 			}
 			updateMovesLeft();
-		
 		}
 		
 		// Dado un id de un barco lo retorna/
@@ -625,15 +661,17 @@ package components
 		}
 		
 		// Chequea si esta en puerto
-		private function checkPort():Boolean {
+		private function checkPort():Boolean
+		{
 			return _mapComponent.areSubCoordinates(_selectedShip.coordenates, _mapComponent.getPortCoordinates());
 		}
 		
 		// Chequea si gano
-		private function checkGoal():Boolean {
+		private function checkGoal():Boolean
+		{
 			var result:Boolean = false;
 			
-			if(_selectedShip == _redShipComponent)
+			if (_selectedShip == _redShipComponent)
 				result = _mapComponent.areSubCoordinates(_selectedShip.coordenates, _mapComponent.getPortCoordinates());
 			else
 				result = false;
