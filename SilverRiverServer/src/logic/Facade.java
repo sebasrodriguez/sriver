@@ -174,7 +174,7 @@ public class Facade {
 		
 		
 		//Comparo si es igual al jugador ROJO
-		if(activeGame.getTurn().getActivePlayer().equals(activeGame.getRedPlayer())){
+		if(activeGame.getTurn().getActivePlayer().getUsername().compareTo(activeGame.getRedPlayer().getUsername()) == 0){
 			activeGame.getBlueActionQueue().add(fireActionToReturn);
 		}else{
 			activeGame.getRedActionQueue().add(fireActionToReturn);
@@ -213,7 +213,7 @@ public class Facade {
 			rotateActionToReturn = new RotateAction(shipVO, destination);
 			
 			//Comparo si es igual al jugador ROJO
-			if(activeGame.getTurn().getActivePlayer().equals(activeGame.getRedPlayer())){
+			if(activeGame.getTurn().getActivePlayer().getUsername().compareTo(activeGame.getRedPlayer().getUsername()) == 0){
 				activeGame.getBlueActionQueue().add(rotateActionToReturn);
 			}else{
 				activeGame.getRedActionQueue().add(rotateActionToReturn);
@@ -238,7 +238,7 @@ public class Facade {
 		EndTurnAction endTurnActionToReturn = null;
 		
 		//comparo si el jugador actual es el rojo
-		if(activeGame.getTurn().getActivePlayer().equals(activeGame.getRedPlayer())){
+		if(activeGame.getTurn().getActivePlayer().getUsername().compareTo(activeGame.getRedPlayer().getUsername()) == 0){
 			activeGame.getTurn().endTurn(activeGame.getBluePlayer());
 			endTurnActionToReturn = new EndTurnAction(gameId, activeGame.getBluePlayer());
 			activeGame.insertActionBlueQueue(endTurnActionToReturn);
@@ -350,7 +350,7 @@ public class Facade {
 		Action[] actionToReturn;
 		
 		//comparo si es redPlayer
-		if(activeGame.getRedPlayer().getUsername() == username){
+		if(activeGame.getRedPlayer().getUsername().compareTo(username) == 0){
 			actionToReturn = activeGame.redActionQueueMapToArray();
 			activeGame.getRedActionQueue().clear();
 		}else{
