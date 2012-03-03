@@ -45,16 +45,16 @@ public class Data {
 			
 			ResultSet rs = pepe.executeQuery();
 			
-			byte[] buf = rs.getBytes(3);
-			ObjectInputStream objectIn = null;
-			
-			if (buf != null){
-				objectIn = new ObjectInputStream(new ByteArrayInputStream(buf));
-			 
-			    deSerializedGame = objectIn.readObject();
-			 
-			    rs.close();
-			    
+			if(rs.next()){			
+				byte[] buf = rs.getBytes(4);
+				ObjectInputStream objectIn = null;
+				
+				if (buf != null){
+					objectIn = new ObjectInputStream(new ByteArrayInputStream(buf));
+				 
+				    deSerializedGame = objectIn.readObject();
+				}				 
+		    rs.close();			    
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
