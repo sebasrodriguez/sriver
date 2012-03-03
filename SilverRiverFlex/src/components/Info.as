@@ -1,4 +1,4 @@
-package components 
+package components
 {
 	import flash.display.Shape;
 	import mx.accessibility.ButtonAccImpl;
@@ -8,29 +8,37 @@ package components
 	import mx.core.Container;
 	import mx.core.UIComponent;
 	import common.*;
+	
 	/**
 	 * ...
 	 * @author pablo
 	 */
 	public class Info extends UIComponent
 	{
-		public static const INFO_LABEL_WIDTH:int = 240;
-		public static const INFO_LABEL_HEIGHT:int = 25;
-		public static const INFO_LABEL_FONT_SIZE:int = 15;
-		public static const INFO_LABEL_FONT_COLOR:uint = 0xFFCC33;
-		public static const INFO_LABEL_FONT_STYLE_BOLD:String = "bold";		
+		private static const INFO_LABEL_WIDTH:int = 240;
+		private static const INFO_LABEL_HEIGHT:int = 25;
+		private static const INFO_LABEL_FONT_SIZE:int = 15;
+		private static const INFO_LABEL_FONT_COLOR:uint = 0xFFCC33;
+		private static const INFO_LABEL_FONT_STYLE_BOLD:String = "bold";
 		
 		private var _shape:Shape;
+		
 		private var _movesLeftLabel:Label;
 		private var _movesLeftText:String;
+		
 		private var _timeLeftLabel:Label;
 		private var _timeLeftText:String;
-		private var _myUsernameLabel:Label;
-		private var _myUsernameText:String;
-		private var _activePlayerLabel:Label;
-		private var _activePlayerText:String;
 		
-		public function Info() 
+		private var _redPlayerLabel:Label;
+		private var _bluePlayerLabel:Label;
+		
+		private var _redPlayerText:String;
+		private var _bluePlayerText:String;
+		
+		private var _redPlayerUsername:String;
+		private var _bluePlayerUsername:String;
+		
+		public function Info()
 		{
 			_shape = new Shape();
 			_shape.graphics.beginFill(0x000000, 0.6);
@@ -38,37 +46,38 @@ package components
 			left = 10;
 			top = 10;
 			_shape.graphics.endFill();
-			addChild(_shape);			
-			createLabels();	
+			addChild(_shape);
+			createLabels();
 		}
-		private function createLabels():void {
+		
+		private function createLabels():void
+		{
 			//label movimientos restantes
 			_movesLeftLabel = new Label();
-			_movesLeftLabel.text = "Movimientos restantes: ";
 			formatInfoLabels(_movesLeftLabel);
-			//_movesLeftLabel.y = INFO_LABEL_HEIGHT * 0;
 			addChild(_movesLeftLabel);
+			
 			//label tiempo restante
-			_timeLeftLabel = new Label();	
-			_timeLeftLabel.text = "Tiempo restantes: ";		
+			_timeLeftLabel = new Label();
 			formatInfoLabels(_timeLeftLabel);
 			_movesLeftLabel.y = INFO_LABEL_HEIGHT * 1;
 			addChild(_timeLeftLabel);
-			// Label de jugador
-			_myUsernameLabel = new Label();
-			_myUsernameLabel.text = "Jugador: ";
-			formatInfoLabels(_myUsernameLabel);
-			_myUsernameLabel.y = INFO_LABEL_HEIGHT * 2;
-			addChild(_myUsernameLabel);
-			// Label de jugador activo
-			_activePlayerLabel = new Label();	
-			_activePlayerLabel.text = "Jugador activo: ";		
-			formatInfoLabels(_activePlayerLabel);
-			_activePlayerLabel.y = INFO_LABEL_HEIGHT * 3;
-			addChild(_activePlayerLabel);
+			
+			// Label de jugador rojo
+			_redPlayerLabel = new Label();
+			formatInfoLabels(_redPlayerLabel);
+			_redPlayerLabel.y = INFO_LABEL_HEIGHT * 2;
+			addChild(_redPlayerLabel);
+			
+			// Label de jugador azul
+			_bluePlayerLabel = new Label();
+			formatInfoLabels(_bluePlayerLabel);
+			_bluePlayerLabel.y = INFO_LABEL_HEIGHT * 3;
+			addChild(_bluePlayerLabel);
 		}
 		
-		public function formatInfoLabels(l:Label):void {	
+		public function formatInfoLabels(l:Label):void
+		{
 			l.width = INFO_LABEL_WIDTH;
 			l.height = INFO_LABEL_HEIGHT;
 			l.setStyle("fontSize", INFO_LABEL_FONT_SIZE);
@@ -76,31 +85,40 @@ package components
 			l.setStyle("fontStyle", INFO_LABEL_FONT_STYLE_BOLD);
 		}
 		
-		public function set movesLeftText(value:String):void 
-		{			
+		public function set movesLeftText(value:String):void
+		{
 			_movesLeftText = "Movimientos restantes: " + value;
 			_movesLeftLabel.text = _movesLeftText;
 		}
 		
-		public function set timeLeftText(value:String):void 
-		{			
-			_timeLeftText = "Tiempo restantes: " + value;
+		public function set timeLeftText(value:String):void
+		{
+			_timeLeftText = "Tiempo restante: " + value;
 			_timeLeftLabel.text = _timeLeftText;
 		}
 		
-		public function set myUsernameText(value:String):void 
+		public function set redPlayerUsername(value:String):void
 		{
-			_myUsernameText = "Jugador: " + value;
-			_myUsernameLabel.text = _myUsernameText;
+			_redPlayerUsername = value;
 		}
 		
-		public function set activePlayerText(value:String):void 
-		{			
-			_activePlayerText = "Jugador activo: " + value;
-			_activePlayerLabel.text = _activePlayerText;
+		public function set bluePlayerUsername(value:String):void
+		{
+			_bluePlayerUsername = value;
 		}
 		
-		
+		public function setActivePlayer(isRedPlayerActive:Boolean):void
+		{
+			if (isRedPlayerActive)
+			{
+				_redPlayerLabel.text = "Jugador rojo:  " + _redPlayerUsername + " (*)";
+				_bluePlayerLabel.text = "Jugador azul: " + _bluePlayerUsername;
+			}
+			else
+			{
+				_redPlayerLabel.text = "Jugador rojo:  " + _redPlayerUsername;
+				_bluePlayerLabel.text = "Jugador azul: " + _bluePlayerUsername + " (*)";
+			}
+		}
 	}
-
 }
