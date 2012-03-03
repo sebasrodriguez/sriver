@@ -57,7 +57,7 @@ package common
 		}
 		
 		public function toString():String {
-            return "Coordinate: ("+_r+","+_c+"), XY: ("+_x+","+_y+")";
+            return "Coordinate: ("+_r+","+_c+"), XY: ("+_x+","+_y+");";
         }
 		
 		public function equals(c:Coordinate):Boolean {
