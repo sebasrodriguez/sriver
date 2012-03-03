@@ -54,11 +54,19 @@ package components
 			trace("active player = " + _activePlayer.username);
 		}
 		
-		public function decreaseMovesLeft():void {
-			_movesLeft --;	
+		public function decreaseMovesLeft():void
+		{
+			_movesLeft--;
 		}
-		public function hasMovesLeft():Boolean {
+		
+		public function hasMovesLeft():Boolean
+		{
 			return _movesLeft > 0;
+		}
+		
+		public function decreaseTimeLeft():void
+		{
+			_timeLeft--;
 		}
 	}
 
