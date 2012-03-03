@@ -5,8 +5,6 @@ import entities.Coordinate;
 import entities.RedShipVO;
 import entities.ShipVO;
 import logic.actions.RotateAction;
-import logic.ship.RedShip;
-import logic.ship.Ship;
 
 public class pruebaRotateAction {
 
