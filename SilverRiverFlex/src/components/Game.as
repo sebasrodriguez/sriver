@@ -120,11 +120,16 @@ package components
 			_redPlayer = new Player(game.redPlayer.username);
 			trace(_redPlayer.username + " vs " + _bluePlayer.username);
 			
+			_redShipComponent = new RedShip(redShip.id, new Coordinate(10, 15), new Cardinal(redShip.orientation.direction), redShip.speed, redShip.size);
+			_blueShipComponent1 = new BlueShip(blueShip1.id, new Coordinate(14, 15), new Cardinal(blueShip1.orientation.direction), blueShip1.speed, blueShip1.size);
+			_blueShipComponent2 = new BlueShip(blueShip2.id, new Coordinate(15, 20), new Cardinal(blueShip2.orientation.direction), blueShip2.speed, blueShip2.size);
+			_blueShipComponent3 = new BlueShip(blueShip3.id, new Coordinate(18, 23), new Cardinal(blueShip3.orientation.direction), blueShip3.speed, blueShip3.size);
+			/*
 			_redShipComponent = new RedShip(redShip.id, new Coordinate(redShip.position.y, redShip.position.x), new Cardinal(redShip.orientation.direction), redShip.speed, redShip.size);
 			_blueShipComponent1 = new BlueShip(blueShip1.id, new Coordinate(blueShip1.position.y, blueShip1.position.x), new Cardinal(blueShip1.orientation.direction), blueShip1.speed, blueShip1.size);
 			_blueShipComponent2 = new BlueShip(blueShip2.id, new Coordinate(blueShip2.position.y, blueShip2.position.x), new Cardinal(blueShip2.orientation.direction), blueShip2.speed, blueShip2.size);
 			_blueShipComponent3 = new BlueShip(blueShip3.id, new Coordinate(blueShip3.position.y, blueShip3.position.x), new Cardinal(blueShip3.orientation.direction), blueShip3.speed, blueShip3.size);
-			
+			*/
 			_shipList = new Array(_redShipComponent, _blueShipComponent1, _blueShipComponent2, _blueShipComponent3);
 			_turn = new Turn(turn.movesLeft, _redPlayer, turn.timeLeft);
 			if (isActivePlayer())
@@ -400,7 +405,7 @@ package components
 		{
 			if (_selectedShip != null)
 			{
-				drawMovements();
+				enableMovement(_selectedShip);
 			}
 		}
 		
@@ -440,6 +445,40 @@ package components
 					_selectedShip.filters = null;
 					_selectedShip = null;
 				}
+			}
+		}
+		
+		public function enableMovement(ship:Ship):void {
+			var nomore:Boolean = false;
+			var offset:int = Math.ceil(ship.size / 2);
+			var i:int = 0;
+			var currentPos:Coordinate = ship.currentPos;
+			var offsetPos:Coordinate;
+			var realSpeed:Number = 2 / 5 * ship.speed;
+			while (!nomore && i < realSpeed ){
+				currentPos = Helper.calculateNextCell(currentPos, ship.direction);
+				offsetPos = Helper.calculateNextCell(currentPos, ship.direction, offset);
+				trace(currentPos);
+				trace(offsetPos);
+				if (!_gridComponent.getCell(offsetPos).blocked) {					
+					trace("quiere habilitar adelante:" +currentPos);
+					_gridComponent.enableCell(currentPos);
+				}else
+					nomore = true;
+				i ++;
+			}
+			currentPos = ship.currentPos;
+			i = 0;
+			nomore = false;
+			while (!nomore && i < realSpeed ){
+				currentPos = Helper.calculateNextCell(currentPos, Helper.getOppositeDirection(ship.direction));
+				offsetPos = Helper.calculateNextCell(currentPos, Helper.getOppositeDirection(ship.direction), offset);
+				if (!_gridComponent.getCell(offsetPos).blocked) {
+					trace("quiere habilitar reversa:" +currentPos);
+					_gridComponent.enableCell(currentPos);
+				}else
+					nomore = true;
+				i ++;
 			}
 		}
 		
@@ -647,23 +686,22 @@ package components
 			var tope:int = Math.floor(ship.size / 2);
 			var i:int = 0;
 			var currentPos:Coordinate = ship.currentPos;
-			while (result && i < tope)
-			{
-				var a:Coordinate = Helper.calculateNextCell(currentPos, cardinal);
-				result = !_gridComponent.getCell(a).blocked;
-				currentPos = a;
-				i++;
+
+			while (result && i < tope ){
+				currentPos = Helper.calculateNextCell(currentPos, cardinal);				
+				result = !_gridComponent.getCell(currentPos).blocked || ship.itsMe(currentPos);
+				i ++;
 			}
 			currentPos = ship.currentPos;
 			i = 0;
 			while (result && i < tope)
 			{
-				var b:Coordinate = Helper.calculateNextCell(ship.currentPos, Helper.getOppositeDirection(cardinal));
-				result = !_gridComponent.getCell(b).blocked;
-				currentPos = b;
-				i++;
+				currentPos = Helper.calculateNextCell(currentPos, Helper.getOppositeDirection(cardinal));
+				result = !_gridComponent.getCell(currentPos).blocked || ship.itsMe(currentPos);
+				i ++;
+
 			}
-			return result
+			return result;
 		}
 	}
 }

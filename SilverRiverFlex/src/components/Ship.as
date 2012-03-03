@@ -28,7 +28,7 @@ package components
 			_id = id;
 			_direction = d;
 			_ship = this;			
-			_speed = (s * 4) / 10;			
+			_speed = s;			
 			_size = size;
 			this.rotation = d.cardinal;
 			updateCoordinates();
@@ -141,6 +141,17 @@ package components
 				if(func != null)
 					func.call();
 			});
+		}
+		
+		public function itsMe(coordinate:Coordinate):Boolean {
+			var result:Boolean = false;
+			var i:int = 0;
+			while (!result && i < _coordinates.length) {
+				if (coordinate.equals(_coordinates[i]))
+					result = true;
+				i ++;
+			}
+			return result;
 		}
 	}
 
