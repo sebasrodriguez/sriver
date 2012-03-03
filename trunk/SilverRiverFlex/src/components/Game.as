@@ -188,23 +188,11 @@ package components
 			_menu = new Menu(Menu.MENU_POSITION_BOTTOM_LEFT);
 			_menu.addEventListener(ActionEvent.MODE_CHANGED, function(event:ActionEvent):void
 				{
-					switch (event.mode)
-					{
-						case Menu.MENU_MODE_MOVE: 
-							if (_selectedShip != null)
-								enableMovement(_selectedShip);
-							break;
-						case Menu.MENU_MODE_ROTATE: 
-							_gridComponent.disableCells();
-							break;
-						case Menu.MENU_MODE_FIRE: 
-							trace("Cambio a Fire");
-							break;
-					}
+					refreshMode();
 				});
 			_menu.addEventListener(ActionEvent.ROTATION_CLICKED, function(event:ActionEvent):void
 				{
-					if (_selectedShip != null && _turn.movesLeft > 0)
+					if (_selectedShip != null)
 					{
 						rotateAction(_selectedShip, new Cardinal(event.rotation));
 					}
@@ -219,6 +207,24 @@ package components
 			_info.setActivePlayer(_turn.activePlayer.username == _redPlayer.username);
 			
 			_main.addElement(_info);
+		}
+		
+		public function refreshMode():void {
+			clearMode();
+			if(_selectedShip != null && _turn.hasMovesLeft() && isActivePlayer()){
+				switch(_menu.currentMode) {
+					case Menu.MENU_MODE_MOVE:
+						enableMovement(_selectedShip);
+						break;
+					case Menu.MENU_MODE_ROTATE:
+						break;
+					case Menu.MENU_MODE_FIRE:
+						break;
+				}
+			}
+		}
+		public function clearMode():void {
+			_gridComponent.disableCells();
 		}
 		
 		public function getGameHandler(response:ResultEvent):void
@@ -418,25 +424,17 @@ package components
 		// Evento disparado cuando se selecciona un barco
 		public function selectedShipEvent(event:SelectedShipEvent):void
 		{
-			var selectedShip:Ship = event.selectedShip;
+			var ship:Ship = event.selectedShip;
 			// El usuario selecciono el barco rojo
-			if ((selectedShip is RedShip && _redPlayer.username == _myUsername) || (selectedShip is BlueShip && _bluePlayer.username == _myUsername))
+			if ((ship is RedShip && _redPlayer.username == _myUsername) || (ship is BlueShip && _bluePlayer.username == _myUsername))
 			{
-				if (_selectedShip != null)
-					_selectedShip.filters = null;
-				// Si hay un barco seleccionado lo marcamos en la pantalla, en caso contrario desmarcamos
-				// el que previamente estuviese marcado
-				if (selectedShip != _selectedShip)
-				{
-					_selectedShip = selectedShip;
-					var glow:GlowFilter = new GlowFilter(0xFF0000);
-					_selectedShip.filters = [glow];
-				}
-				else
-				{
-					_gridComponent.disableCells();
-					_selectedShip.filters = null;
-					_selectedShip = null;
+				//si el barco es distinto al seleccionado, desseleccionamos el anterior y seleccionamos el nuevo
+				if (_selectedShip != ship) {
+					if(_selectedShip != null)
+						_selectedShip.selected = false;
+					_selectedShip = ship;
+					_selectedShip.selected = true;
+					refreshMode();
 				}
 			}
 		}
@@ -518,14 +516,12 @@ package components
 						trace("esta en puerto");
 					if (checkGoal(ship))
 						trace("ganoooooooooo");
-					// Si quedan movimientos y yo soy el usuario activo muestro las celdas de movimientos
-					if (_turn.hasMovesLeft() && isActivePlayer())
-					{
-						// Se muestran nuevas celdas de movimiento basadas en la nueva posicion del barco
-						enableMovement(ship);
-					}
+					// Se muestran nuevas celdas de movimiento basadas en la nueva posicion del barco
+					refreshMode();
 					// Bloqueamos la nueva posicion del barco
 					setShipCellStatus(ship, true);
+					//refrescamos para que habilite la accion mover nuevamente
+					
 					if (func != null)
 						func.call();
 				}, 10);
@@ -665,6 +661,10 @@ package components
 
 			}
 			return result;
+		}
+		//centra la pantalla en el seleccionado
+		public function centerOnShip(ship:Ship):void {
+			
 		}
 	}
 }
