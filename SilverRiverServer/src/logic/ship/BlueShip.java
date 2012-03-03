@@ -1,17 +1,20 @@
 package logic.ship;
 
-import java.io.Serializable;
-
 import entities.BlueShipVO;
 import entities.Cardinal;
 import entities.Coordinate;
 
-public class BlueShip extends Ship  implements Serializable {
+public class BlueShip extends Ship{
 
 	/*
 	 * Constructores
 	 */
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public BlueShip(){
 		
 	}

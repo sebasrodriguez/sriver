@@ -4,6 +4,10 @@ import logic.player.Player;
 
 public class EndTurnAction extends GameAction {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Player playerTurn;
 	
 	/*

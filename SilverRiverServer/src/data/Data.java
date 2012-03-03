@@ -34,7 +34,7 @@ public class Data {
 			String password = prop.getProperty("dbPassword");
 			String url = prop.getProperty("dbUrl");
 			String driver = prop.getProperty("dbDriver");
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName(driver);
 			Connection con = DriverManager.getConnection(url, username, password);
 			Queries query = new Queries();
 			

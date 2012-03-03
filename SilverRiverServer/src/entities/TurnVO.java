@@ -1,7 +1,13 @@
 package entities;
 
-public class TurnVO {
+import java.io.Serializable;
 
+public class TurnVO implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private PlayerVO activePlayer;
 	private int movesLeft;
 	private int timeLeft;

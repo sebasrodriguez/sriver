@@ -1,7 +1,13 @@
 package entities;
 
-public class PlayerVO {
+import java.io.Serializable;
 
+public class PlayerVO  implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String username;
 	
 	

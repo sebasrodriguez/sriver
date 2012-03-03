@@ -1,9 +1,12 @@
 package entities;
 
-import java.io.Serializable;
-
-public class RedShipVO extends ShipVO  implements Serializable{	
+public class RedShipVO extends ShipVO{	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/*
 	 * Constructor
 	 */

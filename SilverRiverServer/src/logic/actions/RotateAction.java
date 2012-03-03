@@ -1,12 +1,14 @@
 package logic.actions;
 
-import java.io.Serializable;
-
 import entities.Cardinal;
 import entities.ShipVO;
 
-public class RotateAction extends ShipAction implements Serializable{
+public class RotateAction extends ShipAction{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Cardinal cardinal;
 	
 

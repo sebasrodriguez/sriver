@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 public class Weapon implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int TORPEDO = 0;
 	public static final int MACHINEGUN = 1;
 	public static final int AIRCRAFT = 2;

@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 public class Cardinal implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int N = -90;
 	public static final int NE = -45;
 	public static final int E = 0;

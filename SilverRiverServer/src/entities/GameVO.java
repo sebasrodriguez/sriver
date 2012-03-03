@@ -1,12 +1,17 @@
 package entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import logic.actions.Action;
 
 
-public class GameVO {
+public class GameVO implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private PlayerVO redPlayer;
 	private PlayerVO bluePlayer;

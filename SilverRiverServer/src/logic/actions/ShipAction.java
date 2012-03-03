@@ -4,6 +4,10 @@ import entities.ShipVO;
 
 public abstract class ShipAction extends Action {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ShipVO ship;
 	
 	/*

@@ -230,6 +230,8 @@ public class pruebaFacade {
 		printShips(1);
 		printTurn(1);
 		printMoveAction(moveAction);
+		System.out.println(facadePrueba.getActions(1, "Jugador 3").length);
+		System.out.println(facadePrueba.getActions(1, "Jugador 4").length);		
 		System.out.println("--------------------------------------------");
 		
 		System.out.println("Jugador 3 rota el barco con id 0 a 135");
@@ -238,6 +240,8 @@ public class pruebaFacade {
 		printShips(1);
 		printTurn(1);
 		printRotateAction(rotateAction);
+		System.out.println(facadePrueba.getActions(1, "Jugador 3").length);
+		System.out.println(facadePrueba.getActions(1, "Jugador 4").length);		
 		System.out.println("--------------------------------------------");
 		
 		System.out.println("Disparando desde el barco con id 0 al punto (20,20)");
@@ -247,12 +251,16 @@ public class pruebaFacade {
 		printShips(1);
 		printTurn(1);
 		printFireAction(fireAction);
+		System.out.println(facadePrueba.getActions(1, "Jugador 3").length);
+		System.out.println(facadePrueba.getActions(1, "Jugador 4").length);		
 		System.out.println("--------------------------------------------");	
 		
 		System.out.println("Jugador 3 termina su turno");
 		facadePrueba.endTurn(1);
 		printShips(1);
 		printTurn(1);
+		System.out.println(facadePrueba.getActions(1, "Jugador 3").length);
+		System.out.println(facadePrueba.getActions(1, "Jugador 4").length);		
 		System.out.println("--------------------------------------------");
 			
 		System.out.println("Jugador 4 rota el barco con id 2 a 90");
@@ -261,6 +269,8 @@ public class pruebaFacade {
 		printShips(1);
 		printTurn(1);
 		printRotateAction(rotateAction);
+		System.out.println(facadePrueba.getActions(1, "Jugador 3").length);
+		System.out.println(facadePrueba.getActions(1, "Jugador 4").length);		
 		System.out.println("--------------------------------------------");
 		
 		System.out.println("Disparando desde el barco con id 3 al punto (12,10)");
@@ -270,6 +280,8 @@ public class pruebaFacade {
 		printShips(1);
 		printTurn(1);
 		printFireAction(fireAction);
+		System.out.println(facadePrueba.getActions(1, "Jugador 3").length);
+		System.out.println(facadePrueba.getActions(1, "Jugador 4").length);		
 		System.out.println("--------------------------------------------");	
 		
 		System.out.println("moviendo el barco con id 2 al (12,12)");
@@ -278,6 +290,8 @@ public class pruebaFacade {
 		printShips(1);
 		printTurn(1);
 		printMoveAction(moveAction);
+		System.out.println(facadePrueba.getActions(1, "Jugador 3").length);
+		System.out.println(facadePrueba.getActions(1, "Jugador 4").length);		
 		System.out.println("--------------------------------------------");
 		
 		System.out.println("moviendo el barco con id 1 al (12,8)");
@@ -286,6 +300,8 @@ public class pruebaFacade {
 		printShips(1);
 		printTurn(1);
 		printMoveAction(moveAction);
+		System.out.println(facadePrueba.getActions(1, "Jugador 3").length);
+		System.out.println(facadePrueba.getActions(1, "Jugador 4").length);		
 		System.out.println("--------------------------------------------");
 		
 		System.out.println("Disparando desde el barco con id 1 al punto (12,10)");
@@ -295,6 +311,8 @@ public class pruebaFacade {
 		printShips(1);
 		printTurn(1);
 		printFireAction(fireAction);
+		System.out.println(facadePrueba.getActions(1, "Jugador 3").length);
+		System.out.println(facadePrueba.getActions(1, "Jugador 4").length);		
 		System.out.println("--------------------------------------------");	
 		
 		System.out.println("Eliminando el Game con Id 0");
@@ -327,11 +345,12 @@ public class pruebaFacade {
 		}
 		System.out.println("-------------------------------------------------------------");
 		
-		System.out.println("Guardando la partida con id 1");
+		/*
+		 System.out.println("Guardando la partida con id 1");		 
 		facadePrueba.saveGame(1);
 		System.out.println("Se guardo....");
 		System.out.println("-------------------------------------------------------------");
-		
+		*/
 	}
 
 }
