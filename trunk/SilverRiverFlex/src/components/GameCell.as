@@ -71,8 +71,15 @@ package components
 		{
 			if (value)
 				changeColor(CELL_COLOR_AVAILABLE, CELL_ALPHA_AVAILABLE);
-			else
-				changeColor(CELL_COLOR_NORMAL, CELL_ALPHA_NORMAL);
+			else{
+				if(_portCell)
+					changeColor(CELL_COLOR_PORT, CELL_ALPHA_PORT);
+				else
+					if(_goalCell)
+						changeColor(CELL_COLOR_GOAL, CELL_ALPHA_GOAL);
+					else
+						changeColor(CELL_COLOR_NORMAL, CELL_ALPHA_NORMAL);
+			}
 			_available = value;
 		}
 		
