@@ -99,13 +99,8 @@ package components
 			if (gameId >= 0)
 			{
 				_gameId = gameId;
-				trace("getting new game");
 				_main.wsRequest.getGame(gameId);
 				_gameMode.gameMode = GameMode.GETTING_GAME;
-			}
-			else
-			{
-				trace("still waiting for another player");
 			}
 		}
 		
@@ -118,18 +113,17 @@ package components
 			var turn:Object = game.turn;
 			_bluePlayer = new Player(game.bluePlayer.username);
 			_redPlayer = new Player(game.redPlayer.username);
-			trace(_redPlayer.username + " vs " + _bluePlayer.username);
 			
 			_redShipComponent = new RedShip(redShip.id, new Coordinate(10, 15), new Cardinal(redShip.orientation.direction), redShip.speed, redShip.size);
 			_blueShipComponent1 = new BlueShip(blueShip1.id, new Coordinate(14, 15), new Cardinal(blueShip1.orientation.direction), blueShip1.speed, blueShip1.size);
 			_blueShipComponent2 = new BlueShip(blueShip2.id, new Coordinate(15, 20), new Cardinal(blueShip2.orientation.direction), blueShip2.speed, blueShip2.size);
 			_blueShipComponent3 = new BlueShip(blueShip3.id, new Coordinate(18, 23), new Cardinal(blueShip3.orientation.direction), blueShip3.speed, blueShip3.size);
 			/*
-			_redShipComponent = new RedShip(redShip.id, new Coordinate(redShip.position.y, redShip.position.x), new Cardinal(redShip.orientation.direction), redShip.speed, redShip.size);
-			_blueShipComponent1 = new BlueShip(blueShip1.id, new Coordinate(blueShip1.position.y, blueShip1.position.x), new Cardinal(blueShip1.orientation.direction), blueShip1.speed, blueShip1.size);
-			_blueShipComponent2 = new BlueShip(blueShip2.id, new Coordinate(blueShip2.position.y, blueShip2.position.x), new Cardinal(blueShip2.orientation.direction), blueShip2.speed, blueShip2.size);
-			_blueShipComponent3 = new BlueShip(blueShip3.id, new Coordinate(blueShip3.position.y, blueShip3.position.x), new Cardinal(blueShip3.orientation.direction), blueShip3.speed, blueShip3.size);
-			*/
+			   _redShipComponent = new RedShip(redShip.id, new Coordinate(redShip.position.y, redShip.position.x), new Cardinal(redShip.orientation.direction), redShip.speed, redShip.size);
+			   _blueShipComponent1 = new BlueShip(blueShip1.id, new Coordinate(blueShip1.position.y, blueShip1.position.x), new Cardinal(blueShip1.orientation.direction), blueShip1.speed, blueShip1.size);
+			   _blueShipComponent2 = new BlueShip(blueShip2.id, new Coordinate(blueShip2.position.y, blueShip2.position.x), new Cardinal(blueShip2.orientation.direction), blueShip2.speed, blueShip2.size);
+			   _blueShipComponent3 = new BlueShip(blueShip3.id, new Coordinate(blueShip3.position.y, blueShip3.position.x), new Cardinal(blueShip3.orientation.direction), blueShip3.speed, blueShip3.size);
+			 */
 			_shipList = new Array(_redShipComponent, _blueShipComponent1, _blueShipComponent2, _blueShipComponent3);
 			_turn = new Turn(turn.movesLeft, _redPlayer, turn.timeLeft);
 			if (isActivePlayer())
@@ -194,7 +188,8 @@ package components
 				{
 					if (_selectedShip != null)
 					{
-						rotateAction(_selectedShip, new Cardinal(event.rotation));
+						if(isActivePlayer())
+							rotateAction(_selectedShip, new Cardinal(event.rotation));
 					}
 				});
 			_main.addElement(_menu);
@@ -240,7 +235,6 @@ package components
 		
 		public function fireHandler(response:ResultEvent):void
 		{
-			trace("el disparo del server");
 			var coordinate:Coordinate = new Coordinate(response.result.hitCoordinate.y, response.result.hitCoordinate.x);
 			var affectedShip:Ship = null;
 			if (response.result.affectedShip != null)
@@ -263,8 +257,7 @@ package components
 		
 		public function endTurnHandler(response:ResultEvent):void
 		{
-			trace("nuevo turno obtenido del servidor");
-			trace("usuario activo: " + response.result.playerTurn.username);
+			endTurnAction();
 		}
 		
 		public function endTurnFaultHandler(response:FaultEvent):void
@@ -273,7 +266,7 @@ package components
 		}
 		
 		/*
-		 * inicia la ssincronizacion con el server, ejecuta un timer cada 500 milisegundos
+		 * inicia la sincronizacion con el server, ejecuta un timer cada 500 milisegundos
 		 *
 		 */
 		public function startSyncronizing():void
@@ -290,10 +283,11 @@ package components
 				_main.wsRequest.checkGameId();
 			}
 			else if (_gameMode.gameMode == GameMode.PLAYING)
-			{				
+			{
+				trace("estoy jugando");
 			}
 			else if (_gameMode.gameMode == GameMode.WAITING_PLAYER_TURN)
-			{				
+			{
 				_main.wsRequest.getActions(_gameId, _myUsername);
 			}
 			
@@ -308,26 +302,25 @@ package components
 				_turn.decreaseTimeLeft();
 				_info.timeLeftText = _turn.timeLeft.toString();
 				if (_turn.timeLeft <= 0 && isActivePlayer())
-				{
-					endTurnAction();
+				{					
+					_main.wsRequest.endTurn(_gameId);
 				}
+				
 			}
-			_shouldDecreaseTime = !_shouldDecreaseTime;
+			if (_turn.timeLeft > 0)
+				_shouldDecreaseTime = !_shouldDecreaseTime;
+			else
+				_shouldDecreaseTime = false;
 		}
 		
 		public function consumeActionsHandler(response:ResultEvent):void
 		{
 			if (response.result != null)
 			{
-				trace("tengo una accion en la cola");
 				// Agregamos las nuevas acciones a ejecutar a la cola de acciones
 				_actionQueue.addItem(response.result);
 				
 				consumeNextAction();
-			}
-			else
-			{
-				//trace("no hay nada en la cola para consumir");
 			}
 		}
 		
@@ -363,7 +356,6 @@ package components
 				}
 				else if (action.actionType == "EndTurnAction")
 				{
-					// TODO: solucionar problema con los turnos
 					endTurnAction();
 				}
 				else if (action.actionType == "EnterPortAction")
@@ -402,11 +394,10 @@ package components
 					coor.x = event.coordinate.c;
 					coor.y = event.coordinate.r;
 					// Llamamos al webservice con la accion de disparo
-					_main.wsRequest.fire(_gameId, _selectedShip.shipId, coor, _menu.currentFireMode);						
+					_main.wsRequest.fire(_gameId, _selectedShip.shipId, coor, _menu.currentFireMode);
 				}
 			}
 		}
-		
 		
 		private function addShipsToUI():void
 		{
@@ -439,40 +430,47 @@ package components
 			}
 		}
 		
-		public function enableMovement(ship:Ship):void {
+		public function enableMovement(ship:Ship):void
+		{
 			var nomore:Boolean = false;
 			var offset:Number = Math.floor(ship.size / 2);
 			var i:int = 0;
 			var currentPos:Coordinate = ship.currentPos;
 			var offsetPos:Coordinate;
 			var realSpeed:Number = 2 / 5 * ship.speed;
-			while (!nomore && i < realSpeed ){
+			while (!nomore && i < realSpeed)
+			{
 				currentPos = Helper.calculateNextCell(currentPos, ship.direction);
-				offsetPos = Helper.calculateNextCell(currentPos, ship.direction, offset);				
-				if (!_gridComponent.getCell(offsetPos).blocked || ship.itsMe(offsetPos)) {
+				offsetPos = Helper.calculateNextCell(currentPos, ship.direction, offset);
+				if (!_gridComponent.getCell(offsetPos).blocked || ship.itsMe(offsetPos))
+				{
 					_gridComponent.enableCell(currentPos);
-				}else
+				}
+				else
 					nomore = true;
-				i ++;
+				i++;
 			}
 			currentPos = ship.currentPos;
 			i = 0;
 			nomore = false;
 			trace(realSpeed / 2);
-			while (!nomore && i < realSpeed / 2 ){
+			while (!nomore && i < realSpeed / 2)
+			{
 				currentPos = Helper.calculateNextCell(currentPos, Helper.getOppositeDirection(ship.direction));
 				offsetPos = Helper.calculateNextCell(currentPos, Helper.getOppositeDirection(ship.direction), offset);
-				trace("currentPos: "+currentPos);
-				trace("offsetPos: "+offsetPos);
-				if (!_gridComponent.getCell(offsetPos).blocked) {
-					trace("quiere habilitar reversa:" +currentPos);
+				trace("currentPos: " + currentPos);
+				trace("offsetPos: " + offsetPos);
+				if (!_gridComponent.getCell(offsetPos).blocked)
+				{
+					trace("quiere habilitar reversa:" + currentPos);
 					_gridComponent.enableCell(currentPos);
-				}else
+				}
+				else
 					nomore = true;
-				i ++;
+				i++;
 			}
 		}
-			
+		
 		// Bloquea/Desbloquea las celdas que el barco ocupa/ocupo
 		private function setShipCellStatus(ship:Ship, enabled:Boolean):void
 		{
@@ -505,12 +503,14 @@ package components
 			// Se deshabilita las celdas de movimiento previamente mostradas
 			_gridComponent.disableCells();
 			// Actualizo la cantidad de movimientos restantes del turno
-			_turn.decreaseMovesLeft();
+			updateMovesLeft();
 			// Desbloqueamos las celdas actuales del barco
 			setShipCellStatus(ship, false);
 			// Se mueve el barco
 			ship.moveTo(coordinate, function():void
 				{
+					if (!_turn.hasMovesLeft())
+						_main.wsRequest.endTurn();
 					//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
 					if (checkPort(ship))
 						trace("esta en puerto");
@@ -546,6 +546,8 @@ package components
 				// Rotamos el barco
 				ship.rotateTo(direction.cardinal, function():void
 					{
+						if (!_turn.hasMovesLeft())
+							_main.wsRequest.endTurn();
 						// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
 						setShipCellStatus(ship, true);
 						//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
@@ -562,13 +564,10 @@ package components
 		// Cambia el control del jugador actual al jugador que estaba esperando
 		private function endTurnAction():void
 		{
-			// Si soy el usuario activo envio al servidor el cambio de turno
-			if (isActivePlayer())
-			{
-				_main.wsRequest.endTurn(_gameId);
-			}
 			// Cambia el turno y reseteo contadores
-			_turn.switchTurn(_redPlayer, _bluePlayer);			
+			_turn.switchTurn(_redPlayer, _bluePlayer);
+			// Cambia el modo
+			refreshMode();
 			// Actualizo el contador de tiempo/movimientos y jugador actual
 			_info.movesLeftText = _turn.movesLeft.toString();
 			_info.timeLeftText = _turn.timeLeft.toString();
@@ -645,11 +644,12 @@ package components
 			var tope:int = Math.floor(ship.size / 2);
 			var i:int = 0;
 			var currentPos:Coordinate = ship.currentPos;
-
-			while (result && i < tope ){
-				currentPos = Helper.calculateNextCell(currentPos, cardinal);				
+			
+			while (result && i < tope)
+			{
+				currentPos = Helper.calculateNextCell(currentPos, cardinal);
 				result = !_gridComponent.getCell(currentPos).blocked || ship.itsMe(currentPos);
-				i ++;
+				i++;
 			}
 			currentPos = ship.currentPos;
 			i = 0;
@@ -657,8 +657,8 @@ package components
 			{
 				currentPos = Helper.calculateNextCell(currentPos, Helper.getOppositeDirection(cardinal));
 				result = !_gridComponent.getCell(currentPos).blocked || ship.itsMe(currentPos);
-				i ++;
-
+				i++;
+				
 			}
 			return result;
 		}
