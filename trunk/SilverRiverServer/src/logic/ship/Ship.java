@@ -39,40 +39,64 @@ public abstract class Ship {
 	
 	
 	/*
-	 * Setters
+	 * Setea el id del barco
 	 */
 	public void setId(int id){
 		this.id = id;
 	}
 	
+	/*
+	 * Setea la velocidad del barco
+	 */
 	public void setSpeed(int speed){
 		this.speed = speed;		
 	}
 	
+	/*
+	 * Setea el blindaje del barco
+	 */
 	public void setArmor(int armor){
 		this.armor = armor;
 	}
 	
+	/*
+	 * Setea la cantidad de balas de la metralleta
+	 */
 	public void setAmmo(int ammo){
 		this.ammo = ammo;
 	}
 	
+	/*
+	 * Setea la cantidad de torpedos
+	 */
 	public void setTorpedo(int torpedo){
 		this.torpedo = torpedo;
 	}
 	
+	/*
+	 * Setea el rango de visibilidad
+	 */
 	public void setViewRange(int viewRange){
 		this.viewRange = viewRange;
 	}
 	
+	/*
+	 * Setea el tamaño
+	 */
 	public void setSize(int size){
 		this.size = size;
 	}
 
+	/*
+	 *Setea la posicion del barco
+	 */
 	public void setPosition(Coordinate position){
 		this.position = position;
 	}
 	
+	/*
+	 * Setea la orientacion del barco
+	 */
 	public void setOrientation(Cardinal orientation){
 		this.orientation = orientation;
 	}
@@ -80,40 +104,64 @@ public abstract class Ship {
 	
 
 	/*
-	 * Getters
+	 * Devuelve el id del barco
 	 */
 	public int getId(){
 		return this.id;		
 	}
 	
+	/*
+	 * Devuelve la velocidad del barco
+	 */
 	public int getSpeed(){
 		return this.speed;
 	}
 	
+	/*
+	 * Devuelve la cantidad de blindaje
+	 */
 	public int getArmor(){
 		return this.armor;
 	}
 	
+	/*
+	 * Devuelve la cantidad de balas
+	 */
 	public int getAmmo(){
 		return this.ammo;
 	}
 	
+	/*
+	 * Devuelve la cantidad de torpedos
+	 */
 	public int getTorpedo(){
 		return this.torpedo;
 	}
 	
+	/*
+	 * Devuelve el rango de visibilidad
+	 */
 	public int getViewRange(){
 		return this.viewRange;
 	}
 	
+	/*
+	 * Devuelve el tamaño del barco
+	 */
 	public int getSize(){
 		return this.size;
 	}
 	
+	/*
+	 * Devuelve la posicion del barco
+	 */
 	public Coordinate getPosition(){
 		return this.position;
 	}
 	
+	/*
+	 * Devuelve la orientacion
+	 */
 	public Cardinal getOrientation(){
 		return this.orientation;
 	}	
@@ -155,7 +203,7 @@ public abstract class Ship {
 	}
 	
 	/*
-	 * Metodo que se retorna a si mismo como un ShipVO
+	 * Metodo abstracto que se retorna a si mismo como un ShipVO
 	 */
 	public abstract ShipVO mapToValueObject();
 }

@@ -15,7 +15,7 @@ public abstract class Action {
 	}	
 	
 	/*
-	 * Getters
+	 * Devuelve el tipo del action
 	 */
 	public String getActionType(){
 		return this.actionType;

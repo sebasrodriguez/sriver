@@ -14,7 +14,9 @@ public abstract class ShipVO {
 	private Cardinal orientation;	
 		
 	
-
+	/*
+	 *Constructor
+	 */
 	public ShipVO(int id, int speed, int armor, int ammo, int torpedo, int viewRange, int size, Coordinate position, Cardinal orientation){
 		this.id = id;
 		this.speed = speed;
@@ -28,39 +30,65 @@ public abstract class ShipVO {
 	}
 	
 	
-	
+	/*
+	 * Devuele el id del barco
+	 */
 	public int getId(){
 		return this.id;		
 	}
 	
+	/*
+	 * Devuelve la velocidad del barco
+	 */
 	public int getSpeed(){
 		return this.speed;
 	}
 	
+	/*
+	 * Devuelve el blindaje del barco
+	 */
 	public int getArmor(){
 		return this.armor;
 	}
 	
+	/*
+	 * Devuelve la cantidad de balas de la metralleta
+	 */
 	public int getAmmo(){
 		return this.ammo;
 	}
 	
+	/*
+	 * Devuelve la cantidad de torpedos
+	 */
 	public int getTorpedo(){
 		return this.torpedo;
 	}
 	
+	/*
+	 * Devuelve el rango de visibilidad
+	 */
 	public int getViewRange(){
 		return this.viewRange;
 	}
 	
+	/*
+	 * Devuelve el tamaño del barco
+	 */
 	public int getSize(){
 		return this.size;
 	}
 	
+	/*
+	 * Devuelve la coordenada del barco
+	 */
 	public Coordinate getPosition(){
 		return this.position;
 	}
 	
+	/*
+	 * Devuelve la orientacion del barco
+	 */
 	public Cardinal getOrientation(){
 		return this.orientation;
 	}

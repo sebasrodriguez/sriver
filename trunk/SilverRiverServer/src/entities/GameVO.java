@@ -15,6 +15,10 @@ public class GameVO {
 	private ShipVO[] ships;
 	private TurnVO turn;
 	
+	
+	/*
+	 * Constructor
+	 */
 	public GameVO(int id, PlayerVO redPlayer, PlayerVO bluePlayer,
 			ArrayList<Action> redActionQueue, ArrayList<Action> blueActionQueue,
 			ArrayList<ShipVO> ships, TurnVO turn) 
@@ -28,6 +32,74 @@ public class GameVO {
 		this.turn = turn;
 	}
 	
+	
+	/*
+	 * Metodos publicos
+	 */	
+	
+	/*
+	 * Devuelve el id del game
+	 */
+	public int getId() 
+	{
+		return id;
+	}
+
+	/*
+	 * Devuelve el jugador rojo en ValueObject
+	 */
+	public PlayerVO getRedPlayer() 
+	{
+		return redPlayer;
+	}
+	
+	/*
+	 * Devuelve el jugador azul en ValueObject
+	 */
+	public PlayerVO getBluePlayer() 
+	{
+		return bluePlayer;
+	}
+	
+	/*
+	 * Devuelve la cola de acciones del juador azul en un Array
+	 */
+	public Action[] getBlueActionQueue() 
+	{
+		return blueActionQueue;
+	}
+
+	/*
+	 * Devuelve la cola de acciones del jugador rojo en un array
+	 */
+	public Action[] getRedActionQueue() 
+	{
+		return redActionQueue;
+	}
+
+	/*
+	 * Devuelve un array de los barcos en ValueObject
+	 */
+	public ShipVO[] getShips() 
+	{
+		return ships;
+	}
+	
+	/*
+	 * Devuelve el turno en forma de ValueObject
+	 */
+	public TurnVO getTurn() 
+	{
+		return turn;
+	}	
+	
+	/*
+	 * Metodos privados
+	 */
+	
+	/*
+	 * Convierte el ArrayList<Action> en un array simple: Action[]
+	 */
 	private Action[] convertToArray(ArrayList<Action>actions){
 		Action[] actionsArr = new Action[actions.size()];
 		
@@ -38,6 +110,9 @@ public class GameVO {
 		return actionsArr;		
 	}
 	
+	/*
+	 * Convierte el ArrayList<ShipVO> en un array simple ShipVO[]	
+	 */
 	private ShipVO[] convertToShipArray(ArrayList<ShipVO>ships){
 		ShipVO[] shipsArr = new ShipVO[ships.size()];
 		
@@ -47,41 +122,4 @@ public class GameVO {
 		
 		return shipsArr;		
 	}
-
-	public int getId() 
-	{
-		return id;
-	}
-
-	public PlayerVO getRedPlayer() 
-	{
-		return redPlayer;
-	}
-	
-	public PlayerVO getBluePlayer() 
-	{
-		return bluePlayer;
-	}
-	
-	public Action[] getBlueActionQueue() 
-	{
-		return blueActionQueue;
-	}
-
-	
-	public Action[] getRedActionQueue() 
-	{
-		return redActionQueue;
-	}
-
-	
-	public ShipVO[] getShips() 
-	{
-		return ships;
-	}
-	
-	public TurnVO getTurn() 
-	{
-		return turn;
-	}	
 }

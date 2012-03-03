@@ -9,10 +9,16 @@ public class Weapon{
 	
 	private int weapon;
 
+	/*
+	 * Constructor
+	 */
 	public Weapon(int weapon){
 		this.weapon = weapon;
 	}
 	
+	/*
+	 * Devuelve el tipo del arma
+	 */
 	public int getWeapon(){
 		return this.weapon;
 	}	

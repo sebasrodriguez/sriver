@@ -483,7 +483,7 @@ public class Facade {
 		return this.activeGames.iterator();
 	}
 	
-	
+	/*
 	//PRUEBAS CON LA UI
 	public Action[] pruebaActions(){
 		
@@ -535,7 +535,7 @@ public class Facade {
 				
 		return acs;	
 		
-	}
+	}*/
 	
 	
 	

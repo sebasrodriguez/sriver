@@ -7,6 +7,9 @@ public class Player
 	
 	private String username;
 	
+	/*
+	 * Constructor
+	 */
 	public Player()
 	{
 	}
@@ -16,19 +19,25 @@ public class Player
 		this.username = username;
 	}
 	
-	/* Setters y Getters */
-	
-	
+	/*
+	 * Devuelve el nombre del usuario
+	 */	
 	public String getUsername()
 	{
 		return this.username;
 	}
 	
+	/*
+	 * Setea el nombre del usuario 
+	 */
 	public void setUsername(String user)
 	{
 		this.username = user;
 	}
 	
+	/*
+	 * Devuelve al jugador en ValueObject
+	 */
 	public PlayerVO mapToValueObject(){
 		PlayerVO playerVOToReturn = new PlayerVO(this.username);
 		return playerVOToReturn;

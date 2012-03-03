@@ -14,25 +14,39 @@ public class Turn{
 		
 	}
 	
-	//public Turn(Player activePlayer, int movesLeft){
+	/*
+	 * Constructor
+	 */
 	public Turn(Player activePlayer){	
 		this.activePlayer = activePlayer;
 		this.movesLeft = 5;
 		this.timeLeft = 60;		
 	}
 
+	/*
+	 * Devuelve el jugador activo
+	 */
 	public Player getActivePlayer(){
 		return activePlayer;
 	}
 
+	/*
+	 * Setea al jugador activo
+	 */
 	public void setActivePlayer(Player activePlayer){
 		this.activePlayer = activePlayer;
 	}
 
+	/*
+	 * Devuelve la cantidad de movimientos restantes
+	 */
 	public int getMovesLeft(){
 		return movesLeft;
 	}
 
+	/*
+	 * Setea la cantidad de movimientos restantes
+	 */
 	public void setMovesLeft(int movesLeft){
 		this.movesLeft = movesLeft;
 	}
@@ -54,6 +68,9 @@ public class Turn{
 		this.movesLeft = this.movesLeft - 1;
 	}
 	
+	/*
+	 * Devuelve el turno en ValueObject
+	 */
 	public TurnVO mapToValueObject(){
 		PlayerVO playerVO = this.activePlayer.mapToValueObject();
 		TurnVO turnVOToReturn = new TurnVO(playerVO,this.movesLeft,this.timeLeft);
