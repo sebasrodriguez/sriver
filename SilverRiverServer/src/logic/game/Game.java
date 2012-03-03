@@ -3,6 +3,7 @@ package logic.game;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 import entities.Cardinal;
 import entities.Coordinate;
@@ -316,27 +317,37 @@ public class Game implements Serializable
 	 */
 	private ArrayList<Ship> createShipsArray(){
 		ArrayList<Ship> shipsToReturn = new ArrayList<Ship>();
+		int x = 0;
+		int y = 0;
 		
 		//barcoRojo
-		Coordinate position = new Coordinate(10,10);
+		y = 10;
+		x = this.randomX(15);
+		Coordinate position = new Coordinate(x,y);
 		Cardinal cardinal = new Cardinal(45);
 		Ship redShip = new RedShip(0,10,10,12,3,10,3,position, cardinal);
 		shipsToReturn.add(redShip);
 		
 		//barcoAzul1
-		position = new Coordinate(20,20);
+		y = 30;
+		x = this.randomX(15);
+		position = new Coordinate(x,y);
 		cardinal = new Cardinal(90);
 		Ship blueShip1 = new BlueShip(1,10,5,12,3,10,1,position, cardinal);
 		shipsToReturn.add(blueShip1);
 		
 		//barcoAzul2
-		position = new Coordinate(25,25);
+		y = 31;
+		x = this.randomX(15);
+		position = new Coordinate(x,y);
 		cardinal = new Cardinal(-45);
 		Ship blueShip2 = new BlueShip(2,10,5,6,1,5,1,position, cardinal);
 		shipsToReturn.add(blueShip2);
 		
 		//barcoAzul3
-		position = new Coordinate(32,32);
+		y = 32;
+		x = this.randomX(15);
+		position = new Coordinate(x,y);
 		cardinal = new Cardinal(-90);
 		Ship blueShip3 = new BlueShip(3,10,5,6,1,5,1,position, cardinal);		
 		shipsToReturn.add(blueShip3);
@@ -357,4 +368,14 @@ public class Game implements Serializable
 		
 		return shipsVOToReturn;
 	}	
+	
+	/*
+	 * Metodo que genera el random entre un rango de valores
+	 */
+	private int randomX(int minimum){
+		Random randomX = new Random();
+		int randomToReturn = randomX.nextInt(minimum) + minimum;
+		
+		return randomToReturn;		
+	}
 }
