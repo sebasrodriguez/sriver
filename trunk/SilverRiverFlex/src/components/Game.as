@@ -278,12 +278,10 @@ package components
 				_main.wsRequest.checkGameId();
 			}
 			else if (_gameMode.gameMode == GameMode.PLAYING)
-			{
-				// trace("Soy user " + _turn.activePlayer.username + " y estoy jugando");
+			{				
 			}
 			else if (_gameMode.gameMode == GameMode.WAITING_PLAYER_TURN)
-			{
-				// trace("El user " + _turn.activePlayer.username + " esta jugando");
+			{				
 				_main.wsRequest.getActions(_gameId, _myUsername);
 			}
 			
@@ -296,7 +294,7 @@ package components
 			if (_shouldDecreaseTime)
 			{
 				_turn.decreaseTimeLeft();
-				// _timeLeftLabel.text = "Tiempo restante: " + _turn.timeLeft.toString();
+				_info.timeLeftText = _turn.timeLeft.toString();
 				if (_turn.timeLeft <= 0 && isActivePlayer())
 				{
 					endTurnAction();
@@ -392,8 +390,7 @@ package components
 					coor.x = event.coordinate.c;
 					coor.y = event.coordinate.r;
 					// Llamamos al webservice con la accion de disparo
-					_main.wsRequest.fire(_gameId, _selectedShip.shipId, coor, _menu.currentFireMode);
-						// 	fireAction(_selectedShip, event.coordinate, _menu.currentFireMode);
+					_main.wsRequest.fire(_gameId, _selectedShip.shipId, coor, _menu.currentFireMode);						
 				}
 			}
 		}
@@ -560,7 +557,7 @@ package components
 							trace("ganoo");
 						if (func != null)
 							func.call();
-					});			
+					});
 			}
 		}
 		
@@ -573,10 +570,11 @@ package components
 				_main.wsRequest.endTurn(_gameId);
 			}
 			// Cambia el turno y reseteo contadores
-			_turn.switchTurn(_redPlayer, _bluePlayer);
+			_turn.switchTurn(_redPlayer, _bluePlayer);			
 			// Actualizo el contador de tiempo/movimientos y jugador actual
 			_info.movesLeftText = _turn.movesLeft.toString();
 			_info.timeLeftText = _turn.timeLeft.toString();
+			_info.setActivePlayer(_turn.activePlayer.username == _redPlayer.username);
 			
 			if (isActivePlayer())
 			{
