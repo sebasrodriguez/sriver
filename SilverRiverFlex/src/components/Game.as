@@ -39,12 +39,9 @@ package components
 		private var _shouldDecreaseTime:Boolean;
 		private var _gameMode:GameMode;
 		private var _componentsToShow:ArrayList;
-		// Controles UI
-		private var _movesLeftLabel:Label;
-		private var _timeLeftLabel:Label;
+		// Controles UI		
 		private var _waitingPlayerLabel:Label;
-		private var _activePlayerLabel:Label;
-		private var _myUsernameLabel:Label;
+		private var _info:Info;
 		
 		public var _gridComponent:GameGrid;
 		public var _redShipComponent:RedShip;
@@ -183,46 +180,6 @@ package components
 			_blueShipComponent2.show();
 			_blueShipComponent3.show();
 			
-			// Label de movimientos restantes
-			_movesLeftLabel = new Label();
-			_movesLeftLabel.text = "Movimientos restantes: " + _turn.movesLeft.toString();
-			_movesLeftLabel.x = 10;
-			_movesLeftLabel.y = 10;
-			_movesLeftLabel.setStyle("fontSize", 20);
-			_movesLeftLabel.setStyle("color", 0xFFCC33);
-			_movesLeftLabel.setStyle("fontStyle", "bold");
-			_main.addElement(_movesLeftLabel);
-			
-			// Label de tiempo restante
-			_timeLeftLabel = new Label();
-			_timeLeftLabel.text = "Tiempo restante: " + _turn.timeLeft.toString();
-			_timeLeftLabel.x = 10;
-			_timeLeftLabel.y = 30;
-			_timeLeftLabel.setStyle("fontSize", 20);
-			_timeLeftLabel.setStyle("color", 0xFFCC33);
-			_timeLeftLabel.setStyle("fontStyle", "bold");
-			_main.addElement(_timeLeftLabel);
-			
-			// Label de jugador
-			_myUsernameLabel = new Label();
-			_myUsernameLabel.text = "Jugador: " + _myUsername;
-			_myUsernameLabel.x = 10;
-			_myUsernameLabel.y = 50;
-			_myUsernameLabel.setStyle("fontSize", 20);
-			_myUsernameLabel.setStyle("color", 0xFFCC33);
-			_myUsernameLabel.setStyle("fontStyle", "bold");
-			_main.addElement(_myUsernameLabel);
-			
-			// Label de jugador activo
-			_activePlayerLabel = new Label();
-			_activePlayerLabel.text = "Jugador activo: " + _turn.activePlayer.username;
-			_activePlayerLabel.x = 10;
-			_activePlayerLabel.y = 70;
-			_activePlayerLabel.setStyle("fontSize", 20);
-			_activePlayerLabel.setStyle("color", 0xFFCC33);
-			_activePlayerLabel.setStyle("fontStyle", "bold");
-			_main.addElement(_activePlayerLabel);
-			
 			_menu = new Menu(Menu.MENU_POSITION_BOTTOM_LEFT);
 			_menu.addEventListener(ActionEvent.MODE_CHANGED, function(event:ActionEvent):void
 				{
@@ -247,6 +204,15 @@ package components
 					}
 				});
 			_main.addElement(_menu);
+			
+			_info = new Info();
+			_info.redPlayerUsername = _redPlayer.username;
+			_info.bluePlayerUsername = _bluePlayer.username;
+			_info.movesLeftText = _turn.movesLeft.toString();
+			_info.timeLeftText = _turn.timeLeft.toString();
+			_info.setActivePlayer(_turn.activePlayer.username == _redPlayer.username);
+			
+			_main.addElement(_info);
 		}
 		
 		public function getGameHandler(response:ResultEvent):void
@@ -329,11 +295,10 @@ package components
 		{
 			if (_shouldDecreaseTime)
 			{
-				_turn.timeLeft--;
-				_timeLeftLabel.text = "Tiempo restante: " + _turn.timeLeft.toString();
+				_turn.decreaseTimeLeft();
+				// _timeLeftLabel.text = "Tiempo restante: " + _turn.timeLeft.toString();
 				if (_turn.timeLeft <= 0 && isActivePlayer())
 				{
-					trace("CAMBIO DE TURNO");
 					endTurnAction();
 				}
 			}
@@ -525,8 +490,8 @@ package components
 		// Actualiza los movimientos del turno y refleja en el UI la cantidad de movimientos restantes
 		private function updateMovesLeft():void
 		{
-			_turn.movesLeft = _turn.movesLeft - 1;
-			_movesLeftLabel.text = "Movimientos restantes: " + _turn.movesLeft.toString();
+			_turn.decreaseMovesLeft();
+			_info.movesLeftText = _turn.movesLeft.toString();
 		}
 		
 		// Mueve el barco a la posicion dada y actualiza el estado del juego
@@ -570,7 +535,8 @@ package components
 		// Rota el barco a la direccion dada y actualiza el estado del juego
 		private function rotateAction(ship:Ship, direction:Cardinal, func:Function = null):void
 		{
-			if(rotationEnabled(ship, direction)){
+			if (rotationEnabled(ship, direction))
+			{
 				if (isActivePlayer())
 				{
 					// Llamamos al web service para actualizar la direccion del barco				
@@ -584,9 +550,9 @@ package components
 					{
 						//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
 						if (checkPort())
-							_activePlayerLabel.text = "en el puerto";
+							trace("estoy en puerto");
 						if (checkGoal())
-							_activePlayerLabel.text = "ganoo";
+							trace("ganoo");
 						if (func != null)
 							func.call();
 					});
@@ -597,6 +563,25 @@ package components
 				// Actualizamos los movimientos restantes
 				updateMovesLeft();
 			}
+// Actualizamos las celdas bloqueadas por el barco
+			setShipCellStatus(ship, false);
+			// Rotamos el barco
+			ship.rotateTo(direction.cardinal, function():void
+				{
+					//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
+					if (checkPort())
+						trace("en el puerto");
+					if (checkGoal())
+						trace("ganoooo");
+					if (func != null)
+						func.call();
+				});
+			// Seteamos la nueva direccion del barco
+			ship.direction = direction;
+			// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
+			setShipCellStatus(ship, true);
+			// Actualizamos los movimientos restantes
+			updateMovesLeft();
 		}
 		
 		// Cambia el control del jugador actual al jugador que estaba esperando
@@ -610,18 +595,16 @@ package components
 			// Cambia el turno y reseteo contadores
 			_turn.switchTurn(_redPlayer, _bluePlayer);
 			// Actualizo el contador de tiempo/movimientos y jugador actual
-			// _movesLeftLabel.text = "Movimientos restantes: " + _turn.movesLeft.toString();
-			_timeLeftLabel.text = "Tiempo restante: " + _turn.timeLeft.toString();
-			_activePlayerLabel.text = "Jugador activo: " + _turn.activePlayer.username;
+			_info.movesLeftText = _turn.movesLeft.toString();
+			_info.timeLeftText = _turn.timeLeft.toString();
+			
 			if (isActivePlayer())
 			{
 				_gameMode.gameMode = GameMode.PLAYING;
-				_movesLeftLabel.text = "soy el activo";
 			}
 			else
 			{
 				_gameMode.gameMode = GameMode.WAITING_PLAYER_TURN;
-				_movesLeftLabel.text = "el otro es activo";
 			}
 		}
 		
@@ -680,24 +663,27 @@ package components
 		}
 		
 		//verifica si hay celdas bloqueadas que impidan la rotacion
-		private function rotationEnabled(ship:Ship, cardinal:Cardinal):Boolean {
+		private function rotationEnabled(ship:Ship, cardinal:Cardinal):Boolean
+		{
 			var result:Boolean = true;
 			var tope:int = Math.floor(ship.size / 2);
 			var i:int = 0;
 			var currentPos:Coordinate = ship.currentPos;
-			while (result && i < tope ){
-				var a:Coordinate = Helper.calculateNextCell(currentPos, cardinal);				
-				result = !_gridComponent.getCell(a).blocked;	
-				currentPos =  a;
-				i ++;
+			while (result && i < tope)
+			{
+				var a:Coordinate = Helper.calculateNextCell(currentPos, cardinal);
+				result = !_gridComponent.getCell(a).blocked;
+				currentPos = a;
+				i++;
 			}
 			currentPos = ship.currentPos;
 			i = 0;
-			while (result && i < tope ){
+			while (result && i < tope)
+			{
 				var b:Coordinate = Helper.calculateNextCell(ship.currentPos, Helper.getOppositeDirection(cardinal));
-				result = !_gridComponent.getCell(b).blocked;	
-				currentPos =  b;
-				i ++;
+				result = !_gridComponent.getCell(b).blocked;
+				currentPos = b;
+				i++;
 			}
 			return result
 		}
