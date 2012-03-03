@@ -24,6 +24,9 @@ public class RedShip extends Ship {
 		super(id, speed, armor, ammo, torpedo, viewRange, size, position, orientation);
 	}	
 	
+	/*
+	 * Devuelve al barco rojo como ValueObject
+	 */
 	public RedShipVO mapToValueObject(){		
 		RedShipVO redShipVOToReturn = new RedShipVO(this.getId(), this.getSpeed(), this.getArmor(), this.getAmmo(), this.getTorpedo(), this.getViewRange(), this.getSize(), this.getPosition(),this.getOrientation());
 		return redShipVOToReturn;

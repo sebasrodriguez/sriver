@@ -74,8 +74,8 @@ public class pruebaFacade {
 	
 	
 	private static void printFireAction(FireAction frAc){
-		System.out.print("FireAction: " + frAc.getShip().getId() + " (" + frAc.getHitCoordenate().getX() + "," +
-				frAc.getHitCoordenate().getY() +") " + frAc.getHit() + 	" " + frAc.getWeaponType().getWeapon());
+		System.out.print("FireAction: " + frAc.getShip().getId() + " (" + frAc.getHitCoordinate().getX() + "," +
+				frAc.getHitCoordinate().getY() +") " + frAc.getHit() + 	" " + frAc.getWeaponType().getWeapon());
 		if(frAc.getAffectedShip() != null){
 			System.out.println(" " + frAc.getAffectedShip().getId());
 		}else{

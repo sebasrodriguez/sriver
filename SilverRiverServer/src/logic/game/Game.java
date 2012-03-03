@@ -30,13 +30,12 @@ public class Game implements Serializable
 	private ArrayList<Ship> ships;
 	private Turn turn;
 	
+	/*
+	 * Constructores
+	 */
 	public Game(){
 		
 	}
-	
-	/*public Game(int id, Player redPlayer, Player bluePlayer, ArrayList<Action> redActionQueue, 
-			ArrayList<Action> blueActionQueue,ArrayList<Ship> ships, Turn turn) {
-	*/
 	
 	public Game(int id, Player redPlayer, Player bluePlayer){	
 		super();
@@ -49,58 +48,100 @@ public class Game implements Serializable
 		this.turn = new Turn(redPlayer);
 	}
 	
+	/*
+	 * Devuelve el id del game
+	 */
 	public int getId(){
 		return id;
 	}
 
+	/*
+	 * Setea el id del game
+	 */
 	public void setId(int id){
 		this.id = id;
 	}
 
+	/*
+	 * Devuelve el jugador rojo
+	 */
 	public Player getRedPlayer(){
 		return redPlayer;
 	}
 
+	/*
+	 *Setea al jugador rojo
+	 */
 	public void setRedPlayer(Player redPlayer){
 		this.redPlayer = redPlayer;
 	}
 
+	/*
+	 * Devuelve al jugador azul
+	 */
 	public Player getBluePlayer(){
 		return bluePlayer;
 	}
 
+	/*
+	 * Setea al jugador azul
+	 */
 	public void setBluePlayer(Player bluePlayer){
 		this.bluePlayer = bluePlayer;
 	}
 
+	/*
+	 * Devuelve la cola de acciones del jugador rojo
+	 */
 	public ArrayList<Action> getRedActionQueue(){
 		return redActionQueue;
 	}
 
+	/*
+	 * Setea la cola de acciones del jugador rojo
+	 */
 	public void setRedActionQueue(ArrayList<Action> redActionQueue){
 		this.redActionQueue = redActionQueue;
 	}
 
+	/*
+	 * Devuelve la cola de acciones del jugador azul
+	 */
 	public ArrayList<Action> getBlueActionQueue(){
 		return blueActionQueue;
 	}
 
+	/*
+	 * Setea la cola de acciones del jugador azul
+	 */
 	public void setBlueActionQueue(ArrayList<Action> blueActionQueue){
 		this.blueActionQueue = blueActionQueue;
 	}
 
+	/*
+	 * Devuelve la lista de barcos del game
+	 */
 	public ArrayList<Ship> getShips(){
 		return ships;
 	}
 
+	/*
+	 * Setea la lista de barcos 
+	 */
 	public void setShips(ArrayList<Ship> ships){
 		this.ships = ships;
 	}
 
+	/*
+	 * Devuelve el turno
+	 */
 	public Turn getTurn(){
 		return turn;
 	}
 
+	/*
+	 * Setea el turno
+	 */
 	public void setTurn(Turn turn){
 		this.turn = turn;
 	}
@@ -203,6 +244,9 @@ public class Game implements Serializable
 	}
 	
 	
+	/*
+	 * Devuelve el game en ValueObject
+	 */
 	public GameVO mapToValueObject(){
 		PlayerVO redPlayerVO = this.redPlayer.mapToValueObject();
 		PlayerVO bluePlayerVO = this.bluePlayer.mapToValueObject();

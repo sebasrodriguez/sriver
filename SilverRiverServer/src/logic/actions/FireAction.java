@@ -12,7 +12,9 @@ public class FireAction extends ShipAction {
 	private ShipVO affectedShip;
 	
 	
-	
+	/*
+	 * Constructor
+	 */
 	public FireAction(ShipVO shipFiring, Weapon weaponType, Coordinate hitCoordenate, boolean hit, ShipVO affectedShip){
 		super(shipFiring, "FireAction");
 		this.weaponType = weaponType;
@@ -23,20 +25,29 @@ public class FireAction extends ShipAction {
 	
 	
 	/*
-	 * Getters
+	 * Devuelve el tipo del arma
 	 */
 	public Weapon getWeaponType(){
 		return this.weaponType;
 	}
 	
-	public Coordinate getHitCoordenate(){
+	/*
+	 * Devuelve el punto donde disparo
+	 */
+	public Coordinate getHitCoordinate(){
 		return this.hitCoordenate;
 	}
 	
+	/*
+	 * Devuelve true si acerto
+	 */
 	public boolean getHit(){
 		return this.hit;
 	}
 	
+	/*
+	 * En caso de haber acertado, devuelve el barco afectado en ValueObject
+	 */
 	public ShipVO getAffectedShip(){
 		return this.affectedShip;
 	}	

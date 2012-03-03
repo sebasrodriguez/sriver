@@ -56,9 +56,9 @@ public class SilverRiverService {
 		return Facade.getInstance().getActions(gameId, username);
 	}	
 	
-	public Action[] pruebaActions(){
+	/*public Action[] pruebaActions(){
 		return Facade.getInstance().pruebaActions();
-	}
+	}*/
 	
 	
 }

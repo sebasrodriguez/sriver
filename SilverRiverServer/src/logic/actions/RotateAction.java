@@ -8,14 +8,16 @@ public class RotateAction extends ShipAction{
 	private Cardinal cardinal;
 	
 
-	
+	/*
+	 * Constructor
+	 */
 	public RotateAction(ShipVO shipRotating, Cardinal cardinal){
 		super(shipRotating, "RotateAction");
 		this.cardinal = cardinal;
 	}
 	
 	/*
-	 * Getters
+	 * Devuelve el cardinal
 	 */
 	public Cardinal getCardinal(){
 		return this.cardinal;
