@@ -5,6 +5,7 @@ package components
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.MouseEvent;
+	import flash.filters.GlowFilter;
 	import mx.containers.Canvas;
 	
 	/**
@@ -21,6 +22,7 @@ package components
 		private var _ammo:int;
 		private var _armor:int;
 		private var _coordinates:Array;
+		private var _selected:Boolean;
 		
 		public function Ship(id:int, c:Coordinate, d:Cardinal, s:int, size:int)
 		{
@@ -83,6 +85,22 @@ package components
 		public function set coordinates(value:Array):void 
 		{
 			_coordinates = value;
+		}
+		
+		public function get selected():Boolean 
+		{
+			return _selected;
+		}
+		
+		public function set selected(value:Boolean):void 
+		{
+			if (value) {
+				var glow:GlowFilter = new GlowFilter(0xFF0000);
+				filters = [glow];
+			}else {
+				filters = null;
+			}
+			_selected = value;
 		}
 		
 		public function updateCoordinates():void {
