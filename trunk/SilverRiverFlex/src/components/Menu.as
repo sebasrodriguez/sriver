@@ -29,8 +29,8 @@ package components
 		public static const MENU_SMALL_BUTTON_WIDTH:Number = 40;
 		public static const MENU_SMALL_BUTTON_HEIGHT:Number = 25;
 		
-		public static const MENU_FIRE_MODE_BULLET:int = 0;
-		public static const MENU_FIRE_MODE_TORPEDO:int = 1;
+		public static const MENU_FIRE_MODE_BULLET:int = 1;
+		public static const MENU_FIRE_MODE_TORPEDO:int = 0;
 		
 		private var _shape:Shape;
 		private var _moveButton:Button;
