@@ -1,6 +1,8 @@
 package entities;
 
-public class RedShipVO extends ShipVO {	
+import java.io.Serializable;
+
+public class RedShipVO extends ShipVO  implements Serializable{	
 	
 	/*
 	 * Constructor

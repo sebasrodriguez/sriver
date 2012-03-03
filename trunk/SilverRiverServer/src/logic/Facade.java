@@ -1,9 +1,10 @@
 package logic;
 
+import data.Data;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import data.Data;
 import entities.BlueShipVO;
 import entities.Cardinal;
 import entities.Coordinate;
@@ -240,9 +241,11 @@ public class Facade {
 		if(activeGame.getTurn().getActivePlayer().equals(activeGame.getRedPlayer())){
 			activeGame.getTurn().endTurn(activeGame.getBluePlayer());
 			endTurnActionToReturn = new EndTurnAction(gameId, activeGame.getBluePlayer());
+			activeGame.insertActionBlueQueue(endTurnActionToReturn);
 		}else{
 			activeGame.getTurn().endTurn(activeGame.getRedPlayer());
 			endTurnActionToReturn = new EndTurnAction(gameId, activeGame.getRedPlayer());
+			activeGame.insertActionRedQueue(endTurnActionToReturn);
 		}		
 		return endTurnActionToReturn;		
 	}

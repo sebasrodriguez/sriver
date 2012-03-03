@@ -1,8 +1,10 @@
 package logic.player;
 
+import java.io.Serializable;
+
 import entities.PlayerVO;
 
-public class Player
+public class Player implements Serializable
 {
 	
 	private String username;

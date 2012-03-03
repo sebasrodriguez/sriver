@@ -1,6 +1,8 @@
 package entities;
 
-public class Weapon{
+import java.io.Serializable;
+
+public class Weapon implements Serializable{
 	
 	public static final int TORPEDO = 0;
 	public static final int MACHINEGUN = 1;

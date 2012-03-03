@@ -1,5 +1,6 @@
 package data;
 
+
 public class Queries {
 
 	public String loadGame(){

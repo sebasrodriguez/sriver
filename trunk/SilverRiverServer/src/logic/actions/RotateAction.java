@@ -1,9 +1,11 @@
 package logic.actions;
 
+import java.io.Serializable;
+
 import entities.Cardinal;
 import entities.ShipVO;
 
-public class RotateAction extends ShipAction{
+public class RotateAction extends ShipAction implements Serializable{
 
 	private Cardinal cardinal;
 	

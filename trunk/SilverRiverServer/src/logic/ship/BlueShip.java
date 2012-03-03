@@ -1,10 +1,12 @@
 package logic.ship;
 
+import java.io.Serializable;
+
 import entities.BlueShipVO;
 import entities.Cardinal;
 import entities.Coordinate;
 
-public class BlueShip extends Ship {
+public class BlueShip extends Ship  implements Serializable {
 
 	/*
 	 * Constructores

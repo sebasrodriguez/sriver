@@ -329,6 +329,7 @@ public class pruebaFacade {
 		
 		System.out.println("Guardando la partida con id 1");
 		facadePrueba.saveGame(1);
+		System.out.println("Se guardo....");
 		System.out.println("-------------------------------------------------------------");
 		
 	}

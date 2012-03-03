@@ -1,10 +1,12 @@
 package logic.actions;
 
+import java.io.Serializable;
+
 import entities.Coordinate;
 import entities.ShipVO;
 import entities.Weapon;
 
-public class FireAction extends ShipAction {
+public class FireAction extends ShipAction implements Serializable {
 	
 	private Weapon weaponType;
 	private Coordinate hitCoordinate;

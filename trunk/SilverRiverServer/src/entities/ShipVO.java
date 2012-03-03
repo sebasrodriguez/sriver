@@ -1,7 +1,9 @@
 package entities;
 
+import java.io.Serializable;
 
-public abstract class ShipVO {
+
+public abstract class ShipVO  implements Serializable {
 	
 	private int id;
 	private int speed;
