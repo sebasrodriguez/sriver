@@ -51,6 +51,11 @@ package common
 			}
 		}
 		
+		public function centerMapToXY(x:Number, y:Number):void {
+			_board.x = -(x - _main.stage.stageWidth / 2 );
+			_board.y = -(y - _main.stage.stageHeight / 2 );
+		}
+		
 	}
 
 }
