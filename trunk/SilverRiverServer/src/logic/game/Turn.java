@@ -65,6 +65,7 @@ public class Turn implements Serializable{
 	public void endTurn(Player nextPlayer){
 		this.activePlayer = nextPlayer;
 		this.movesLeft = 5;	
+		this.timeLeft = 60;
 	}
 	
 	/*
