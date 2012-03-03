@@ -406,11 +406,10 @@ public class Facade {
 	private Coordinate calculateHitPoint(Ship firingShip, Coordinate clickedCoordinate){
 		
 		Coordinate coord = new Coordinate();
-		//int offset = 50;
 		
 		int offset = (int)this.calculateDistance(firingShip, clickedCoordinate);
-		int max_x = clickedCoordinate.getX() + offset;
-		int max_y = clickedCoordinate.getY() + offset;
+		int max_x = (int)Math.ceil(clickedCoordinate.getX() + (offset * 0.3));
+		int max_y = (int)Math.ceil(clickedCoordinate.getY() + (offset * 0.3));
 		
 		int min_x = max_x - (offset * 2);
 		int min_y = max_y - (offset * 2);
