@@ -322,7 +322,7 @@ public class Game implements Serializable
 		
 		//barcoRojo
 		y = 10;
-		x = this.randomX(15);
+		x = this.randomX(19,60);
 		Coordinate position = new Coordinate(x,y);
 		Cardinal cardinal = this.randomCardinal();
 		Ship redShip = new RedShip(0,10,10,12,3,10,3,position, cardinal);
@@ -330,7 +330,7 @@ public class Game implements Serializable
 		
 		//barcoAzul1
 		y = 30;
-		x = this.randomX(15);
+		x = this.randomX(19,60);
 		position = new Coordinate(x,y);
 		cardinal = this.randomCardinal();
 		Ship blueShip1 = new BlueShip(1,10,5,12,3,10,1,position, cardinal);
@@ -338,7 +338,7 @@ public class Game implements Serializable
 		
 		//barcoAzul2
 		y = 31;
-		x = this.randomX(15);
+		x = this.randomX(19,60);
 		position = new Coordinate(x,y);
 		cardinal = this.randomCardinal();
 		Ship blueShip2 = new BlueShip(2,10,5,6,1,5,1,position, cardinal);
@@ -346,7 +346,7 @@ public class Game implements Serializable
 		
 		//barcoAzul3
 		y = 32;
-		x = this.randomX(15);
+		x = this.randomX(19,60);
 		position = new Coordinate(x,y);
 		cardinal = this.randomCardinal();
 		Ship blueShip3 = new BlueShip(3,10,5,6,1,5,1,position, cardinal);		
@@ -372,9 +372,9 @@ public class Game implements Serializable
 	/*
 	 * Metodo que genera el random entre un rango de valores, usado para variar el X de la posicion
 	 */
-	private int randomX(int minimum){
+	private int randomX(int min, int max){
 		Random randomX = new Random();
-		int randomToReturn = randomX.nextInt(minimum) + minimum;
+		int randomToReturn = randomX.nextInt(max - min) + min;
 		
 		return randomToReturn;		
 	}
