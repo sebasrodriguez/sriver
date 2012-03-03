@@ -78,6 +78,7 @@ package components
 					this.listener.y = oy + ydelta * (newX / distance);
 				}, function():void
 				{
+					_currentPos = c;
 					if (func != null)
 					{
 						func.call();

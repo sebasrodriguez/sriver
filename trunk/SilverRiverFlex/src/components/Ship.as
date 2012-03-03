@@ -20,7 +20,7 @@ package components
 		private var _size:int;
 		private var _ammo:int;
 		private var _armor:int;
-		private var _coordenates:Array;
+		private var _coordinates:Array;
 		
 		public function Ship(id:int, c:Coordinate, d:Cardinal, s:int, size:int)
 		{
@@ -75,14 +75,14 @@ package components
 			_size = value;
 		}
 		
-		public function get coordenates():Array 
+		public function get coordinates():Array 
 		{
-			return _coordenates;
+			return _coordinates;
 		}
 		
-		public function set coordenates(value:Array):void 
+		public function set coordinates(value:Array):void 
 		{
-			_coordenates = value;
+			_coordinates = value;
 		}
 		
 		public function updateCoordinates():void {
@@ -95,8 +95,7 @@ package components
 				arr.push(new Coordinate(this.currentPos.r + offset.r, this.currentPos.c + offset.c));
 				arr.push(new Coordinate(this.currentPos.r - offset.r, this.currentPos.c - offset.c));
 			}
-			arr.push(this.currentPos);
-			_coordenates = arr;
+			_coordinates = arr;
 		}
 		
 		public function fireBullet(c:Coordinate, func:Function):void {
@@ -119,7 +118,6 @@ package components
 			board.addChild(torpedo);
 			torpedo.rotation = this.rotation;
 			torpedo.show();
-			trace(currentPos.c - currentPos.r);
 			torpedo.moveTo(new Coordinate(0,0), FunctionUtil.createDelegate(function (torpedo:Torpedo):void {
 				torpedo.hide();
 				torpedo = null;
@@ -128,7 +126,7 @@ package components
 			},torpedo), 10);
 		}
 		
-		public override function moveTo(c:Coordinate, func:Function, speed:Number = 1):void{
+		public override function moveTo(c:Coordinate, func:Function, speed:Number = 1):void{			
 			super.moveTo(c, function():void {
 				updateCoordinates();
 				if(func != null)
@@ -138,6 +136,7 @@ package components
 		
 		public override function rotateTo(degrees:int, func:Function):void{
 			super.rotateTo(degrees, function():void {
+				_direction = new Cardinal(degrees);
 				updateCoordinates();
 				if(func != null)
 					func.call();

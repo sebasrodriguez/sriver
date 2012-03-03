@@ -74,6 +74,28 @@ package components
 			}
 		}
 		
+		public function unblockCells(... coordinates):void
+		{
+			var cell:GameCell;
+			var c:Coordinate;
+			if (coordinates[0] is Array)
+			{
+				for each (c in coordinates[0])
+				{
+					cell = _gridMatrix[c.r][c.c];
+					cell.blocked = false;
+				}
+			}
+			else
+			{
+				for each (c in coordinates)
+				{
+					cell = _gridMatrix[c.r][c.c];
+					cell.blocked = false;
+				}
+			}
+		}
+		
 		
 		public function goalCells(... coordinates):void
 		{

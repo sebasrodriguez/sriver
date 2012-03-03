@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   contentCreationComplete="creationCompleteHandler(event)"
+			   initialize="initializeHandler(event)">
+
+	<fx:Declarations>		
+		<!--<s:WebService id="wsRequest"
+					  wsdl="http://localhost:8080/SilverRiverServer/services/SilverRiverService?wsdl">	
+					  <s:operation name="newGame" resultFormat="object" result="_game.newGameHandler(event);"  />
+					  <s:operation name="checkGameId" resultFormat="object" result="_game.checkGameIdHandler(event);"  />
+					  <s:operation name="getGame" resultFormat="object" result="_game.getGameHandler(event);"  />
+					  <s:operation name="move" resultFormat="object" result="_game.moveHandler(event);"  />
+					  <s:operation name="rotate" resultFormat="object" result="_game.rotateHandler(event);"  />
+					  <s:operation name="endTurn" resultFormat="object" result="_game.endTurnHandler(event);"  fault="_game.endTurnFaultHandler(event)" />
+					  <s:operation name="getActions" resultFormat="object" result="_game.consumeActionsHandler(event);"  />
+		</s:WebService>-->
+	</fx:Declarations>	
+	<fx:Script>
+		<![CDATA[
+			import components.*
+			import mx.controls.Label;
+					
+			
+			private function initializeHandler(e:Event):void
+			{
+				//new TestMap();
+				var info:Info = new Info();
+				addElement(info);
+				
+				/*var l:Label = new Label();
+				l.text = "hola";
+				l.setStyle("color", 0xffffff);				
+				info.addChild(l);*/
+			}			
+			
+			private function creationCompleteHandler(e:Event):void
+			{			
+			}			
+			
+			
+		]]>
+	</fx:Script>
+
+
+</s:Application>

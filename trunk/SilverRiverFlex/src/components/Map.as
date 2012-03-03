@@ -104,10 +104,11 @@ package components
 			var j:int = 0;
 			while (!result && i < coord.length) {
 				if (sub[j].equals(coord[i])) {
-					j ++
+					j ++;
 					if (j == sub.length) {
 						result = true;
 					}
+					i = 0;
 				}else {
 					i ++;
 				}

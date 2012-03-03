@@ -50,7 +50,7 @@ package common
 				case NE:
 				case SW:
 					offsetX = 1;
-					offsetY = 1;
+					offsetY = -1;
 					break;
 				case NW:
 				case SE:
