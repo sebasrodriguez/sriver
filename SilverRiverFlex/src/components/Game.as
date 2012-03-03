@@ -570,30 +570,33 @@ package components
 		// Rota el barco a la direccion dada y actualiza el estado del juego
 		private function rotateAction(ship:Ship, direction:Cardinal, func:Function = null):void
 		{
-			if (isActivePlayer())
-			{
-				// Llamamos al web service para actualizar la direccion del barco				
-				_main.wsRequest.rotate(_gameId, ship.shipId, direction.cardinal);
-			}
-			// Actualizamos las celdas bloqueadas por el barco
-			setShipCellStatus(ship, false);
-			// Rotamos el barco
-			ship.rotateTo(direction.cardinal, function():void
+			if(rotationEnabled(ship, direction)){
+				if (isActivePlayer())
 				{
-					//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
-					if (checkPort())
-						_activePlayerLabel.text = "en el puerto";
-					if (checkGoal())
-						_activePlayerLabel.text = "ganoo";
-					if (func != null)
-						func.call();
-				});
-			// Seteamos la nueva direccion del barco
-			ship.direction = direction;
-			// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
-			setShipCellStatus(ship, true);
-			// Actualizamos los movimientos restantes
-			updateMovesLeft();
+					// Llamamos al web service para actualizar la direccion del barco				
+					_main.wsRequest.rotate(_gameId, ship.shipId, direction.cardinal);
+				}
+				
+				// Actualizamos las celdas bloqueadas por el barco
+				setShipCellStatus(ship, false);
+				// Rotamos el barco
+				ship.rotateTo(direction.cardinal, function():void
+					{
+						//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
+						if (checkPort())
+							_activePlayerLabel.text = "en el puerto";
+						if (checkGoal())
+							_activePlayerLabel.text = "ganoo";
+						if (func != null)
+							func.call();
+					});
+				// Seteamos la nueva direccion del barco
+				ship.direction = direction;
+				// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
+				setShipCellStatus(ship, true);
+				// Actualizamos los movimientos restantes
+				updateMovesLeft();
+			}
 		}
 		
 		// Cambia el control del jugador actual al jugador que estaba esperando
@@ -674,6 +677,29 @@ package components
 			else
 				result = false;
 			return result;
+		}
+		
+		//verifica si hay celdas bloqueadas que impidan la rotacion
+		private function rotationEnabled(ship:Ship, cardinal:Cardinal):Boolean {
+			var result:Boolean = true;
+			var tope:int = Math.floor(ship.size / 2);
+			var i:int = 0;
+			var currentPos:Coordinate = ship.currentPos;
+			while (result && i < tope ){
+				var a:Coordinate = Helper.calculateNextCell(currentPos, cardinal);				
+				result = !_gridComponent.getCell(a).blocked;	
+				currentPos =  a;
+				i ++;
+			}
+			currentPos = ship.currentPos;
+			i = 0;
+			while (result && i < tope ){
+				var b:Coordinate = Helper.calculateNextCell(ship.currentPos, Helper.getOppositeDirection(cardinal));
+				result = !_gridComponent.getCell(b).blocked;	
+				currentPos =  b;
+				i ++;
+			}
+			return result
 		}
 	}
 }

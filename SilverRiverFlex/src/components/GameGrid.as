@@ -143,7 +143,11 @@ package components
 		
 		public function setCellStatus(coordinate:Coordinate, blocked: Boolean):void {
 			_gridMatrix[coordinate.r][coordinate.c].blocked = blocked;
-		}		
+		}
+		
+		public function getCell(coordinate:Coordinate):GameCell {
+			return _gridMatrix[coordinate.r][coordinate.c];
+		}
 		
 		public function enableCell(coordinate:Coordinate):Boolean
 		{

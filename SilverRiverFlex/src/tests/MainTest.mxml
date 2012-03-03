@@ -26,13 +26,7 @@
 			private function initializeHandler(e:Event):void
 			{
 				//new TestMap();
-				var info:Info = new Info();
-				addElement(info);
-				
-				/*var l:Label = new Label();
-				l.text = "hola";
-				l.setStyle("color", 0xffffff);				
-				info.addChild(l);*/
+				new TestInfo(this);
 			}			
 			
 			private function creationCompleteHandler(e:Event):void
