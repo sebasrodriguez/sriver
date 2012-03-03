@@ -542,12 +542,17 @@ package components
 					// Llamamos al web service para actualizar la direccion del barco				
 					_main.wsRequest.rotate(_gameId, ship.shipId, direction.cardinal);
 				}
-				
+				// Actualizamos los movimientos restantes
+				updateMovesLeft();
 				// Actualizamos las celdas bloqueadas por el barco
 				setShipCellStatus(ship, false);
+				// Seteamos la nueva direccion del barco
+				ship.direction = direction;
 				// Rotamos el barco
 				ship.rotateTo(direction.cardinal, function():void
 					{
+						// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
+						setShipCellStatus(ship, true);
 						//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
 						if (checkPort())
 							trace("estoy en puerto");
@@ -555,33 +560,8 @@ package components
 							trace("ganoo");
 						if (func != null)
 							func.call();
-					});
-				// Seteamos la nueva direccion del barco
-				ship.direction = direction;
-				// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
-				setShipCellStatus(ship, true);
-				// Actualizamos los movimientos restantes
-				updateMovesLeft();
+					});			
 			}
-// Actualizamos las celdas bloqueadas por el barco
-			setShipCellStatus(ship, false);
-			// Rotamos el barco
-			ship.rotateTo(direction.cardinal, function():void
-				{
-					//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
-					if (checkPort())
-						trace("en el puerto");
-					if (checkGoal())
-						trace("ganoooo");
-					if (func != null)
-						func.call();
-				});
-			// Seteamos la nueva direccion del barco
-			ship.direction = direction;
-			// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
-			setShipCellStatus(ship, true);
-			// Actualizamos los movimientos restantes
-			updateMovesLeft();
 		}
 		
 		// Cambia el control del jugador actual al jugador que estaba esperando
