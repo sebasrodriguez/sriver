@@ -7,7 +7,7 @@ import entities.Weapon;
 public class FireAction extends ShipAction {
 	
 	private Weapon weaponType;
-	private Coordinate hitCoordenate;
+	private Coordinate hitCoordinate;
 	private boolean hit;
 	private ShipVO affectedShip;
 	
@@ -15,10 +15,10 @@ public class FireAction extends ShipAction {
 	/*
 	 * Constructor
 	 */
-	public FireAction(ShipVO shipFiring, Weapon weaponType, Coordinate hitCoordenate, boolean hit, ShipVO affectedShip){
+	public FireAction(ShipVO shipFiring, Weapon weaponType, Coordinate hitCoordinate, boolean hit, ShipVO affectedShip){
 		super(shipFiring, "FireAction");
 		this.weaponType = weaponType;
-		this.hitCoordenate = hitCoordenate;
+		this.hitCoordinate = hitCoordinate;
 		this.hit = hit;
 		this.affectedShip = affectedShip;
 	}
@@ -35,7 +35,7 @@ public class FireAction extends ShipAction {
 	 * Devuelve el punto donde disparo
 	 */
 	public Coordinate getHitCoordinate(){
-		return this.hitCoordenate;
+		return this.hitCoordinate;
 	}
 	
 	/*
