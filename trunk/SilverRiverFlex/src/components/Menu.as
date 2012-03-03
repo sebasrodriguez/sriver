@@ -3,14 +3,25 @@ package components
 	import events.ActionEvent;
 	import flash.display.Shape;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import mx.accessibility.ButtonAccImpl;
+	import mx.containers.Grid;
+	import mx.containers.GridItem;
+	import mx.containers.GridRow;
+	import mx.containers.HBox;
+	import mx.containers.TabNavigator;
+	import mx.containers.VBox;
 	import mx.controls.Button;
+	import mx.controls.Label;
+	import mx.controls.tabBarClasses.Tab;
+	import mx.controls.Text;
 	import mx.controls.ToggleButtonBar;
 	import mx.core.Container;
 	import mx.core.UIComponent;
 	import common.*;
 	import flash.display.BitmapData;
+	import mx.events.IndexChangedEvent;
 	import mx.states.State;
 	import spark.components.ToggleButton;
 	/**
@@ -33,13 +44,9 @@ package components
 		public static const MENU_FIRE_MODE_TORPEDO:int = 0;
 		
 		private var _shape:Shape;
-		private var _moveButton:Button;
-		private var _rotateButton:Button;
-		private var _fireButton:Button;
-		private var _moveContainer:Container;
-		private var _rotateContainer:Container;
-		private var _fireContainer:Container;
-		private var _currenMode:int = MENU_MODE_MOVE;
+		private var _tabNavigator:TabNavigator;
+		
+		private var _currentMode:int = MENU_MODE_MOVE;
 		private var _rotateButtons:Array;
 		private var _currentFireMode:int = MENU_FIRE_MODE_BULLET;
 		
@@ -57,104 +64,146 @@ package components
 			}
 			_shape.graphics.endFill();
 			addChild(_shape);
+			alpha = 0.8;
 			
-			createModeButtons();
+			createTabNavigator();
+			createMoveTab();
+			createRotateTab();
+			createFireTab();
+			dispatchModeChanged(MENU_MODE_MOVE);
+			/*createModeButtons();
 			createContainers();
 			createRotationButtons();
-			createFireButtons();
+			createFireButtons();*/
 			
 		}
-		private function createContainers():void {
-			_moveContainer = getContainer();
-			_moveContainer.visible = false;
-			addChild(_moveContainer);
-			_rotateContainer = getContainer();
-			_rotateContainer.visible = false;
-			_rotateContainer.x = 60;
-			addChild(_rotateContainer);
-			_fireContainer = getContainer();
-			_fireContainer.visible = false;
-			_fireContainer.x = 60;
-			addChild(_fireContainer);
+		private function createTabNavigator():void {
+			_tabNavigator = new TabNavigator();
+			_tabNavigator.addEventListener(IndexChangedEvent.CHANGE, function (event:IndexChangedEvent):void {
+				_currentMode = event.newIndex;
+				dispatchModeChanged(event.newIndex);
+			});
+			_tabNavigator.x = 10;
+			_tabNavigator.y = 10;
+			_tabNavigator.width = 220;
+			_tabNavigator.height = 180;
+			addChild(_tabNavigator);
 		}
 		
-		private function createModeButtons():void {
-			_moveButton = getButton("Mover", 0, 0);
-			_moveButton.addEventListener(MouseEvent.CLICK, function ():void { 
-				//if (_currenMode != MENU_MODE_MOVE) {
-					hideContainers();
-					_moveContainer.visible = true;
-					dispatchModeChanged(MENU_MODE_MOVE);
-					_currenMode = MENU_MODE_MOVE;
-				//}
-				
-			});
-			addChild(_moveButton);
-			_rotateButton = getButton("Rotar", MENU_BIG_BUTTON_WIDTH * 1, 0);
-			_rotateButton.addEventListener(MouseEvent.CLICK, function ():void {
-				//if(_currenMode != MENU_MODE_ROTATE){
-					hideContainers();
-					_rotateContainer.visible = true;
-					dispatchModeChanged(MENU_MODE_ROTATE);
-					_currenMode = MENU_MODE_ROTATE;
-				//}				
-			});
-			addChild(_rotateButton);
-			_fireButton = getButton("Disparar", MENU_BIG_BUTTON_WIDTH * 2, 0);
-			_fireButton.addEventListener(MouseEvent.CLICK, function ():void {
-				//if(_currenMode != MENU_MODE_FIRE){
-					hideContainers();
-					_fireContainer.visible = true;
-					dispatchModeChanged(MENU_MODE_FIRE);
-					_currenMode = MENU_MODE_FIRE;
-				//}
-				
-			});
-			addChild(_fireButton);
+		private function createMoveTab():void {
+			var box:VBox = new VBox();
+			box.label = "Mover";
+			var text:Text = new Text();
+			text.width = 210;
+			text.text = "Selecciona uno de tus barcos para moverlo";
+			box.addChild(text);
+			_tabNavigator.addChild(box);	
 		}
 		
-		private function createRotationButtons():void {
-			var currentButton:Button;
-			currentButton = getSmallButton("N", MENU_SMALL_BUTTON_WIDTH * 1, MENU_SMALL_BUTTON_HEIGHT * 0);
-			currentButton.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.N); } );
-			_rotateContainer.addChild(currentButton);
-			currentButton = getSmallButton("S", MENU_SMALL_BUTTON_WIDTH * 1, MENU_SMALL_BUTTON_HEIGHT * 2);
-			currentButton.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.S); } );
-			_rotateContainer.addChild(currentButton);
-			currentButton = getSmallButton("E", MENU_SMALL_BUTTON_WIDTH * 2, MENU_SMALL_BUTTON_HEIGHT * 1);
-			currentButton.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.E); } );
-			_rotateContainer.addChild(currentButton);
-			currentButton = getSmallButton("O", MENU_SMALL_BUTTON_WIDTH * 0, MENU_SMALL_BUTTON_HEIGHT * 1);
-			currentButton.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.W);});
-			_rotateContainer.addChild(currentButton);
-			currentButton = getSmallButton("NE", MENU_SMALL_BUTTON_WIDTH * 2, MENU_SMALL_BUTTON_HEIGHT * 0);
-			currentButton.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.NE);});
-			_rotateContainer.addChild(currentButton);
-			currentButton = getSmallButton("SE", MENU_SMALL_BUTTON_WIDTH * 2, MENU_SMALL_BUTTON_HEIGHT * 2);
-			currentButton.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.SE);});
-			_rotateContainer.addChild(currentButton);
-			currentButton = getSmallButton("SO", MENU_SMALL_BUTTON_WIDTH * 0, MENU_SMALL_BUTTON_HEIGHT * 2);
-			currentButton.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.SW);});
-			_rotateContainer.addChild(currentButton);
-			currentButton = getSmallButton("NO", MENU_SMALL_BUTTON_WIDTH * 0, MENU_SMALL_BUTTON_HEIGHT * 0);
-			currentButton.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.NW);});
-			_rotateContainer.addChild(currentButton);
+		private function createRotateTab():void {
+			var box:VBox = new VBox();
+			box.label = "Rotar";			
+			var text:Text = new Text();
+			text.width = 210;
+			text.text = "Selecciona uno de tus barcos y presiona un boton para rotarlo";
+			box.addChild(text);
+			var grid:Grid = new Grid();
+			grid.x = 30;
+			var row:GridRow;
+			var item:GridItem;
+			var button:Button;
+			
+			//primera fila de botones
+			row = new GridRow();
+			item = new GridItem();			
+			button = getButton("NO");
+			button.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.NW); } );
+			item.addChild(button);
+			row.addChild(item);			
+			button = getButton("N");
+			button.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.N); } );
+			item.addChild(button);
+			row.addChild(item);			
+			button = getButton("NE");
+			button.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.NE); } );
+			item.addChild(button);
+			row.addChild(item);			
+			grid.addChild(row);
+			//segunda fila de botones
+			row = new GridRow();
+			item = new GridItem();			
+			button = getButton("O");
+			button.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.W); } );
+			item.addChild(button);
+			row.addChild(item);				
+			button = getButton(" ");
+			item.addChild(button);
+			row.addChild(item);				
+			button = getButton("E");
+			button.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.E); } );
+			item.addChild(button);
+			row.addChild(item);			
+			grid.addChild(row);
+			
+			//tercer fila de botones
+			row = new GridRow();
+			item = new GridItem();			
+			button = getButton("S0");
+			button.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.SW); } );
+			item.addChild(button);
+			row.addChild(item);			
+			button = getButton("S");
+			button.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.S); } );
+			item.addChild(button);
+			row.addChild(item);			
+			button = getButton("SE");
+			button.addEventListener(MouseEvent.CLICK, function ():void { dispatchRotate(Cardinal.SE); } );
+			item.addChild(button);
+			row.addChild(item);			
+			grid.addChild(row);
+			
+			box.addChild(grid);			
+			
+			_tabNavigator.addChild(box);	
 		}
 		
-		private function createFireButtons():void {
-			var currentButton:Button;
-			currentButton = getButton("Cañon", MENU_BIG_BUTTON_WIDTH * 0, MENU_BIG_BUTTON_HEIGHT * 0);
-			currentButton.addEventListener(MouseEvent.CLICK, function ():void { 
+		private function createFireTab():void {
+			var box:VBox = new VBox();
+			box.label = "Disparar";		
+			var text:Text = new Text();
+			text.width = 210;
+			text.text = "Selecciona uno de tus barcos para dispara, luego haz click en el objetivo";
+			box.addChild(text);
+			
+			var hbox:HBox = new HBox();
+			var button1:Button;
+			var button2:Button;
+			button1 = getButton("Cañon", MENU_BIG_BUTTON_WIDTH);
+			button1.toggle = true;
+			button1.addEventListener(MouseEvent.CLICK, function ():void {
+				button2.selected = false;
 				_currentFireMode = MENU_FIRE_MODE_BULLET;
 				dispatchFireMode(MENU_FIRE_MODE_BULLET); 
 			} );
-			_fireContainer.addChild(currentButton);
-			currentButton = getButton("Torpedo", MENU_BIG_BUTTON_WIDTH * 1, MENU_BIG_BUTTON_HEIGHT * 0);
-			currentButton.addEventListener(MouseEvent.CLICK, function ():void {
+			hbox.addChild(button1);			
+			button2 = getButton("Torpedo", MENU_BIG_BUTTON_WIDTH);
+			button2.toggle = true;
+			button2.addEventListener(MouseEvent.CLICK, function ():void {
+				button1.selected = false;
 				_currentFireMode = MENU_FIRE_MODE_TORPEDO;
 				dispatchFireMode(MENU_FIRE_MODE_TORPEDO); 
 			} );
-			_fireContainer.addChild(currentButton);			
+			hbox.addChild(button2);
+			box.addChild(hbox);
+			_tabNavigator.addChild(box);	
+		}
+		
+		
+		private function dispatchRotate(rotation:int):void {
+			var rotateEvent:ActionEvent = new ActionEvent(ActionEvent.ROTATION_CLICKED);
+			rotateEvent.mode = MENU_MODE_ROTATE;
+			rotateEvent.rotation = rotation
+			dispatchEvent(rotateEvent);
 		}
 		
 		private function dispatchFireMode(fireMode:int):void {
@@ -166,51 +215,18 @@ package components
 		
 		private function dispatchModeChanged(mode:int):void {
 			var modeEvent:ActionEvent = new ActionEvent();
-				modeEvent.mode = mode;
-				dispatchEvent(modeEvent);
+			modeEvent.mode = mode;
+			dispatchEvent(modeEvent);
 		}
 		
-		private function dispatchRotate(rotation:int):void {
-			var rotateEvent:ActionEvent = new ActionEvent(ActionEvent.ROTATION_CLICKED);
-			rotateEvent.mode = MENU_MODE_ROTATE;
-			rotateEvent.rotation = rotation
-			dispatchEvent(rotateEvent);
-		}
 		
-		private function getContainer():Container {
-			var c:Container = new Container();
-			c.x = 0;
-			c.y = 100;
-			c.width = 240;
-			c.height = 100;
-			return c;
-		}
-		
-		private function getButton(text:String, x:Number, y:Number):Button {
+		private function getButton(text:String, width:Number = MENU_SMALL_BUTTON_WIDTH):Button {
 			var button:Button = new Button();
 			button.label = text;
-			button.width = MENU_BIG_BUTTON_WIDTH;
-			button.height = MENU_BIG_BUTTON_HEIGHT;
-			button.x = x;
-			button.y = y;
-			return button;
-		}
-		private function getSmallButton(text:String, x:Number, y:Number):Button {
-			var button:Button = getButton(text, x, y);
-			button.width = MENU_SMALL_BUTTON_WIDTH;
-			button.height = MENU_SMALL_BUTTON_HEIGHT;
+			button.width = width;
 			return button;
 		}
 		
-		private function hideContainers():void {
-			_moveContainer.visible = false;
-			_rotateContainer.visible = false;
-			_fireContainer.visible = false;
-		}
-		
-		public function currentMenuMode():int {
-			return _currenMode;
-		}
 		
 		public function get currentFireMode():int 
 		{
@@ -222,6 +238,15 @@ package components
 			_currentFireMode = value;
 		}
 		
+		public function get currentMode():int 
+		{
+			return _currentMode;
+		}
+		
+		public function set currentMode(value:int):void 
+		{
+			_currentMode = value;
+		}
 	}
 
 }
