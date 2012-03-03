@@ -1,10 +1,16 @@
 package logic.actions;
 
+import java.io.Serializable;
+
 /*
  * Clase abstracta
  */
-public abstract class Action {
+public abstract class Action implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	String actionType;
 	/*
 	 * Constructor

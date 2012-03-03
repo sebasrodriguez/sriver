@@ -1,13 +1,15 @@
 package logic.actions;
 
-import java.io.Serializable;
-
 import entities.Coordinate;
 import entities.ShipVO;
 
 
-public class MoveAction extends ShipAction implements Serializable{
+public class MoveAction extends ShipAction{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Coordinate position;
 	
 	/*

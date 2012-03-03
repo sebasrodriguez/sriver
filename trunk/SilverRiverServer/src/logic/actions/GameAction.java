@@ -3,6 +3,10 @@ package logic.actions;
 
 public class GameAction extends Action{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int gameId;
 	
 	/*

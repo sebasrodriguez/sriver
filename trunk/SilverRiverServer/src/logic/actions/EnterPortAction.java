@@ -6,6 +6,10 @@ import entities.ShipVO;
 public class EnterPortAction extends ShipAction {
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int port;
 	
 	/*
