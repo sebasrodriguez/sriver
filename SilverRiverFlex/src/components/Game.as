@@ -382,7 +382,7 @@ package components
 			if (_selectedShip != null)
 			{
 				// Si el modo del menu es mover se mueve el barco a la celda seleccionada
-				if (_menu.currentMenuMode() == Menu.MENU_MODE_MOVE)
+				if (_menu.currentMode == Menu.MENU_MODE_MOVE)
 				{
 					// Si la celda seleccionada esta habilitada muevo el barco
 					if (_gridComponent.isCellEnabled(event.coordinate))
@@ -390,7 +390,7 @@ package components
 						moveAction(_selectedShip, event.coordinate);
 					}
 				}
-				else if (_menu.currentMenuMode() == Menu.MENU_MODE_FIRE)
+				else if (_menu.currentMode == Menu.MENU_MODE_FIRE)
 				{
 					var coor:Object = new Object();
 					coor.x = event.coordinate.c;
@@ -514,9 +514,9 @@ package components
 			ship.moveTo(coordinate, function():void
 				{
 					//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
-					if (checkPort())
+					if (checkPort(ship))
 						trace("esta en puerto");
-					if (checkGoal())
+					if (checkGoal(ship))
 						trace("ganoooooooooo");
 					// Si quedan movimientos y yo soy el usuario activo muestro las celdas de movimientos
 					if (_turn.hasMovesLeft() && isActivePlayer())
@@ -553,9 +553,9 @@ package components
 						// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
 						setShipCellStatus(ship, true);
 						//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
-						if (checkPort())
+						if (checkPort(ship))
 							trace("estoy en puerto");
-						if (checkGoal())
+						if (checkGoal(ship))
 							trace("ganoo");
 						if (func != null)
 							func.call();
@@ -625,18 +625,18 @@ package components
 		}
 		
 		// Chequea si esta en puerto
-		private function checkPort():Boolean
+		private function checkPort(ship:Ship):Boolean
 		{
-			return _mapComponent.areSubCoordinates(_selectedShip.coordinates, _mapComponent.getPortCoordinates());
+			return _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortCoordinates());
 		}
 		
 		// Chequea si gano
-		private function checkGoal():Boolean
+		private function checkGoal(ship:Ship):Boolean
 		{
 			var result:Boolean = false;
 			
-			if (_selectedShip == _redShipComponent)
-				result = _mapComponent.areSubCoordinates(_selectedShip.coordinates, _mapComponent.getPortCoordinates());
+			if (ship == _redShipComponent)
+				result = _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortCoordinates());
 			else
 				result = false;
 			return result;

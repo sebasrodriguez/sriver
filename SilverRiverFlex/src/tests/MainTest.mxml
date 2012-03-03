@@ -20,13 +20,14 @@
 	<fx:Script>
 		<![CDATA[
 			import components.*
+			import flash.accessibility.AccessibilityImplementation;
 			import mx.controls.Label;
 					
 			
 			private function initializeHandler(e:Event):void
 			{
 				//new TestMap();
-				new TestInfo(this);
+				new TestMenu(this);
 			}			
 			
 			private function creationCompleteHandler(e:Event):void
