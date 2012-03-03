@@ -407,12 +407,14 @@ public class Facade {
 		
 		Coordinate coord = new Coordinate();
 		
-		int offset = (int)this.calculateDistance(firingShip, clickedCoordinate);
-		int max_x = (int)Math.ceil(clickedCoordinate.getX() + (offset * 0.3));
-		int max_y = (int)Math.ceil(clickedCoordinate.getY() + (offset * 0.3));
+		double offset = (int)this.calculateDistance(firingShip, clickedCoordinate);
 		
-		int min_x = max_x - (offset * 2);
-		int min_y = max_y - (offset * 2);
+		offset = Math.floor(offset / 50);
+		int max_x = (int)(clickedCoordinate.getX() + offset);
+		int max_y = (int)(clickedCoordinate.getY() + offset);
+		
+		int min_x = (int)(max_x - (offset * 2));
+		int min_y = (int)(max_y - (offset * 2));
 		
 		int x = (int)(Math.random() * (max_x - min_x)) + min_x;
 		int y = (int)(Math.random() * (max_y - min_y)) + min_y;
