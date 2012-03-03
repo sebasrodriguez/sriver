@@ -324,7 +324,7 @@ public class Game implements Serializable
 		y = 10;
 		x = this.randomX(15);
 		Coordinate position = new Coordinate(x,y);
-		Cardinal cardinal = new Cardinal(45);
+		Cardinal cardinal = this.randomCardinal();
 		Ship redShip = new RedShip(0,10,10,12,3,10,3,position, cardinal);
 		shipsToReturn.add(redShip);
 		
@@ -332,7 +332,7 @@ public class Game implements Serializable
 		y = 30;
 		x = this.randomX(15);
 		position = new Coordinate(x,y);
-		cardinal = new Cardinal(90);
+		cardinal = this.randomCardinal();
 		Ship blueShip1 = new BlueShip(1,10,5,12,3,10,1,position, cardinal);
 		shipsToReturn.add(blueShip1);
 		
@@ -340,7 +340,7 @@ public class Game implements Serializable
 		y = 31;
 		x = this.randomX(15);
 		position = new Coordinate(x,y);
-		cardinal = new Cardinal(-45);
+		cardinal = this.randomCardinal();
 		Ship blueShip2 = new BlueShip(2,10,5,6,1,5,1,position, cardinal);
 		shipsToReturn.add(blueShip2);
 		
@@ -348,7 +348,7 @@ public class Game implements Serializable
 		y = 32;
 		x = this.randomX(15);
 		position = new Coordinate(x,y);
-		cardinal = new Cardinal(-90);
+		cardinal = this.randomCardinal();
 		Ship blueShip3 = new BlueShip(3,10,5,6,1,5,1,position, cardinal);		
 		shipsToReturn.add(blueShip3);
 		
@@ -370,7 +370,7 @@ public class Game implements Serializable
 	}	
 	
 	/*
-	 * Metodo que genera el random entre un rango de valores
+	 * Metodo que genera el random entre un rango de valores, usado para variar el X de la posicion
 	 */
 	private int randomX(int minimum){
 		Random randomX = new Random();
@@ -378,4 +378,47 @@ public class Game implements Serializable
 		
 		return randomToReturn;		
 	}
+	
+	/*
+	 * Metodo que genera un random del cardinal
+	 */
+	private Cardinal randomCardinal(){
+		int max = 360;
+		Random random = new Random();
+		Cardinal cardinalToReturn; 
+		
+		int randomPosition = random.nextInt(max);
+		
+		if(0 <= randomPosition  && randomPosition < 45){
+			cardinalToReturn = new Cardinal(Cardinal.N);		
+		}else{
+			if(45 <= randomPosition && randomPosition < 90){
+				cardinalToReturn = new Cardinal(Cardinal.NE);
+			}else{
+				if(90 <= randomPosition && randomPosition < 135){
+					cardinalToReturn = new Cardinal(Cardinal.E);
+				}else{
+					if(135 <= randomPosition && randomPosition < 180){
+						cardinalToReturn = new Cardinal(Cardinal.SE);
+					}else{
+						if(180 <= randomPosition && randomPosition < 225){
+							cardinalToReturn = new Cardinal(Cardinal.S);
+						}else{
+							if(225 <= randomPosition && randomPosition < 270){
+								cardinalToReturn = new Cardinal(Cardinal.SW);
+							}else{
+								if(270 <= randomPosition && randomPosition < 315){
+									cardinalToReturn = new Cardinal(Cardinal.W);
+								}else{
+									cardinalToReturn = new Cardinal(Cardinal.NW);
+								}
+							}
+						}
+					}
+				}
+			}			
+		}
+		return cardinalToReturn;		
+	}
+	
 }
