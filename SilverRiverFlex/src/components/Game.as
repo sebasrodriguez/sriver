@@ -44,6 +44,7 @@ package components
 		// Controles UI		
 		private var _waitingPlayerLabel:Label;
 		private var _info:Info;
+		private var _toastManager:ToastManager;
 		
 		public var _gridComponent:GameGrid;
 		public var _redShipComponent:RedShip;
@@ -165,7 +166,8 @@ package components
 			_gridComponent.addEventListener(CellEvent.CLICK, selectedCellEvent);
 			_gridComponent.blockCells(_mapComponent.getInitialBlockedCoordinates());
 			_gridComponent.goalCells(_mapComponent.getGoalCoordinates());
-			_gridComponent.portCells(_mapComponent.getPortCoordinates());
+			_gridComponent.portCells(_mapComponent.getPortHalfCoordinates());
+			_gridComponent.portCells(_mapComponent.getPortOneCoordinates());
 			
 			_selectedShip = null;
 			
@@ -200,6 +202,9 @@ package components
 			
 			_info = new Info();
 			_main.addElement(_info);
+			
+			_toastManager = new ToastManager();
+			_main.addElement(_toastManager);
 		}		
 		
 		/**
@@ -473,7 +478,7 @@ package components
 						_main.wsRequest.endTurn(_gameId);
 					//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
 					if (checkPort(ship))
-						trace("esta en puerto");
+						_toastManager.addToast("Esta en puerto");
 					if (checkGoal(ship))
 						trace("ganoooooooooo");
 					// Se muestran nuevas celdas de movimiento basadas en la nueva posicion del barco

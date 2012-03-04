@@ -58,11 +58,11 @@ package common
 			var xscroll:Number = -(x - _main.stage.stageWidth / 2 );
 			var yscroll:Number = -(y - _main.stage.stageHeight / 2 );
 			
-			new Tween(this, xinit, xscroll, 2000, 20, function(newX:Number):void
+			new Tween(this, xinit, xscroll, 1000, 20, function(newX:Number):void
 			{
 				_board.x = newX;
 			}, function():void{});
-			new Tween(this, yinit, yscroll, 2000, 20, function(newY:Number):void
+			new Tween(this, yinit, yscroll, 1000, 20, function(newY:Number):void
 			{
 				_board.y = newY;
 			}, function():void{});
