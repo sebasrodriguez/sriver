@@ -20,18 +20,22 @@ package components
 		private var _speed:int;
 		private var _size:int;
 		private var _ammo:int;
+		private var _torpedoes:int;
 		private var _armor:int;
 		private var _coordinates:Array;
 		private var _selected:Boolean;
 		
-		public function Ship(id:int, c:Coordinate, d:Cardinal, s:int, size:int)
+		public function Ship(id:int, c:Coordinate, d:Cardinal, s:int, size:int, armor:int, ammo:int, torpedoes:int)
 		{
 			super(c);
 			_id = id;
 			_direction = d;
-			_ship = this;			
-			_speed = s;			
+			_ship = this;
+			_speed = s;
 			_size = size;
+			_armor = armor;
+			_ammo = ammo;
+			_torpedoes = torpedoes;
 			this.rotation = d.cardinal;
 			updateCoordinates();
 			this.addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void
@@ -57,6 +61,36 @@ package components
 			_direction = value;
 		}
 		
+		public function get armor():int
+		{
+			return _armor;
+		}
+		
+		public function set armor(value:int):void
+		{
+			_armor = value;
+		}
+		
+		public function get ammo():int
+		{
+			return _ammo;
+		}
+		
+		public function set ammo(value:int):void
+		{
+			_ammo = value;
+		}
+		
+		public function get torpedoes():int
+		{
+			return _torpedoes;
+		}
+		
+		public function set torpedoes(value:int):void
+		{
+			_torpedoes = value;
+		}
+		
 		public function get speed():int
 		{
 			return _speed;
@@ -77,97 +111,132 @@ package components
 			_size = value;
 		}
 		
-		public function get coordinates():Array 
+		public function get coordinates():Array
 		{
 			return _coordinates;
 		}
 		
-		public function set coordinates(value:Array):void 
+		public function set coordinates(value:Array):void
 		{
 			_coordinates = value;
 		}
 		
-		public function get selected():Boolean 
+		public function get selected():Boolean
 		{
 			return _selected;
 		}
 		
-		public function set selected(value:Boolean):void 
+		public function hasAmmo():Boolean
 		{
-			if (value) {
+			return _ammo > 0;
+		}
+		
+		public function hasTorpedoes():Boolean
+		{
+			return _torpedoes > 0;
+		}
+		
+		public function decreaseAmmo():void
+		{
+			_ammo--;
+		}
+		
+		public function decreaseTorpedoes():void
+		{
+			_torpedoes--;
+		}
+		
+		public function set selected(value:Boolean):void
+		{
+			if (value)
+			{
 				var glow:GlowFilter = new GlowFilter(0xFF0000);
 				filters = [glow];
-			}else {
+			}
+			else
+			{
 				filters = null;
 			}
 			_selected = value;
 		}
 		
-		public function updateCoordinates():void {
+		public function updateCoordinates():void
+		{
 			var arr:Array = new Array();
 			var midsize:Number = Math.floor(_size / 2);
 			var offset:Coordinate = Cardinal.getOffsetCoodinate(_direction.cardinal);
 			arr.push(this.currentPos);
 			//TODO:RECHEQUEAR FUNCION
-			for (var i:int = 1; i <= midsize; i ++) {
+			for (var i:int = 1; i <= midsize; i++)
+			{
 				arr.push(new Coordinate(this.currentPos.r + offset.r, this.currentPos.c + offset.c));
 				arr.push(new Coordinate(this.currentPos.r - offset.r, this.currentPos.c - offset.c));
 			}
 			_coordinates = arr;
 		}
 		
-		public function fireBullet(c:Coordinate, func:Function):void {
+		public function fireBullet(c:Coordinate, func:Function):void
+		{
 			var board:DisplayObjectContainer = this.parent;
 			var bullet:Bullet = new Bullet(currentPos);
 			board.addChild(bullet);
 			bullet.rotation = Helper.getAngleToCoordinate(currentPos, c);
 			bullet.show();
-			bullet.moveTo(c, FunctionUtil.createDelegate(function (bullet:Bullet):void {				
-				bullet.hide();
-				bullet = null;
-				if( func != null)
-					func.call();
-			},bullet), 10);
+			bullet.moveTo(c, FunctionUtil.createDelegate(function(bullet:Bullet):void
+				{
+					bullet.hide();
+					bullet = null;
+					if (func != null)
+						func.call();
+				}, bullet), 10);
 		}
 		
-		public function fireTorpedo(func:Function):void {
+		public function fireTorpedo(func:Function):void
+		{
 			var board:DisplayObjectContainer = this.parent;
 			var torpedo:Torpedo = new Torpedo(currentPos);
 			board.addChild(torpedo);
 			torpedo.rotation = this.rotation;
 			torpedo.show();
-			torpedo.moveTo(new Coordinate(0, 0), FunctionUtil.createDelegate(function (torpedo:Torpedo):void {				
-				torpedo.hide();
-				torpedo = null;
-				if( func != null)
-					func.call();
-			},torpedo), 10);
+			torpedo.moveTo(new Coordinate(0, 0), FunctionUtil.createDelegate(function(torpedo:Torpedo):void
+				{
+					torpedo.hide();
+					torpedo = null;
+					if (func != null)
+						func.call();
+				}, torpedo), 10);
 		}
 		
-		public override function moveTo(c:Coordinate, func:Function, speed:Number = 1):void{			
-			super.moveTo(c, function():void {
-				updateCoordinates();
-				if(func != null)
-					func.call();
-			}, speed);
+		public override function moveTo(c:Coordinate, func:Function, speed:Number = 1):void
+		{
+			super.moveTo(c, function():void
+				{
+					updateCoordinates();
+					if (func != null)
+						func.call();
+				}, speed);
 		}
 		
-		public override function rotateTo(degrees:int, func:Function):void{
-			super.rotateTo(degrees, function():void {
-				_direction = new Cardinal(degrees);
-				updateCoordinates();
-				if(func != null)
-					func.call();
-			});
+		public override function rotateTo(degrees:int, func:Function):void
+		{
+			super.rotateTo(degrees, function():void
+				{
+					_direction = new Cardinal(degrees);
+					updateCoordinates();
+					if (func != null)
+						func.call();
+				});
 		}
 		
-		public function itsMe(coordinate:Coordinate):Boolean {
+		public function itsMe(coordinate:Coordinate):Boolean
+		{
 			var result:Boolean = false;
 			var i:int = 0;
-			while (!result && i < _coordinates.length) {
+			while (!result && i < _coordinates.length)
+			{
 				if (coordinate.equals(_coordinates[i]))
 					result = true;
-				i ++;
+				i++;
 			}
 			return result;
 		}
