@@ -401,7 +401,7 @@ package components
 					if (isActivePlayer() && !_isAnimating)
 					{
 						// Si quedan balas disparo
-						if (_selectedShip.hasAmmo())
+						if (_selectedShip.hasAmmo() && _selectedShip.isInFireRange(ship.currentPos))
 						{
 							var coor:Object = new Object();
 							coor.x = ship.currentPos.c;
@@ -412,7 +412,10 @@ package components
 						}
 						else
 						{
-							trace("barco sin ammo");
+							if(!_selectedShip.hasAmmo())
+								trace("666: barco sin ammo");
+							if (!_selectedShip.isInFireRange(ship.currentPos))
+								trace("666: barco no en el range de disparo");
 						}
 					}
 				}
