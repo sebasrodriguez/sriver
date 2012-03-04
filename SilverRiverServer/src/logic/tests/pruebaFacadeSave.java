@@ -1,6 +1,7 @@
 package logic.tests;
 
 import entities.GameVO;
+import entities.ShipVO;
 import logic.Facade;
 
 public class pruebaFacadeSave {
@@ -31,6 +32,14 @@ public class pruebaFacadeSave {
 		System.out.println("BlueActionQueueSize: " + gameToSave.getBlueActionQueue().length);
 		System.out.println("ShipsSize: " + gameToSave.getShips().length);
 		System.out.println("ActivePlayer: " + gameToSave.getTurn().getActivePlayer().getUsername() + " MovesLeft: " + gameToSave.getTurn().getMovesLeft());
+		
+		
+		ShipVO[] shipIt = gameToSave.getShips();
+		
+		for(int i=0;i<=3;i++){
+			System.out.println(shipIt[i].getId() + " " + shipIt[i].getAmmo() + " " + shipIt[i].getArmor() + " " + shipIt[i].getSize() + " " + shipIt[i].getSpeed() + " " + shipIt[i].getTorpedo() + " " + shipIt[i].getViewRange() + " " + shipIt[i].getOrientation().getDirection() + " (" + shipIt[i].getPosition().getX() + "," + shipIt[i].getPosition().getY() + ")");
+		}
+		
 		System.out.println("---------------------------------------------");
 		
 		System.out.println("--- Salvando ---");

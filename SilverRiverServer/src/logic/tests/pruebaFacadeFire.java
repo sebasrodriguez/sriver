@@ -1,7 +1,6 @@
 package logic.tests;
 
 import entities.Coordinate;
-import entities.Weapon;
 import logic.Facade;
 import logic.actions.FireAction;
 
