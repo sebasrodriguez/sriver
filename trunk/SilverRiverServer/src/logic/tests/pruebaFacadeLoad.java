@@ -2,6 +2,7 @@ package logic.tests;
 
 import logic.Facade;
 import entities.GameVO;
+import entities.ShipVO;
 
 public class pruebaFacadeLoad {
 
@@ -31,7 +32,16 @@ public class pruebaFacadeLoad {
 			System.out.println("RedActionQueueSize: " + gameLoaded.getRedActionQueue().length);
 			System.out.println("BlueActionQueueSize: " + gameLoaded.getBlueActionQueue().length);
 			System.out.println("ShipsSize: " + gameLoaded.getShips().length);
-			System.out.println("ActivePlayer: " + gameLoaded.getTurn().getActivePlayer().getUsername() + " MovesLeft: " + gameLoaded.getTurn().getMovesLeft());		
+			System.out.println("ActivePlayer: " + gameLoaded.getTurn().getActivePlayer().getUsername() + " MovesLeft: " + gameLoaded.getTurn().getMovesLeft());
+			
+			ShipVO[] shipIt = gameLoaded.getShips();
+			
+			for(int i=0;i<=3;i++){
+				System.out.println(shipIt[i].getId() + " " + shipIt[i].getAmmo() + " " + shipIt[i].getArmor() + " " + shipIt[i].getSize() + " " + shipIt[i].getSpeed() + " " + shipIt[i].getTorpedo() + " " + shipIt[i].getViewRange() + " " + shipIt[i].getOrientation().getDirection() + " (" + shipIt[i].getPosition().getX() + "," + shipIt[i].getPosition().getY() + ")");
+			}
+		
+		
+		
 		}
 		System.out.println("---------------------------------------------");
 	

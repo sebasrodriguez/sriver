@@ -12,8 +12,9 @@ public class pruebaEndGameAction {
 
 		EndGameAction endGameActionPrueba = new EndGameAction(12);
 		
-		System.out.println("Creando el objeto sin problema");
 		
+		System.out.println("Creando el objeto sin problema");
+		System.out.println(endGameActionPrueba.toString());
 		
 	}
 
