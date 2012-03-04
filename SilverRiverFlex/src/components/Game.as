@@ -119,10 +119,10 @@ package components
 			if (_bluePlayer.username == _myUsername)
 				_me = _bluePlayer;
 			
-			_redShipComponent = new RedShip(redShip.id, new Coordinate(10, 15), new Cardinal(Cardinal.SW), redShip.speed, redShip.size, redShip.armor, redShip.ammo, redShip.torpedo, redShip.viewRange);
-			_blueShipComponent1 = new BlueShip(blueShip1.id, new Coordinate(14, 15), new Cardinal(blueShip1.orientation.direction), blueShip1.speed, blueShip1.size, blueShip1.armor, blueShip1.ammo, blueShip1.torpedo, blueShip1.viewRange);
-			_blueShipComponent2 = new BlueShip(blueShip2.id, new Coordinate(15, 20), new Cardinal(blueShip2.orientation.direction), blueShip2.speed, blueShip2.size, blueShip2.armor, blueShip2.ammo, blueShip2.torpedo, blueShip2.viewRange);
-			_blueShipComponent3 = new BlueShip(blueShip3.id, new Coordinate(18, 23), new Cardinal(blueShip3.orientation.direction), blueShip3.speed, blueShip3.size, blueShip3.armor, blueShip3.ammo, blueShip3.torpedo, blueShip3.viewRange);
+			_redShipComponent = new RedShip(redShip.id, new Coordinate(redShip.position.y, redShip.position.x), new Cardinal(redShip.orientation.direction), redShip.speed, redShip.size, redShip.armor, redShip.ammo, redShip.torpedo, redShip.viewRange);
+			_blueShipComponent1 = new BlueShip(blueShip1.id, new Coordinate(blueShip1.position.y, blueShip1.position.x), new Cardinal(blueShip1.orientation.direction), blueShip1.speed, blueShip1.size, blueShip1.armor, blueShip1.ammo, blueShip1.torpedo, blueShip1.viewRange);
+			_blueShipComponent2 = new BlueShip(blueShip2.id, new Coordinate(blueShip2.position.y, blueShip2.position.x), new Cardinal(blueShip2.orientation.direction), blueShip2.speed, blueShip2.size, blueShip2.armor, blueShip2.ammo, blueShip2.torpedo, blueShip2.viewRange);
+			_blueShipComponent3 = new BlueShip(blueShip3.id, new Coordinate(blueShip3.position.y, blueShip3.position.x), new Cardinal(blueShip3.orientation.direction), blueShip3.speed, blueShip3.size, blueShip3.armor, blueShip3.ammo, blueShip3.torpedo, blueShip3.viewRange);
 			/*
 			   _redShipComponent = new RedShip(redShip.id, new Coordinate(redShip.position.y, redShip.position.x), new Cardinal(redShip.orientation.direction), redShip.speed, redShip.size);
 			   _blueShipComponent1 = new BlueShip(blueShip1.id, new Coordinate(blueShip1.position.y, blueShip1.position.x), new Cardinal(blueShip1.orientation.direction), blueShip1.speed, blueShip1.size);
@@ -224,6 +224,13 @@ package components
 							rotateAction(_selectedShip, new Cardinal(event.rotation));
 					}
 				});
+			_menu.addEventListener(ActionEvent.FIRE_MODE_CHANGED, function(event:ActionEvent):void
+				{
+					if (isActivePlayer() && !_isAnimating && _selectedShip != null && _menu.currentFireMode == Menu.MENU_FIRE_MODE_TORPEDO && _selectedShip.hasTorpedoes())
+					{
+						_main.wsRequest.fireTorpedo(_gameId, _selectedShip.shipId);
+					}
+				});
 			_main.addElement(_menu);
 			
 			_info = new Info();
@@ -266,9 +273,15 @@ package components
 		
 		public function fireHandler(response:ResultEvent):void
 		{
-			var coordinate:Coordinate = new Coordinate(response.result.hitCoordinate.y, response.result.hitCoordinate.x);
+			var coordinate:Coordinate = null;
 			var affectedShip:Ship = null;
 			var newArmor:int = -1;
+			// Si la coordenada de disparo es null es porque el disparo es de tipo torpedo
+			if (response.result.hitCoordinate != null)
+			{
+				coordinate = new Coordinate(response.result.hitCoordinate.y, response.result.hitCoordinate.x);
+			}
+			// Si hay un barco afectado cargo el nuevo armor del barco afectado
 			if (response.result.affectedShip != null)
 			{
 				affectedShip = getShipById(response.result.affectedShip.id);
@@ -427,23 +440,6 @@ package components
 						moveAction(_selectedShip, event.coordinate);
 					}
 				}
-				else if (_menu.currentMode == Menu.MENU_MODE_FIRE)
-				{
-					// Si quedan balas disparo
-					if (_selectedShip.hasAmmo())
-					{
-						var coor:Object = new Object();
-						coor.x = event.coordinate.c;
-						coor.y = event.coordinate.r;
-						
-						// Llamamos al webservice con la accion de disparo
-						_main.wsRequest.fire(_gameId, _selectedShip.shipId, coor, _menu.currentFireMode);
-					}
-					else
-					{
-						trace("barco sin ammo");
-					}
-				}
 			}
 		}
 		
@@ -451,7 +447,7 @@ package components
 		public function selectedShipEvent(event:SelectedShipEvent):void
 		{
 			var ship:Ship = event.selectedShip;
-			// El usuario selecciono el barco rojo
+			// El usuario selecciono su propio barco
 			if (_me.isMyShip(ship))
 			{
 				//si el barco es distinto al seleccionado, desseleccionamos el anterior y seleccionamos el nuevo
@@ -463,6 +459,27 @@ package components
 					_selectedShip.selected = true;
 					centerOnShip(_selectedShip);
 					refreshMode();
+				}
+			}
+			else
+			{
+				// Si el modo de disparo es artillería y seleccione un barco enemigo, disparo hacia el mismo
+				if (_menu.currentMode == Menu.MENU_MODE_FIRE)
+				{
+					// Si quedan balas disparo
+					if (_selectedShip.hasAmmo())
+					{
+						var coor:Object = new Object();
+						coor.x = ship.currentPos.c;
+						coor.y = ship.currentPos.r;
+						
+						// Llamamos al webservice con la accion de disparo
+						_main.wsRequest.fireAmmo(_gameId, _selectedShip.shipId, coor);
+					}
+					else
+					{
+						trace("barco sin ammo");
+					}
 				}
 			}
 		}
