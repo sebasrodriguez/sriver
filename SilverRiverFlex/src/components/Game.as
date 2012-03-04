@@ -40,6 +40,7 @@ package components
 		private var _gameMode:GameMode;
 		private var _scrollControl:AutoScroll;
 		private var _componentsToShow:ArrayList;
+		private var _isAnimating:Boolean;
 		// Controles UI		
 		private var _waitingPlayerLabel:Label;
 		private var _info:Info;
@@ -111,11 +112,12 @@ package components
 			var blueShip2:Object = game.ships[2];
 			var blueShip3:Object = game.ships[3];
 			var turn:Object = game.turn;
+			_isAnimating = false;
 			_bluePlayer = new Player(game.bluePlayer.username);
 			_redPlayer = new Player(game.redPlayer.username);
-			if (_redPlayer.username == _myUsername) 
+			if (_redPlayer.username == _myUsername)
 				_me = _redPlayer;
-			if (_bluePlayer.username == _myUsername) 
+			if (_bluePlayer.username == _myUsername)
 				_me = _bluePlayer;
 			trace(_redPlayer.username + " vs " + _bluePlayer.username);
 			
@@ -129,7 +131,7 @@ package components
 			   _blueShipComponent2 = new BlueShip(blueShip2.id, new Coordinate(blueShip2.position.y, blueShip2.position.x), new Cardinal(blueShip2.orientation.direction), blueShip2.speed, blueShip2.size);
 			   _blueShipComponent3 = new BlueShip(blueShip3.id, new Coordinate(blueShip3.position.y, blueShip3.position.x), new Cardinal(blueShip3.orientation.direction), blueShip3.speed, blueShip3.size);
 			 */
-			_shipList = new Array(_redShipComponent, _blueShipComponent1, _blueShipComponent2, _blueShipComponent3);			
+			_shipList = new Array(_redShipComponent, _blueShipComponent1, _blueShipComponent2, _blueShipComponent3);
 			_redPlayer.addShip(_redShipComponent);
 			_bluePlayer.addShip(_blueShipComponent1);
 			_bluePlayer.addShip(_blueShipComponent2);
@@ -200,7 +202,7 @@ package components
 				{
 					if (_selectedShip != null)
 					{
-						if(isActivePlayer())
+						if (isActivePlayer() && !_isAnimating)
 							rotateAction(_selectedShip, new Cardinal(event.rotation));
 					}
 				});
@@ -216,21 +218,26 @@ package components
 			_main.addElement(_info);
 		}
 		
-		public function refreshMode():void {
+		public function refreshMode():void
+		{
 			clearMode();
-			if(_selectedShip != null && _turn.hasMovesLeft() && isActivePlayer()){
-				switch(_menu.currentMode) {
-					case Menu.MENU_MODE_MOVE:
+			if (_selectedShip != null && _turn.hasMovesLeft() && isActivePlayer())
+			{
+				switch (_menu.currentMode)
+				{
+					case Menu.MENU_MODE_MOVE: 
 						enableMovement(_selectedShip);
 						break;
-					case Menu.MENU_MODE_ROTATE:
+					case Menu.MENU_MODE_ROTATE: 
 						break;
-					case Menu.MENU_MODE_FIRE:
+					case Menu.MENU_MODE_FIRE: 
 						break;
 				}
 			}
 		}
-		public function clearMode():void {
+		
+		public function clearMode():void
+		{
 			_gridComponent.disableCells();
 		}
 		
@@ -314,7 +321,7 @@ package components
 				_turn.decreaseTimeLeft();
 				_info.timeLeftText = _turn.timeLeft.toString();
 				if (_turn.timeLeft <= 0 && isActivePlayer())
-				{					
+				{
 					_main.wsRequest.endTurn(_gameId);
 				}
 				
@@ -364,7 +371,7 @@ package components
 					if (action.hit && action.affectedShip != null)
 						affectedShip = getShipById(action.affectedShip.id);
 					
-					fireAction(ship, affectedShip, action.hit, new Coordinate(action.position.y, action.position.x), action.weaponType.weapon, consumeNextAction);
+					fireAction(ship, affectedShip, action.hit, new Coordinate(action.hitCoordinate.y, action.hitCoordinate.x), action.weaponType.weapon, consumeNextAction);
 				}
 				else if (action.actionType == "EndTurnAction")
 				{
@@ -389,7 +396,7 @@ package components
 		// Evento disparado cuando se selecciona una celda de la grilla
 		private function selectedCellEvent(event:CellEvent):void
 		{
-			if (_selectedShip != null)
+			if (_selectedShip != null && isActivePlayer() && _turn.hasMovesLeft() && !_isAnimating)
 			{
 				// Si el modo del menu es mover se mueve el barco a la celda seleccionada
 				if (_menu.currentMode == Menu.MENU_MODE_MOVE)
@@ -432,8 +439,9 @@ package components
 			if (_me.isMyShip(ship))
 			{
 				//si el barco es distinto al seleccionado, desseleccionamos el anterior y seleccionamos el nuevo
-				if (_selectedShip != ship) {
-					if(_selectedShip != null)
+				if (_selectedShip != ship)
+				{
+					if (_selectedShip != null)
 						_selectedShip.selected = false;
 					_selectedShip = ship;
 					_selectedShip.selected = true;
@@ -518,11 +526,13 @@ package components
 			updateMovesLeft();
 			// Desbloqueamos las celdas actuales del barco
 			setShipCellStatus(ship, false);
+			_isAnimating = true;
 			// Se mueve el barco
 			ship.moveTo(coordinate, function():void
 				{
-					if (!_turn.hasMovesLeft())
-						_main.wsRequest.endTurn();
+					_isAnimating = false;
+					if (isActivePlayer() && !_turn.hasMovesLeft())
+						_main.wsRequest.endTurn(_gameId);
 					//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
 					if (checkPort(ship))
 						trace("esta en puerto");
@@ -555,11 +565,13 @@ package components
 				setShipCellStatus(ship, false);
 				// Seteamos la nueva direccion del barco
 				ship.direction = direction;
+				_isAnimating = true;
 				// Rotamos el barco
 				ship.rotateTo(direction.cardinal, function():void
 					{
-						if (!_turn.hasMovesLeft())
-							_main.wsRequest.endTurn();
+						_isAnimating = false;
+						if (isActivePlayer() && !_turn.hasMovesLeft())
+							_main.wsRequest.endTurn(_gameId);
 						// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
 						setShipCellStatus(ship, true);
 						//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
@@ -598,19 +610,34 @@ package components
 		// Dispara un projectil desde un barco dado
 		private function fireAction(firingShip:Ship, affectedShip:Ship, hit:Boolean, target:Coordinate, projectile:int, func:Function = null):void
 		{
+			_isAnimating = true;
+			updateMovesLeft();
 			if (projectile == Projectile.WEAPON_TYPE_BULLET)
 			{
-				firingShip.fireBullet(target, func);
+				firingShip.fireBullet(target, function():void
+					{
+						_isAnimating = false;
+						if (isActivePlayer() && !_turn.hasMovesLeft())
+							_main.wsRequest.endTurn(_gameId);
+						if (func != null)
+							func.call();
+					});
 			}
 			else
 			{
-				firingShip.fireTorpedo(func);
+				firingShip.fireTorpedo(function():void
+					{
+						_isAnimating = false;
+						if (isActivePlayer() && !_turn.hasMovesLeft())
+							_main.wsRequest.endTurn(_gameId);
+						if (func != null)
+							func.call();
+					});
 			}
 			if (hit && affectedShip != null)
 			{
 				
 			}
-			updateMovesLeft();
 		}
 		
 		// Dado un id de un barco lo retorna/
@@ -674,8 +701,10 @@ package components
 			}
 			return result;
 		}
+		
 		//centra la pantalla en el seleccionado
-		public function centerOnShip(ship:Ship):void {
+		public function centerOnShip(ship:Ship):void
+		{
 			_scrollControl.centerMapToXY(ship.currentPos.x, ship.currentPos.y);
 		}
 	}

@@ -44,14 +44,13 @@ package components
 		}
 		
 		public function switchTurn(redPlayer:Player, bluePlayer:Player):void
-		{
+		{			
 			_timeLeft = _totalTime;
 			_movesLeft = _totalMoves;
 			if (_activePlayer.username == redPlayer.username)
 				_activePlayer = bluePlayer;
 			else
-				_activePlayer = redPlayer;
-			trace("active player = " + _activePlayer.username);
+				_activePlayer = redPlayer;			
 		}
 		
 		public function decreaseMovesLeft():void
