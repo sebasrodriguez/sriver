@@ -75,8 +75,7 @@ package components
 			if (gameId >= 0)
 			{
 				_gameId = gameId;
-				_gameMode.gameMode = GameMode.GETTING_GAME;
-				startSyncronizing();
+				_gameMode.gameMode = GameMode.GETTING_GAME;				
 				_main.wsRequest.getGame(gameId);
 			}
 			else
@@ -89,9 +88,9 @@ package components
 				_waitingPlayerLabel.setStyle("color", 0x000000);
 				_waitingPlayerLabel.setStyle("fontStyle", "bold");
 				_main.addElement(_waitingPlayerLabel);
-				_gameMode.gameMode = GameMode.WAITING_FOR_PLAYER;
-				startSyncronizing();
+				_gameMode.gameMode = GameMode.WAITING_FOR_PLAYER;				
 			}
+			startSyncronizing();
 		}
 		
 		public function checkGameIdHandler(response:ResultEvent):void
@@ -112,16 +111,15 @@ package components
 			var blueShip2:Object = game.ships[2];
 			var blueShip3:Object = game.ships[3];
 			var turn:Object = game.turn;
-			_isAnimating = false;
+			
 			_bluePlayer = new Player(game.bluePlayer.username);
 			_redPlayer = new Player(game.redPlayer.username);
 			if (_redPlayer.username == _myUsername)
 				_me = _redPlayer;
 			if (_bluePlayer.username == _myUsername)
-				_me = _bluePlayer;
-			trace(_redPlayer.username + " vs " + _bluePlayer.username);
+				_me = _bluePlayer;			
 			
-			_redShipComponent = new RedShip(redShip.id, new Coordinate(10, 15), new Cardinal(redShip.orientation.direction), redShip.speed, redShip.size);
+			_redShipComponent = new RedShip(redShip.id, new Coordinate(10, 15), new Cardinal(Cardinal.SW), redShip.speed, redShip.size);
 			_blueShipComponent1 = new BlueShip(blueShip1.id, new Coordinate(14, 15), new Cardinal(blueShip1.orientation.direction), blueShip1.speed, blueShip1.size);
 			_blueShipComponent2 = new BlueShip(blueShip2.id, new Coordinate(15, 20), new Cardinal(blueShip2.orientation.direction), blueShip2.speed, blueShip2.size);
 			_blueShipComponent3 = new BlueShip(blueShip3.id, new Coordinate(18, 23), new Cardinal(blueShip3.orientation.direction), blueShip3.speed, blueShip3.size);
@@ -147,7 +145,35 @@ package components
 			else
 			{
 				_gameMode.gameMode = GameMode.WAITING_PLAYER_TURN;
-			}
+			}			
+			
+			// Agrega los barcos al mapa
+			_gridComponent.blockCells(_redShipComponent.coordinates);
+			_gridComponent.blockCells(_blueShipComponent1.coordinates);
+			_gridComponent.blockCells(_blueShipComponent2.coordinates);
+			_gridComponent.blockCells(_blueShipComponent3.coordinates);			
+			
+			_redShipComponent.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
+			_blueShipComponent1.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
+			_blueShipComponent2.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
+			_blueShipComponent3.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
+			
+			_board.addChild(_redShipComponent);
+			_board.addChild(_blueShipComponent1);
+			_board.addChild(_blueShipComponent2);
+			_board.addChild(_blueShipComponent3);
+			
+			_redShipComponent.show();
+			_blueShipComponent1.show();
+			_blueShipComponent2.show();
+			_blueShipComponent3.show();
+			
+			// Cargamos informacion de usuarios y barcos
+			_info.redPlayerUsername = _redPlayer.username;
+			_info.bluePlayerUsername = _bluePlayer.username;
+			_info.movesLeftText = _turn.movesLeft.toString();
+			_info.timeLeftText = _turn.timeLeft.toString();
+			_info.setActivePlayer(_turn.activePlayer.username == _redPlayer.username);
 		}
 		
 		private function loadUserInterface():void
@@ -161,6 +187,8 @@ package components
 			_main.addElement(_board);
 			_scrollControl = new AutoScroll(_main, _board);
 			
+			_isAnimating = false;
+			
 			// Inicializa el mapa
 			_mapComponent = new Map();
 			_board.width = _mapComponent.sprite.width;
@@ -171,27 +199,16 @@ package components
 			_gridComponent.addEventListener(CellEvent.CLICK, selectedCellEvent);
 			_gridComponent.blockCells(_mapComponent.getInitialBlockedCoordinates());
 			_gridComponent.goalCells(_mapComponent.getGoalCoordinates());
-			_gridComponent.portCells(_mapComponent.getPortCoordinates());
-			
-			// Agrega los barcos al mapa
-			addShipsToUI();
+			_gridComponent.portCells(_mapComponent.getPortCoordinates());			
 			
 			_selectedShip = null;
 			
 			// Agrega los componentes al objeto Canvas
 			_board.addChild(_mapComponent);
-			_board.addChild(_gridComponent);
-			_board.addChild(_redShipComponent);
-			_board.addChild(_blueShipComponent1);
-			_board.addChild(_blueShipComponent2);
-			_board.addChild(_blueShipComponent3);
+			_board.addChild(_gridComponent);			
 			
 			// Muestra los componentes en pantalla
-			_mapComponent.show();
-			_redShipComponent.show();
-			_blueShipComponent1.show();
-			_blueShipComponent2.show();
-			_blueShipComponent3.show();
+			_mapComponent.show();			
 			
 			_menu = new Menu(Menu.MENU_POSITION_BOTTOM_LEFT);
 			_menu.addEventListener(ActionEvent.MODE_CHANGED, function(event:ActionEvent):void
@@ -208,13 +225,7 @@ package components
 				});
 			_main.addElement(_menu);
 			
-			_info = new Info();
-			_info.redPlayerUsername = _redPlayer.username;
-			_info.bluePlayerUsername = _bluePlayer.username;
-			_info.movesLeftText = _turn.movesLeft.toString();
-			_info.timeLeftText = _turn.timeLeft.toString();
-			_info.setActivePlayer(_turn.activePlayer.username == _redPlayer.username);
-			
+			_info = new Info();			
 			_main.addElement(_info);
 		}
 		
@@ -243,8 +254,8 @@ package components
 		
 		public function getGameHandler(response:ResultEvent):void
 		{
-			initializeGame(response.result);
 			loadUserInterface();
+			initializeGame(response.result);			
 		}
 		
 		public function moveHandler(response:ResultEvent):void
@@ -416,20 +427,7 @@ package components
 					_main.wsRequest.fire(_gameId, _selectedShip.shipId, coor, _menu.currentFireMode);
 				}
 			}
-		}
-		
-		private function addShipsToUI():void
-		{
-			setShipCellStatus(_redShipComponent, true);
-			setShipCellStatus(_blueShipComponent1, true);
-			setShipCellStatus(_blueShipComponent2, true);
-			setShipCellStatus(_blueShipComponent3, true);
-			
-			_redShipComponent.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
-			_blueShipComponent1.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
-			_blueShipComponent2.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
-			_blueShipComponent3.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
-		}
+		}		
 		
 		// Evento disparado cuando se selecciona un barco
 		public function selectedShipEvent(event:SelectedShipEvent):void
@@ -489,18 +487,7 @@ package components
 					nomore = true;
 				i++;
 			}
-		}
-		
-		// Bloquea/Desbloquea las celdas que el barco ocupa/ocupo
-		private function setShipCellStatus(ship:Ship, enabled:Boolean):void
-		{
-			_gridComponent.setCellStatus(ship.currentPos, enabled);
-			if (ship.size > 1)
-			{
-				_gridComponent.setCellStatus(Helper.calculateNextCell(ship.currentPos, ship.direction), enabled);
-				_gridComponent.setCellStatus(Helper.calculateNextCell(ship.currentPos, Helper.getOppositeDirection(ship.direction)), enabled);
-			}
-		}
+		}		
 		
 		// Actualiza los movimientos del turno y refleja en el UI la cantidad de movimientos restantes
 		private function updateMovesLeft():void
@@ -524,8 +511,8 @@ package components
 			_gridComponent.disableCells();
 			// Actualizo la cantidad de movimientos restantes del turno
 			updateMovesLeft();
-			// Desbloqueamos las celdas actuales del barco
-			setShipCellStatus(ship, false);
+			// Desbloqueamos las celdas actuales del barco			
+			_gridComponent.unblockCells(ship.coordinates);			
 			_isAnimating = true;
 			// Se mueve el barco
 			ship.moveTo(coordinate, function():void
@@ -541,7 +528,7 @@ package components
 					// Se muestran nuevas celdas de movimiento basadas en la nueva posicion del barco
 					refreshMode();
 					// Bloqueamos la nueva posicion del barco
-					setShipCellStatus(ship, true);
+					_gridComponent.blockCells(ship.coordinates);					
 					//refrescamos para que habilite la accion mover nuevamente
 					
 					if (func != null)
@@ -562,7 +549,7 @@ package components
 				// Actualizamos los movimientos restantes
 				updateMovesLeft();
 				// Actualizamos las celdas bloqueadas por el barco
-				setShipCellStatus(ship, false);
+				_gridComponent.unblockCells(ship.coordinates);				
 				// Seteamos la nueva direccion del barco
 				ship.direction = direction;
 				_isAnimating = true;
@@ -573,7 +560,7 @@ package components
 						if (isActivePlayer() && !_turn.hasMovesLeft())
 							_main.wsRequest.endTurn(_gameId);
 						// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
-						setShipCellStatus(ship, true);
+						_gridComponent.blockCells(ship.coordinates);						
 						//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
 						if (checkPort(ship))
 							trace("estoy en puerto");
@@ -636,7 +623,7 @@ package components
 			}
 			if (hit && affectedShip != null)
 			{
-				
+				// TODO: implementar impacto
 			}
 		}
 		

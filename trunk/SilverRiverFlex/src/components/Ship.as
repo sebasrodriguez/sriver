@@ -122,7 +122,7 @@ package components
 			board.addChild(bullet);
 			bullet.rotation = Helper.getAngleToCoordinate(currentPos, c);
 			bullet.show();
-			bullet.moveTo(c, FunctionUtil.createDelegate(function (bullet:Bullet):void {
+			bullet.moveTo(c, FunctionUtil.createDelegate(function (bullet:Bullet):void {				
 				bullet.hide();
 				bullet = null;
 				if( func != null)
@@ -136,7 +136,7 @@ package components
 			board.addChild(torpedo);
 			torpedo.rotation = this.rotation;
 			torpedo.show();
-			torpedo.moveTo(new Coordinate(0,0), FunctionUtil.createDelegate(function (torpedo:Torpedo):void {
+			torpedo.moveTo(new Coordinate(0, 0), FunctionUtil.createDelegate(function (torpedo:Torpedo):void {				
 				torpedo.hide();
 				torpedo = null;
 				if( func != null)
