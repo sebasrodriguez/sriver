@@ -31,6 +31,10 @@ public class Facade {
 	private ArrayList<Game> activeGames;
 	private Game gameWithoutBluePlayer;
 	private static Facade facade;
+	private static int maxAxisX = 64;
+	private static int maxAxisY = 32;
+	private static int minAxisX = 0;
+	private static int minAxisY = 0;
 	
 		
 	/*
@@ -196,7 +200,8 @@ public class Facade {
 		
 		
 		while(coordinatesIt.hasNext() && hitted == false){
-			Coordinate coordinateAux = coordinatesIt.next();			
+			Coordinate coordinateAux = coordinatesIt.next();	
+			System.out.println("Coord: (" + coordinateAux.getX() + "," + coordinateAux.getY() + ")" );
 			if(activeGame.getShipFiredId(coordinateAux) != -1){
 				//acerto	
 				hitted = true;			
@@ -550,76 +555,76 @@ public class Facade {
 		
 		switch (orientation.getDirection()){
 		//Norte
-		case 0:
-			//el x queda fijo, y + 1
-			while(y <= 32){
-				y++;
+		case Cardinal.N:
+			//el x queda fijo, y - 1
+			while(y >= minAxisY){
+				y--;
 				coordinateToAdd = new Coordinate(x,y);
 				coordinatesToReturn.add(coordinateToAdd);
 			}
 			break;
 		//Este
-		case 90:
+		case Cardinal.E:
 			//el y queda fijo, x + 1
-			while(x <= 64){
+			while(x <= maxAxisX){
 				x++;
 				coordinateToAdd = new Coordinate(x,y);
 				coordinatesToReturn.add(coordinateToAdd);
 			}
 			break;
 		//Sur
-		case 180:
-			//el x queda fijo, y - 1
-			while(y >= 0){
-				y--;
+		case Cardinal.S:
+			//el x queda fijo, y + 1
+			while(y <= maxAxisY){
+				y++;
 				coordinateToAdd = new Coordinate(x,y);
 				coordinatesToReturn.add(coordinateToAdd);
 			}
 			break;
 		//Oeste
-		case -90:
+		case Cardinal.W:
 			//el y queda fijo, x - 1
-			while(x >= 0){
+			while(x >= minAxisX){
 				x--;
 				coordinateToAdd = new Coordinate(x,y);
 				coordinatesToReturn.add(coordinateToAdd);
 			}
 			break;
 		//Noreste
-		case 45:
-			//x + 1, y + 1
-			while(x <= 64 && y <= 32){
-				y++;
+		case Cardinal.NE:
+			//x + 1, y - 1
+			while(x <= maxAxisX && y >= maxAxisY){
+				y--;
 				x++;
 				coordinateToAdd = new Coordinate(x,y);
 				coordinatesToReturn.add(coordinateToAdd);
 			}
 			break;
 		//Noroeste
-		case -45:
-			//x - 1 y + 1
-			while(x >= 0 && y <= 32){
-				y++;
+		case Cardinal.NW:
+			//x - 1 y - 1
+			while(x >= minAxisX && y >= minAxisY){
+				y--;
 				x--;
 				coordinateToAdd = new Coordinate(x,y);
 				coordinatesToReturn.add(coordinateToAdd);
 			}
 			break;
 		//Sureste
-		case 135:
-			//x +1 y -1
-			while(x <= 64 && y >= 0){
-				y--;
+		case Cardinal.SE:
+			//x +1 y +1
+			while(x <= maxAxisX && y <= maxAxisY){
+				y++;
 				x++;
 				coordinateToAdd = new Coordinate(x,y);
 				coordinatesToReturn.add(coordinateToAdd);
 			}
 			break;
 		//Suroeste
-		case -135:
-			//x - 1 y -1
-			while(x >= 0 && y >= 0){
-				y--;
+		case Cardinal.SW:
+			//x - 1 y +1
+			while(x >= minAxisX && y <= maxAxisY){
+				y++;
 				x--;
 				coordinateToAdd = new Coordinate(x,y);
 				coordinatesToReturn.add(coordinateToAdd);
