@@ -162,12 +162,12 @@ package components
 			_selected = value;
 		}
 		
-		public function get viewRange():int 
+		public function get viewRange():int
 		{
 			return _viewRange;
 		}
 		
-		public function set viewRange(value:int):void 
+		public function set viewRange(value:int):void
 		{
 			_viewRange = value;
 		}
@@ -251,6 +251,16 @@ package components
 				i++;
 			}
 			return result;
+		}
+		
+		public function isInFireRange(coordinate:Coordinate):Boolean
+		{
+			var isInFireRange:Boolean = true;
+			
+			if (Helper.distanceBetweenCells(this.currentPos, coordinate) > _viewRange)
+				isInFireRange = false;
+			
+			return isInFireRange;
 		}
 	}
 
