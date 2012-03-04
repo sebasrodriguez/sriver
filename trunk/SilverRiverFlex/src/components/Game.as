@@ -349,16 +349,16 @@ package components
 			{
 				_turn.decreaseTimeLeft();
 				_info.timeLeftText = _turn.timeLeft.toString();
-				if (_turn.timeLeft <= 0 && isActivePlayer())
-				{
-					_main.wsRequest.endTurn(_gameId);
-				}
-				
 			}
 			if (_turn.timeLeft > 0)
 				_shouldDecreaseTime = !_shouldDecreaseTime;
 			else
 				_shouldDecreaseTime = false;
+			
+			if (_turn.timeLeft <= 0 && isActivePlayer() && !_isAnimating)
+			{
+				_main.wsRequest.endTurn(_gameId);
+			}
 		}
 		
 		public function consumeActionsHandler(response:ResultEvent):void
@@ -396,15 +396,17 @@ package components
 				else if (action.actionType == "FireAction")
 				{
 					ship = getShipById(action.ship.id);
+					var coordinate:Coordinate = null;
 					var affectedShip:Ship = null;
 					var newArmor:int = -1;
 					if (action.hit && action.affectedShip != null)
 					{
 						affectedShip = getShipById(action.affectedShip.id);
 						newArmor = action.affectedShip.armor;
+						coordinate = new Coordinate(action.hitCoordinate.y, action.hitCoordinate.x);
 					}
 					
-					fireAction(ship, affectedShip, newArmor, action.hit, new Coordinate(action.hitCoordinate.y, action.hitCoordinate.x), action.weaponType.weapon, consumeNextAction);
+					fireAction(ship, affectedShip, newArmor, action.hit, coordinate, action.weaponType.weapon, consumeNextAction);
 				}
 				else if (action.actionType == "EndTurnAction")
 				{
@@ -467,19 +469,23 @@ package components
 				// Si el modo de disparo es artillería y seleccione un barco enemigo, disparo hacia el mismo
 				if (_menu.currentMode == Menu.MENU_MODE_FIRE)
 				{
-					// Si quedan balas disparo
-					if (_selectedShip.hasAmmo())
+					// Si es el usuario activo disparo
+					if (isActivePlayer() && !_isAnimating)
 					{
-						var coor:Object = new Object();
-						coor.x = ship.currentPos.c;
-						coor.y = ship.currentPos.r;
-						
-						// Llamamos al webservice con la accion de disparo
-						_main.wsRequest.fireAmmo(_gameId, _selectedShip.shipId, coor);
-					}
-					else
-					{
-						trace("barco sin ammo");
+						// Si quedan balas disparo
+						if (_selectedShip.hasAmmo())
+						{
+							var coor:Object = new Object();
+							coor.x = ship.currentPos.c;
+							coor.y = ship.currentPos.r;
+							
+							// Llamamos al webservice con la accion de disparo
+							_main.wsRequest.fireAmmo(_gameId, _selectedShip.shipId, coor);
+						}
+						else
+						{
+							trace("barco sin ammo");
+						}
 					}
 				}
 			}
@@ -508,22 +514,39 @@ package components
 			currentPos = ship.currentPos;
 			i = 0;
 			nomore = false;
-			trace(realSpeed / 2);
 			while (!nomore && i < realSpeed / 2)
 			{
 				currentPos = Helper.calculateNextCell(currentPos, Helper.getOppositeDirection(ship.direction));
 				offsetPos = Helper.calculateNextCell(currentPos, Helper.getOppositeDirection(ship.direction), offset);
-				trace("currentPos: " + currentPos);
-				trace("offsetPos: " + offsetPos);
 				if (!_gridComponent.getCell(offsetPos).blocked)
 				{
-					trace("quiere habilitar reversa:" + currentPos);
 					_gridComponent.enableCell(currentPos);
 				}
 				else
 					nomore = true;
 				i++;
 			}
+		}
+		
+		// Calcula la celda en la cual el torpedo debe morir ya que no impacto contra un barco enemigo
+		public function calculateTorpedoCell(coordinate:Coordinate, cardinal:Cardinal):Coordinate
+		{
+			var distance:int = 0;
+			var blocked:Boolean = false;
+			var currentPos:Coordinate = new Coordinate(coordinate.r, coordinate.c);
+			while (!blocked && distance < 10)
+			{
+				distance++;
+				if (_gridComponent.getCell(Helper.calculateNextCell(currentPos, cardinal)).blocked)
+				{
+					blocked = true;
+				}
+				else
+				{
+					currentPos = Helper.calculateNextCell(currentPos, cardinal);
+				}
+			}
+			return currentPos;
 		}
 		
 		// Actualiza los movimientos del turno y refleja en el UI la cantidad de movimientos restantes
@@ -638,6 +661,8 @@ package components
 			updateMovesLeft();
 			if (projectile == Projectile.WEAPON_TYPE_BULLET)
 			{
+				if (isActivePlayer() && !_turn.hasMovesLeft())
+					_main.wsRequest.endTurn(_gameId);
 				// Decremento la cantidad de balas
 				firingShip.decreaseAmmo();
 				// Ejecuto la accion de disparar
@@ -649,8 +674,6 @@ package components
 							affectedShip.armor = newArmor;
 						}
 						_isAnimating = false;
-						if (isActivePlayer() && !_turn.hasMovesLeft())
-							_main.wsRequest.endTurn(_gameId);
 						if (func != null)
 							func.call();
 					});
@@ -659,8 +682,18 @@ package components
 			{
 				// Decremento la cantidad de torpedos
 				firingShip.decreaseTorpedoes();
+				var coordinate:Coordinate = null;
+				if (affectedShip != null)
+					coordinate = new Coordinate(target.r, target.c);
+				else
+				{
+					var nextCell:Coordinate = new Coordinate(firingShip.currentPos.r, firingShip.currentPos.c);
+					if (firingShip.size > 1)
+						nextCell = Helper.calculateNextCell(nextCell, firingShip.direction);
+					coordinate = calculateTorpedoCell(nextCell, firingShip.direction);
+				}
 				// Ejecuto la accion de disparar
-				firingShip.fireTorpedo(function():void
+				firingShip.fireTorpedo(coordinate, function():void
 					{
 						// Actualizo el daño recibido en el barco
 						if (hit && affectedShip != null)
@@ -674,6 +707,7 @@ package components
 							func.call();
 					});
 			}
+			_menu.updateShipInfo(firingShip);
 		}
 		
 		// Dado un id de un barco lo retorna/

@@ -203,14 +203,14 @@ package components
 				}, bullet), 10);
 		}
 		
-		public function fireTorpedo(func:Function):void
+		public function fireTorpedo(hitCoordinate:Coordinate, func:Function):void
 		{
 			var board:DisplayObjectContainer = this.parent;
 			var torpedo:Torpedo = new Torpedo(currentPos);
 			board.addChild(torpedo);
 			torpedo.rotation = this.rotation;
 			torpedo.show();
-			torpedo.moveTo(new Coordinate(0, 0), FunctionUtil.createDelegate(function(torpedo:Torpedo):void
+			torpedo.moveTo(hitCoordinate, FunctionUtil.createDelegate(function(torpedo:Torpedo):void
 				{
 					torpedo.hide();
 					torpedo = null;
