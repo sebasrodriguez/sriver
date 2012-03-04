@@ -14,9 +14,12 @@ public class SilverRiverService {
 		return Facade.getInstance().move(gameId, shipId, destination);	
 	}
 	
-	public FireAction fire(int gameId, int shipFiringId, Coordinate firingPoint, int weaponType){
-		Weapon weapon = new Weapon(weaponType);
-		return Facade.getInstance().fire(gameId, shipFiringId, firingPoint, weapon);
+	public FireAction fireAmmo(int gameId, int shipFiringId, Coordinate firingPoint){
+		return Facade.getInstance().fireAmmo(gameId, shipFiringId, firingPoint);
+	}
+	
+	public FireAction fireTorpedo(int gameId, int shipFiringId){
+		return Facade.getInstance().fireTorpedo(gameId, shipFiringId);
 	}
 	
 	public RotateAction rotate(int gameId, int shipId, int degrees){
