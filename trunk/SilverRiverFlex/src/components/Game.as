@@ -429,11 +429,20 @@ package components
 				}
 				else if (_menu.currentMode == Menu.MENU_MODE_FIRE)
 				{
-					var coor:Object = new Object();
-					coor.x = event.coordinate.c;
-					coor.y = event.coordinate.r;
-					// Llamamos al webservice con la accion de disparo
-					_main.wsRequest.fire(_gameId, _selectedShip.shipId, coor, _menu.currentFireMode);
+					// Si quedan balas disparo
+					if (_selectedShip.hasAmmo())
+					{
+						var coor:Object = new Object();
+						coor.x = event.coordinate.c;
+						coor.y = event.coordinate.r;
+						
+						// Llamamos al webservice con la accion de disparo
+						_main.wsRequest.fire(_gameId, _selectedShip.shipId, coor, _menu.currentFireMode);
+					}
+					else
+					{
+						trace("barco sin ammo");
+					}
 				}
 			}
 		}
@@ -611,6 +620,9 @@ package components
 			updateMovesLeft();
 			if (projectile == Projectile.WEAPON_TYPE_BULLET)
 			{
+				// Decremento la cantidad de balas
+				firingShip.decreaseAmmo();
+				// Ejecuto la accion de disparar
 				firingShip.fireBullet(target, function():void
 					{
 						// Actualizo el daño recibido en el barco
@@ -627,6 +639,9 @@ package components
 			}
 			else
 			{
+				// Decremento la cantidad de torpedos
+				firingShip.decreaseTorpedoes();
+				// Ejecuto la accion de disparar
 				firingShip.fireTorpedo(function():void
 					{
 						// Actualizo el daño recibido en el barco
@@ -640,7 +655,7 @@ package components
 						if (func != null)
 							func.call();
 					});
-			}			
+			}
 		}
 		
 		// Dado un id de un barco lo retorna/
