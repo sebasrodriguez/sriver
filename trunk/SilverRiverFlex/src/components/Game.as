@@ -119,10 +119,10 @@ package components
 			if (_bluePlayer.username == _myUsername)
 				_me = _bluePlayer;
 			
-			_redShipComponent = new RedShip(redShip.id, new Coordinate(10, 15), new Cardinal(Cardinal.SW), redShip.speed, redShip.size, redShip.armor, redShip.ammo, redShip.torpedo);
-			_blueShipComponent1 = new BlueShip(blueShip1.id, new Coordinate(14, 15), new Cardinal(blueShip1.orientation.direction), blueShip1.speed, blueShip1.size, blueShip1.armor, blueShip1.ammo, blueShip1.torpedo);
-			_blueShipComponent2 = new BlueShip(blueShip2.id, new Coordinate(15, 20), new Cardinal(blueShip2.orientation.direction), blueShip2.speed, blueShip2.size, blueShip2.armor, blueShip2.ammo, blueShip2.torpedo);
-			_blueShipComponent3 = new BlueShip(blueShip3.id, new Coordinate(18, 23), new Cardinal(blueShip3.orientation.direction), blueShip3.speed, blueShip3.size, blueShip3.armor, blueShip3.ammo, blueShip3.torpedo);
+			_redShipComponent = new RedShip(redShip.id, new Coordinate(10, 15), new Cardinal(Cardinal.SW), redShip.speed, redShip.size, redShip.armor, redShip.ammo, redShip.torpedo, redShip.viewRange);
+			_blueShipComponent1 = new BlueShip(blueShip1.id, new Coordinate(14, 15), new Cardinal(blueShip1.orientation.direction), blueShip1.speed, blueShip1.size, blueShip1.armor, blueShip1.ammo, blueShip1.torpedo, blueShip1.viewRange);
+			_blueShipComponent2 = new BlueShip(blueShip2.id, new Coordinate(15, 20), new Cardinal(blueShip2.orientation.direction), blueShip2.speed, blueShip2.size, blueShip2.armor, blueShip2.ammo, blueShip2.torpedo, blueShip2.viewRange);
+			_blueShipComponent3 = new BlueShip(blueShip3.id, new Coordinate(18, 23), new Cardinal(blueShip3.orientation.direction), blueShip3.speed, blueShip3.size, blueShip3.armor, blueShip3.ammo, blueShip3.torpedo, blueShip3.viewRange);
 			/*
 			   _redShipComponent = new RedShip(redShip.id, new Coordinate(redShip.position.y, redShip.position.x), new Cardinal(redShip.orientation.direction), redShip.speed, redShip.size);
 			   _blueShipComponent1 = new BlueShip(blueShip1.id, new Coordinate(blueShip1.position.y, blueShip1.position.x), new Cardinal(blueShip1.orientation.direction), blueShip1.speed, blueShip1.size);

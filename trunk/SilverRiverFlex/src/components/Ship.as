@@ -22,10 +22,11 @@ package components
 		private var _ammo:int;
 		private var _torpedoes:int;
 		private var _armor:int;
+		private var _viewRange:int;
 		private var _coordinates:Array;
 		private var _selected:Boolean;
 		
-		public function Ship(id:int, c:Coordinate, d:Cardinal, s:int, size:int, armor:int, ammo:int, torpedoes:int)
+		public function Ship(id:int, c:Coordinate, d:Cardinal, s:int, size:int, armor:int, ammo:int, torpedoes:int, viewRange:int)
 		{
 			super(c);
 			_id = id;
@@ -36,6 +37,7 @@ package components
 			_armor = armor;
 			_ammo = ammo;
 			_torpedoes = torpedoes;
+			_viewRange = viewRange;
 			this.rotation = d.cardinal;
 			updateCoordinates();
 			this.addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void
@@ -158,6 +160,16 @@ package components
 				filters = null;
 			}
 			_selected = value;
+		}
+		
+		public function get viewRange():int 
+		{
+			return _viewRange;
+		}
+		
+		public function set viewRange(value:int):void 
+		{
+			_viewRange = value;
 		}
 		
 		public function updateCoordinates():void
