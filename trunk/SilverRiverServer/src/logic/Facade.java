@@ -113,32 +113,29 @@ public class Facade {
 	 * actualiza los valores del barco que disparo
 	 * devuelve el fireAction	 	
 	*/
-	public FireAction fire(int gameId, int shipFiringId, Coordinate firingPoint, Weapon weaponType){
+	public FireAction fireAmmo(int gameId, int shipFiringId, Coordinate firingPoint){
 		
 		Game activeGame = this.findGame(gameId);
 		FireAction fireActionToReturn = null;
 		int newAmunition = 0;
 		boolean hit = false;
 		Ship affectedShip = null; 
-		Coordinate exactFiringPoint = this.calculateHitPoint(activeGame.getShip(shipFiringId), firingPoint);
 		Ship aux = null;
 		ShipVO firedShipVO = null;
 		ShipVO firingShipVO = null;
 		
+		Coordinate exactFiringPoint = this.calculateHitPoint(activeGame.getShip(shipFiringId), firingPoint);
+	
+		
 		
 		if(activeGame.getShipFiredId(exactFiringPoint) != -1){
 			//acerto	
-			hit = true;
-			//OJOOOOOOOOO con Armor - 1
+			hit = true;			
 			affectedShip = activeGame.getShip(activeGame.getShipFiredId(exactFiringPoint));
 			int newArmor = affectedShip.getArmor() - 1;
 			affectedShip.setArmor(newArmor);
 				
-			/*if(affectedShip.getArmor() <= 0){
-				activeGame.destroyedShip(affectedShip.getId());
-			}	*/
-			
-			
+					
 			//Comapro si el barco dañado es rojo
 			if(affectedShip.getId() == 0){
 				firedShipVO = new RedShipVO(affectedShip.getId(), affectedShip.getSpeed(), affectedShip.getArmor(), affectedShip.getAmmo(), affectedShip.getTorpedo(), affectedShip.getViewRange(), affectedShip.getSize(), affectedShip.getPosition(), affectedShip.getOrientation());
@@ -147,19 +144,10 @@ public class Facade {
 			}			
 		}
 		
-		//comparo si es torpedo
-		if(weaponType.getWeapon() == 0){
-			aux = activeGame.getShip(shipFiringId);
-			newAmunition = aux.getTorpedo() - 1;
-			aux.setTorpedo(newAmunition);						
-		}else{
-			aux = activeGame.getShip(shipFiringId);
-			newAmunition = aux.getAmmo() - 1;
-			aux.setAmmo(newAmunition);
-		}
-		
-		
-		
+		//Calculo la nueva cantidad de balas del barco
+		aux = activeGame.getShip(shipFiringId);
+		newAmunition = aux.getAmmo() - 1;
+		aux.setAmmo(newAmunition);
 		
 		//Comparo si el barco que disparo es rojo
 		if(aux.getId() == 0){
@@ -169,10 +157,80 @@ public class Facade {
 		}
 		
 		
+		Weapon weapon = new Weapon(Weapon.MACHINEGUN);
+		fireActionToReturn = new FireAction(firingShipVO, weapon, exactFiringPoint, hit, firedShipVO);
 		
-		fireActionToReturn = new FireAction(firingShipVO, weaponType, exactFiringPoint, hit, firedShipVO);
+		
+		//Comparo si es igual al jugador ROJO
+		if(activeGame.getTurn().getActivePlayer().getUsername().compareTo(activeGame.getRedPlayer().getUsername()) == 0){
+			activeGame.getBlueActionQueue().add(fireActionToReturn);
+		}else{
+			activeGame.getRedActionQueue().add(fireActionToReturn);
+		}
+		
+		activeGame.getTurn().consumeMovement();
+		return fireActionToReturn;
+	}
+	
+	/*
+	 * Entrada: id del barco que disparo
+	 * Salida: fireAction
+	 * Procedimiento:
+	 * Calculo todos las coordenadas de la recta en la cual es la direccion del torpedo
+	 * Si existe algun barco en esa recta entonces 
+	 * 		ese barco es dañado
+	 * sino
+	 * 		no hay barco dañados 
+	 */
+	public FireAction fireTorpedo(int gameId, int shipFiringId){
+		
+		Game activeGame = this.findGame(gameId);
+		FireAction fireActionToReturn = null;		
+		Ship shipFiring = activeGame.getShip(shipFiringId);
+		ArrayList<Coordinate> coordinates = this.straightCoordinates(shipFiring.getPosition(), shipFiring.getOrientation());
+		Iterator<Coordinate> coordinatesIt = coordinates.iterator();
+		boolean hitted = false;
+		Coordinate coordinateHitted = null;
+		ShipVO firedShipVO = null;
+		ShipVO firingShipVO = null;
 		
 		
+		while(coordinatesIt.hasNext() && hitted == false){
+			Coordinate coordinateAux = coordinatesIt.next();			
+			if(activeGame.getShipFiredId(coordinateAux) != -1){
+				//acerto	
+				hitted = true;			
+				coordinateHitted = coordinateAux;
+			}
+		}
+		
+		if(hitted){
+			Ship affectedShip = activeGame.getShip(activeGame.getShipFiredId(coordinateHitted));
+			int newArmor = affectedShip.getArmor() - 1;
+			affectedShip.setArmor(newArmor);						
+			//Comapro si el barco dañado es rojo
+			if(affectedShip.getId() == 0){
+				firedShipVO = new RedShipVO(affectedShip.getId(), affectedShip.getSpeed(), affectedShip.getArmor(), affectedShip.getAmmo(), affectedShip.getTorpedo(), affectedShip.getViewRange(), affectedShip.getSize(), affectedShip.getPosition(), affectedShip.getOrientation());
+			}else{
+				firedShipVO = new BlueShipVO(affectedShip.getId(), affectedShip.getSpeed(), affectedShip.getArmor(), affectedShip.getAmmo(), affectedShip.getTorpedo(), affectedShip.getViewRange(), affectedShip.getSize(), affectedShip.getPosition(), affectedShip.getOrientation());
+			}			
+		}
+			
+		//Calculo la nueva cantidad de balas del barco	
+		int	newAmunition = shipFiring.getTorpedo() - 1;
+		shipFiring.setTorpedo(newAmunition);		
+			
+		//Comparo si el barco que disparo es rojo
+		if(shipFiring.getId() == 0){
+			firingShipVO = new RedShipVO(shipFiring.getId(), shipFiring.getSpeed(), shipFiring.getArmor(), shipFiring.getAmmo(), shipFiring.getTorpedo(), shipFiring.getViewRange(), shipFiring.getSize(), shipFiring.getPosition(), shipFiring.getOrientation());
+		}else{
+			firingShipVO = new BlueShipVO(shipFiring.getId(), shipFiring.getSpeed(), shipFiring.getArmor(), shipFiring.getAmmo(), shipFiring.getTorpedo(), shipFiring.getViewRange(), shipFiring.getSize(), shipFiring.getPosition(), shipFiring.getOrientation());
+		}			
+			
+		Weapon weapon = new Weapon(Weapon.TORPEDO);
+		fireActionToReturn = new FireAction(firingShipVO, weapon, coordinateHitted, hitted, firedShipVO);
+			
+			
 		//Comparo si es igual al jugador ROJO
 		if(activeGame.getTurn().getActivePlayer().getUsername().compareTo(activeGame.getRedPlayer().getUsername()) == 0){
 			activeGame.getBlueActionQueue().add(fireActionToReturn);
@@ -481,66 +539,98 @@ public class Facade {
 		return indexToReturn;
 	}
 	
+	/*
+	 * Metodo que devuelve un ArrayList con todas las coordenadas que pertenecen a la recta en la cual va el torpedo
+	 */
+	private ArrayList<Coordinate> straightCoordinates(Coordinate origin, Cardinal orientation){
+		ArrayList<Coordinate> coordinatesToReturn = new ArrayList<Coordinate>();
+		int x = origin.getX();
+		int y = origin.getY();
+		Coordinate coordinateToAdd = null;
+		
+		switch (orientation.getDirection()){
+		//Norte
+		case 0:
+			//el x queda fijo, y + 1
+			while(y <= 32){
+				y++;
+				coordinateToAdd = new Coordinate(x,y);
+				coordinatesToReturn.add(coordinateToAdd);
+			}
+			break;
+		//Este
+		case 90:
+			//el y queda fijo, x + 1
+			while(x <= 64){
+				x++;
+				coordinateToAdd = new Coordinate(x,y);
+				coordinatesToReturn.add(coordinateToAdd);
+			}
+			break;
+		//Sur
+		case 180:
+			//el x queda fijo, y - 1
+			while(y >= 0){
+				y--;
+				coordinateToAdd = new Coordinate(x,y);
+				coordinatesToReturn.add(coordinateToAdd);
+			}
+			break;
+		//Oeste
+		case -90:
+			//el y queda fijo, x - 1
+			while(x >= 0){
+				x--;
+				coordinateToAdd = new Coordinate(x,y);
+				coordinatesToReturn.add(coordinateToAdd);
+			}
+			break;
+		//Noreste
+		case 45:
+			//x + 1, y + 1
+			while(x <= 64 && y <= 32){
+				y++;
+				x++;
+				coordinateToAdd = new Coordinate(x,y);
+				coordinatesToReturn.add(coordinateToAdd);
+			}
+			break;
+		//Noroeste
+		case -45:
+			//x - 1 y + 1
+			while(x >= 0 && y <= 32){
+				y++;
+				x--;
+				coordinateToAdd = new Coordinate(x,y);
+				coordinatesToReturn.add(coordinateToAdd);
+			}
+			break;
+		//Sureste
+		case 135:
+			//x +1 y -1
+			while(x <= 64 && y >= 0){
+				y--;
+				x++;
+				coordinateToAdd = new Coordinate(x,y);
+				coordinatesToReturn.add(coordinateToAdd);
+			}
+			break;
+		//Suroeste
+		case -135:
+			//x - 1 y -1
+			while(x >= 0 && y >= 0){
+				y--;
+				x--;
+				coordinateToAdd = new Coordinate(x,y);
+				coordinatesToReturn.add(coordinateToAdd);
+			}
+			break;
+		}
+		return coordinatesToReturn;
+	}
 	
 	//OJO QUE HAY QUE BORRARLOOOOO
 	public Iterator<Game> devolverITerator(){
 		return this.activeGames.iterator();
 	}
-	
-	/*
-	//PRUEBAS CON LA UI
-	public Action[] pruebaActions(){
-		
-		Coordinate position = null;
-		Cardinal orientation = null;
-		ArrayList<Action> actions = new ArrayList<Action>();
-		
-		
-		
-		
-		//Creando los barcos
-		position = new Coordinate(12,10);
-		orientation = new Cardinal(Cardinal.S);
-		ShipVO redShip = new RedShipVO(1, 10, 10, 12, 3, 10, 3, position, orientation);
-		
-		position = new Coordinate(20,20);
-		orientation = new Cardinal(90);
-		ShipVO blueShip1 = new BlueShipVO(2, 5, 5, 6, 1, 5, 1, position, orientation);
-		position = new Coordinate(22,20);
-		orientation = new Cardinal(90);
-		ShipVO blueShip2 = new BlueShipVO(3, 5, 5, 6, 1, 5, 1, position, orientation);
-		position = new Coordinate(24,20);
-		orientation = new Cardinal(90);
-		ShipVO blueShip3 = new BlueShipVO(4, 5, 5, 6, 1, 5, 1, position, orientation);
-	
-		//MAPA (64,36)	
-	
-		//Creando las acciones		
-		
-		position = new Coordinate(12,13);				
-		MoveAction action1 = new MoveAction(redShip, position);
-		actions.add(action1);
-		//acs[0] = action1;
-		
-		
-		orientation = new Cardinal(Cardinal.N);				
-		RotateAction action2 = new RotateAction(redShip, orientation);
-		actions.add(action2);
-		//acs[1] = action2;
-		
-		
-		position = new Coordinate(12,9);
-		MoveAction action3 = new MoveAction(redShip, position);
-		actions.add(action3);
-		//acs[2] = action3;
-		
-		
-		Action[] acs = {action1, action2, action3};
-				
-		return acs;	
-		
-	}*/
-	
-	
-	
 }
