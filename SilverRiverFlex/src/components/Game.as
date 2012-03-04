@@ -458,6 +458,7 @@ package components
 					_selectedShip = ship;
 					_selectedShip.selected = true;
 					centerOnShip(_selectedShip);
+					_menu.updateShipInfo(_selectedShip);
 					refreshMode();
 				}
 			}
