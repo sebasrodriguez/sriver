@@ -67,42 +67,7 @@ package components
 			_myUsername = username;
 			_actionQueue = new ArrayList();
 			_main.wsRequest.newGame(username);
-		}
-		
-		public function newGameHandler(response:ResultEvent):void
-		{
-			var gameId:int = response.result as int;
-			if (gameId >= 0)
-			{
-				_gameId = gameId;
-				_gameMode.gameMode = GameMode.GETTING_GAME;
-				_main.wsRequest.getGame(gameId);
-			}
-			else
-			{
-				_waitingPlayerLabel = new Label();
-				_waitingPlayerLabel.text = "Esperando un segundo jugador...";
-				_waitingPlayerLabel.x = _main.width / 3;
-				_waitingPlayerLabel.y = _main.height / 3;
-				_waitingPlayerLabel.setStyle("fontSize", 30);
-				_waitingPlayerLabel.setStyle("color", 0x000000);
-				_waitingPlayerLabel.setStyle("fontStyle", "bold");
-				_main.addElement(_waitingPlayerLabel);
-				_gameMode.gameMode = GameMode.WAITING_FOR_PLAYER;
-			}
-			startSyncronizing();
-		}
-		
-		public function checkGameIdHandler(response:ResultEvent):void
-		{
-			var gameId:int = response.result as int;
-			if (gameId >= 0)
-			{
-				_gameId = gameId;
-				_main.wsRequest.getGame(gameId);
-				_gameMode.gameMode = GameMode.GETTING_GAME;
-			}
-		}
+		}		
 		
 		private function initializeGame(game:Object):void
 		{
@@ -235,88 +200,15 @@ package components
 			
 			_info = new Info();
 			_main.addElement(_info);
-		}
+		}		
 		
-		public function refreshMode():void
-		{
-			clearMode();
-			if (_selectedShip != null && _turn.hasMovesLeft() && isActivePlayer())
-			{
-				switch (_menu.currentMode)
-				{
-					case Menu.MENU_MODE_MOVE: 
-						enableMovement(_selectedShip);
-						break;
-					case Menu.MENU_MODE_ROTATE: 
-						break;
-					case Menu.MENU_MODE_FIRE: 
-						break;
-				}
-			}
-		}
-		
-		public function clearMode():void
-		{
-			_gridComponent.disableCells();
-		}
-		
-		public function getGameHandler(response:ResultEvent):void
-		{
-			loadUserInterface();
-			initializeGame(response.result);
-		}
-		
-		public function moveHandler(response:ResultEvent):void
-		{
-			trace("el server se actualizo con la nueva posicion del barco");
-		}
-		
-		public function fireHandler(response:ResultEvent):void
-		{
-			var coordinate:Coordinate = null;
-			var affectedShip:Ship = null;
-			var newArmor:int = -1;
-			// Si la coordenada de disparo es null es porque el disparo es de tipo torpedo
-			if (response.result.hitCoordinate != null)
-			{
-				coordinate = new Coordinate(response.result.hitCoordinate.y, response.result.hitCoordinate.x);
-			}
-			// Si hay un barco afectado cargo el nuevo armor del barco afectado
-			if (response.result.affectedShip != null)
-			{
-				affectedShip = getShipById(response.result.affectedShip.id);
-				newArmor = response.result.affectedShip.armor;
-			}
-			if (response.result.hit == true)
-			{
-				trace("pego");
-			}
-			else
-			{
-				trace("fallo");
-			}
-			fireAction(_selectedShip, affectedShip, newArmor, response.result.hit, coordinate, response.result.weaponType.weapon);
-		}
-		
-		public function rotateHandler(response:ResultEvent):void
-		{
-			trace("el server se actualizo con la nueva direccion del barco");
-		}
-		
-		public function endTurnHandler(response:ResultEvent):void
-		{
-			endTurnAction();
-		}
-		
-		public function endTurnFaultHandler(response:FaultEvent):void
-		{
-			trace("error al invocar WS");
-		}
-		
-		/*
-		 * inicia la sincronizacion con el server, ejecuta un timer cada 500 milisegundos
+		/**
+		 * ************************************************
 		 *
-		 */
+		 *  TIME HELPERS
+		 * 
+		 * ************************************************
+		 * */
 		public function startSyncronizing():void
 		{
 			var timer:Timer = new Timer(500, 0);
@@ -359,6 +251,49 @@ package components
 			{
 				_main.wsRequest.endTurn(_gameId);
 			}
+		}			
+		
+		/**
+		 * ************************************************
+		 *
+		 *  HANDLERS
+		 * 
+		 * ************************************************
+		 * */
+		
+		 public function newGameHandler(response:ResultEvent):void
+		{
+			var gameId:int = response.result as int;
+			if (gameId >= 0)
+			{
+				_gameId = gameId;
+				_gameMode.gameMode = GameMode.GETTING_GAME;
+				_main.wsRequest.getGame(gameId);
+			}
+			else
+			{
+				_waitingPlayerLabel = new Label();
+				_waitingPlayerLabel.text = "Esperando un segundo jugador...";
+				_waitingPlayerLabel.x = _main.width / 3;
+				_waitingPlayerLabel.y = _main.height / 3;
+				_waitingPlayerLabel.setStyle("fontSize", 30);
+				_waitingPlayerLabel.setStyle("color", 0x000000);
+				_waitingPlayerLabel.setStyle("fontStyle", "bold");
+				_main.addElement(_waitingPlayerLabel);
+				_gameMode.gameMode = GameMode.WAITING_FOR_PLAYER;
+			}
+			startSyncronizing();
+		}
+		
+		public function checkGameIdHandler(response:ResultEvent):void
+		{
+			var gameId:int = response.result as int;
+			if (gameId >= 0)
+			{
+				_gameId = gameId;
+				_main.wsRequest.getGame(gameId);
+				_gameMode.gameMode = GameMode.GETTING_GAME;
+			}
 		}
 		
 		public function consumeActionsHandler(response:ResultEvent):void
@@ -377,73 +312,66 @@ package components
 			trace("fallo llamada a consumir acciones");
 		}
 		
-		public function consumeNextAction():void
+		public function fireHandler(response:ResultEvent):void
 		{
-			if (_actionQueue != null && _actionQueue.length > 0)
+			var coordinate:Coordinate = null;
+			var affectedShip:Ship = null;
+			var newArmor:int = -1;
+			// Si la coordenada de disparo es null es porque el disparo es de tipo torpedo
+			if (response.result.hitCoordinate != null)
 			{
-				var action:Object = _actionQueue.source[0];
-				var ship:Ship;
-				if (action.actionType == "MoveAction")
-				{
-					ship = getShipById(action.ship.id);
-					moveAction(ship, new Coordinate(action.position.y, action.position.x), consumeNextAction);
-				}
-				else if (action.actionType == "RotateAction")
-				{
-					ship = getShipById(action.ship.id);
-					rotateAction(ship, new Cardinal(action.cardinal.direction), consumeNextAction);
-				}
-				else if (action.actionType == "FireAction")
-				{
-					ship = getShipById(action.ship.id);
-					var coordinate:Coordinate = null;
-					var affectedShip:Ship = null;
-					var newArmor:int = -1;
-					if (action.hit && action.affectedShip != null)
-					{
-						affectedShip = getShipById(action.affectedShip.id);
-						newArmor = action.affectedShip.armor;
-						coordinate = new Coordinate(action.hitCoordinate.y, action.hitCoordinate.x);
-					}
-					
-					fireAction(ship, affectedShip, newArmor, action.hit, coordinate, action.weaponType.weapon, consumeNextAction);
-				}
-				else if (action.actionType == "EndTurnAction")
-				{
-					endTurnAction();
-				}
-				else if (action.actionType == "EnterPortAction")
-				{
-					trace("EnterPortAction");
-				}
-				else if (action.actionType == "LeavePortAction")
-				{
-					trace("LeavePortAction");
-				}
-				else if (action.actionType == "EndGameAction")
-				{
-					trace("EndGameAction");
-				}
-				_actionQueue.removeItemAt(0);
+				coordinate = new Coordinate(response.result.hitCoordinate.y, response.result.hitCoordinate.x);
 			}
+			// Si hay un barco afectado cargo el nuevo armor del barco afectado
+			if (response.result.affectedShip != null)
+			{
+				affectedShip = getShipById(response.result.affectedShip.id);
+				newArmor = response.result.affectedShip.armor;
+			}
+			if (response.result.hit == true)
+			{
+				trace("pego");
+			}
+			else
+			{
+				trace("fallo");
+			}
+			fireAction(_selectedShip, affectedShip, newArmor, response.result.hit, coordinate, response.result.weaponType.weapon);
 		}
 		
-		// Evento disparado cuando se selecciona una celda de la grilla
-		private function selectedCellEvent(event:CellEvent):void
+		public function rotateHandler(response:ResultEvent):void
 		{
-			if (_selectedShip != null && isActivePlayer() && _turn.hasMovesLeft() && !_isAnimating)
-			{
-				// Si el modo del menu es mover se mueve el barco a la celda seleccionada
-				if (_menu.currentMode == Menu.MENU_MODE_MOVE)
-				{
-					// Si la celda seleccionada esta habilitada muevo el barco
-					if (_gridComponent.isCellEnabled(event.coordinate))
-					{
-						moveAction(_selectedShip, event.coordinate);
-					}
-				}
-			}
+			trace("el server se actualizo con la nueva direccion del barco");
 		}
+		
+		public function endTurnHandler(response:ResultEvent):void
+		{
+			endTurnAction();
+		}
+		
+		public function endTurnFaultHandler(response:FaultEvent):void
+		{
+			trace("error al invocar WS");
+		}		
+		
+		public function getGameHandler(response:ResultEvent):void
+		{
+			loadUserInterface();
+			initializeGame(response.result);
+		}
+		
+		public function moveHandler(response:ResultEvent):void
+		{
+			trace("el server se actualizo con la nueva posicion del barco");
+		}
+		
+		/**
+		 * ************************************************
+		 *
+		 *  EVENTS
+		 * 
+		 * ************************************************
+		 * */
 		
 		// Evento disparado cuando se selecciona un barco
 		public function selectedShipEvent(event:SelectedShipEvent):void
@@ -489,72 +417,32 @@ package components
 					}
 				}
 			}
-		}
+		}	
 		
-		public function enableMovement(ship:Ship):void
+		// Evento disparado cuando se selecciona una celda de la grilla
+		private function selectedCellEvent(event:CellEvent):void
 		{
-			var nomore:Boolean = false;
-			var offset:Number = Math.floor(ship.size / 2);
-			var i:int = 0;
-			var currentPos:Coordinate = ship.currentPos;
-			var offsetPos:Coordinate;
-			var realSpeed:Number = 2 / 5 * ship.speed;
-			while (!nomore && i < realSpeed)
+			if (_selectedShip != null && isActivePlayer() && _turn.hasMovesLeft() && !_isAnimating)
 			{
-				currentPos = Helper.calculateNextCell(currentPos, ship.direction);
-				offsetPos = Helper.calculateNextCell(currentPos, ship.direction, offset);
-				if (!_gridComponent.getCell(offsetPos).blocked || ship.itsMe(offsetPos))
+				// Si el modo del menu es mover se mueve el barco a la celda seleccionada
+				if (_menu.currentMode == Menu.MENU_MODE_MOVE)
 				{
-					_gridComponent.enableCell(currentPos);
+					// Si la celda seleccionada esta habilitada muevo el barco
+					if (_gridComponent.isCellEnabled(event.coordinate))
+					{
+						moveAction(_selectedShip, event.coordinate);
+					}
 				}
-				else
-					nomore = true;
-				i++;
-			}
-			currentPos = ship.currentPos;
-			i = 0;
-			nomore = false;
-			while (!nomore && i < realSpeed / 2)
-			{
-				currentPos = Helper.calculateNextCell(currentPos, Helper.getOppositeDirection(ship.direction));
-				offsetPos = Helper.calculateNextCell(currentPos, Helper.getOppositeDirection(ship.direction), offset);
-				if (!_gridComponent.getCell(offsetPos).blocked)
-				{
-					_gridComponent.enableCell(currentPos);
-				}
-				else
-					nomore = true;
-				i++;
 			}
 		}
-		
-		// Calcula la celda en la cual el torpedo debe morir ya que no impacto contra un barco enemigo
-		public function calculateTorpedoCell(coordinate:Coordinate, cardinal:Cardinal):Coordinate
-		{
-			var distance:int = 0;
-			var blocked:Boolean = false;
-			var currentPos:Coordinate = new Coordinate(coordinate.r, coordinate.c);
-			while (!blocked && distance < 10)
-			{
-				distance++;
-				if (_gridComponent.getCell(Helper.calculateNextCell(currentPos, cardinal)).blocked)
-				{
-					blocked = true;
-				}
-				else
-				{
-					currentPos = Helper.calculateNextCell(currentPos, cardinal);
-				}
-			}
-			return currentPos;
-		}
-		
-		// Actualiza los movimientos del turno y refleja en el UI la cantidad de movimientos restantes
-		private function updateMovesLeft():void
-		{
-			_turn.decreaseMovesLeft();
-			_info.movesLeftText = _turn.movesLeft.toString();
-		}
+			
+		/**
+		 * ************************************************
+		 *
+		 *  ACTIONS
+		 * 
+		 * ************************************************
+		 * */
 		
 		// Mueve el barco a la posicion dada y actualiza el estado del juego
 		private function moveAction(ship:Ship, coordinate:Coordinate, func:Function = null):void
@@ -590,7 +478,7 @@ package components
 					// Bloqueamos la nueva posicion del barco
 					_gridComponent.blockCells(ship.coordinates);
 					//refrescamos para que habilite la accion mover nuevamente
-					
+					ship.setPosition(coordinate);
 					if (func != null)
 						func.call();
 				}, 10);
@@ -710,6 +598,15 @@ package components
 			_menu.updateShipInfo(firingShip);
 		}
 		
+		
+		/**
+		 * ************************************************
+		 *
+		 *  HELPERS
+		 * 
+		 * ************************************************
+		 * */		
+		
 		// Dado un id de un barco lo retorna/
 		private function getShipById(shipId:int):Ship
 		{
@@ -778,5 +675,144 @@ package components
 			_scrollControl.centerMapToXY(ship.currentPos.x, ship.currentPos.y);
 		
 		}
+	
+		// Actualiza los movimientos del turno y refleja en el UI la cantidad de movimientos restantes
+		private function updateMovesLeft():void
+		{
+			_turn.decreaseMovesLeft();
+			_info.movesLeftText = _turn.movesLeft.toString();
+		}
+		
+		// Calcula la celda en la cual el torpedo debe morir ya que no impacto contra un barco enemigo
+		public function calculateTorpedoCell(coordinate:Coordinate, cardinal:Cardinal):Coordinate
+		{
+			var distance:int = 0;
+			var blocked:Boolean = false;
+			var currentPos:Coordinate = new Coordinate(coordinate.r, coordinate.c);
+			while (!blocked && distance < 10)
+			{
+				distance++;
+				if (_gridComponent.getCell(Helper.calculateNextCell(currentPos, cardinal)).blocked)
+				{
+					blocked = true;
+				}
+				else
+				{
+					currentPos = Helper.calculateNextCell(currentPos, cardinal);
+				}
+			}
+			return currentPos;
+		}		
+	
+		public function enableMovement(ship:Ship):void
+		{
+			var nomore:Boolean = false;
+			var offset:Number = Math.floor(ship.size / 2);
+			var i:int = 0;
+			var currentPos:Coordinate = ship.currentPos;
+			var offsetPos:Coordinate;
+			var realSpeed:Number = 2 / 5 * ship.speed;
+			while (!nomore && i < realSpeed)
+			{
+				currentPos = Helper.calculateNextCell(currentPos, ship.direction);
+				offsetPos = Helper.calculateNextCell(currentPos, ship.direction, offset);
+				if (!_gridComponent.getCell(offsetPos).blocked || ship.itsMe(offsetPos))
+				{
+					_gridComponent.enableCell(currentPos);
+				}
+				else
+					nomore = true;
+				i++;
+			}
+			currentPos = ship.currentPos;
+			i = 0;
+			nomore = false;
+			while (!nomore && i < realSpeed / 2)
+			{
+				currentPos = Helper.calculateNextCell(currentPos, Helper.getOppositeDirection(ship.direction));
+				offsetPos = Helper.calculateNextCell(currentPos, Helper.getOppositeDirection(ship.direction), offset);
+				if (!_gridComponent.getCell(offsetPos).blocked)
+				{
+					_gridComponent.enableCell(currentPos);
+				}
+				else
+					nomore = true;
+				i++;
+			}
+		}		
+		
+		public function consumeNextAction():void
+		{
+			if (_actionQueue != null && _actionQueue.length > 0)
+			{
+				var action:Object = _actionQueue.source[0];
+				var ship:Ship;
+				if (action.actionType == "MoveAction")
+				{
+					ship = getShipById(action.ship.id);
+					moveAction(ship, new Coordinate(action.position.y, action.position.x), consumeNextAction);
+				}
+				else if (action.actionType == "RotateAction")
+				{
+					ship = getShipById(action.ship.id);
+					rotateAction(ship, new Cardinal(action.cardinal.direction), consumeNextAction);
+				}
+				else if (action.actionType == "FireAction")
+				{
+					ship = getShipById(action.ship.id);
+					var coordinate:Coordinate = null;
+					var affectedShip:Ship = null;
+					var newArmor:int = -1;
+					if (action.hit && action.affectedShip != null)
+					{
+						affectedShip = getShipById(action.affectedShip.id);
+						newArmor = action.affectedShip.armor;
+						coordinate = new Coordinate(action.hitCoordinate.y, action.hitCoordinate.x);
+					}
+					
+					fireAction(ship, affectedShip, newArmor, action.hit, coordinate, action.weaponType.weapon, consumeNextAction);
+				}
+				else if (action.actionType == "EndTurnAction")
+				{
+					endTurnAction();
+				}
+				else if (action.actionType == "EnterPortAction")
+				{
+					trace("EnterPortAction");
+				}
+				else if (action.actionType == "LeavePortAction")
+				{
+					trace("LeavePortAction");
+				}
+				else if (action.actionType == "EndGameAction")
+				{
+					trace("EndGameAction");
+				}
+				_actionQueue.removeItemAt(0);
+			}
+		}
+		
+		public function refreshMode():void
+		{
+			clearMode();
+			if (_selectedShip != null && _turn.hasMovesLeft() && isActivePlayer())
+			{
+				switch (_menu.currentMode)
+				{
+					case Menu.MENU_MODE_MOVE: 
+						enableMovement(_selectedShip);
+						break;
+					case Menu.MENU_MODE_ROTATE: 
+						break;
+					case Menu.MENU_MODE_FIRE: 
+						break;
+				}
+			}
+		}
+		
+		public function clearMode():void
+		{
+			_gridComponent.disableCells();
+		}		
 	}
 }
