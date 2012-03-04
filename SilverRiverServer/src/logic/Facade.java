@@ -467,7 +467,7 @@ public class Facade {
 		
 		double offset = (int)this.calculateDistance(firingShip, clickedCoordinate);
 		
-		offset = Math.floor(offset / 50);
+		offset = Math.floor(offset / 2.5);
 		int max_x = (int)(clickedCoordinate.getX() + offset);
 		int max_y = (int)(clickedCoordinate.getY() + offset);
 		
