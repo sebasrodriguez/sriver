@@ -1,6 +1,7 @@
 package components 
 {
 	import events.ActionEvent;
+	import flash.display.ActionScriptVersion;
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -43,51 +44,153 @@ package components
 		public static const MENU_FIRE_MODE_BULLET:int = 1;
 		public static const MENU_FIRE_MODE_TORPEDO:int = 0;
 		
+		public static const INFO_LABEL_COLOR:uint = 0xFFFFFF;
+		public static const INFO_LABEL_WEIGHT:String = "bold";
+		public static const INFO_LABEL_SIZE:int = 15;
+		public static const INFO_LABEL_WIDTH:int = 80;
+		
 		private var _shape:Shape;
+		private var _container:VBox;
 		private var _tabNavigator:TabNavigator;
 		
 		private var _currentMode:int = MENU_MODE_MOVE;
 		private var _rotateButtons:Array;
 		private var _currentFireMode:int = MENU_FIRE_MODE_BULLET;
 		
+		private var _shipNumberText:Text;
+		private var _shipSizeText:Text;
+		private var _shipSpeedText:Text;
+		private var _shipArmorText:Text;
+		private var _shipViewRangeText:Text;
+		private var _shipAmmoText:Text;
+		private var _shipTorpedoesText:Text;
+		
 		public function Menu(position:int) 
 		{
 			_shape = new Shape();
-			_shape.graphics.beginFill(0x000000, 0.6);
-			_shape.graphics.drawRoundRect(0, 0, 240, 200, 10, 10);
+			_shape.graphics.beginFill(0x000000, 1);
+			_shape.graphics.drawRoundRect(0, 0, 240, 350, 10, 10);
 			if (position == MENU_POSITION_BOTTOM_LEFT) {
 				left = 10;
-				bottom = 230;
+				bottom = 380;
 			}else if (position == MENU_POSITION_BOTTOM_RIGHT) {				
 				right = 10;
-				bottom = 230;
+				bottom = 380;
 			}
 			_shape.graphics.endFill();
 			addChild(_shape);
 			alpha = 0.8;
 			
+			_container = new VBox();
+			_container.x = 10;
+			_container.y = 10;
+			_container.width = 240;
+			_container.height = 350;
+			addChild(_container);
+			createShipInfo();
 			createTabNavigator();
 			createMoveTab();
 			createRotateTab();
 			createFireTab();
 			dispatchModeChanged(MENU_MODE_MOVE);
-			/*createModeButtons();
-			createContainers();
-			createRotationButtons();
-			createFireButtons();*/
 			
 		}
+		private function createShipInfo():void {
+			var hbox:HBox;
+			var text:Text;
+			var sprite:Sprite;
+			var comp:UIComponent;
+			
+			hbox = new HBox();
+			hbox.addChild(getNewText("Barco: "));
+			//_container.addChild(hbox);
+			
+			hbox = new HBox();			
+			hbox.addChild(getNewLabel("Velocidad: "));
+			_shipSpeedText = getNewText("0");
+			hbox.addChild(_shipSpeedText);
+			_container.addChild(hbox);
+			
+			hbox = new HBox();
+			hbox.addChild(getNewLabel("Alcance: "));
+			_shipViewRangeText = getNewText("0");
+			hbox.addChild(_shipViewRangeText);
+			_container.addChild(hbox);			
+			
+			hbox = new HBox();
+			hbox.addChild(getNewLabel("Blindaje: "));
+			_shipArmorText = getNewText("0");
+			hbox.addChild(_shipArmorText);
+			_container.addChild(hbox);
+			
+			hbox = new HBox();
+			_shipAmmoText = getNewText("0");
+			_shipAmmoText.width = 25;
+			_shipAmmoText.setStyle("textAlign", "right");
+			hbox.addChild(_shipAmmoText);
+			comp = new UIComponent();
+			comp.width = 50;
+			sprite = new Sprite();
+			sprite.graphics.beginBitmapFill(Assets.BULLET_DATA, null, false, false);
+			sprite.graphics.drawRect(0, 0, Assets.BULLET_DATA.rect.width, Assets.BULLET_DATA.rect.height);
+			sprite.graphics.endFill();
+			sprite.y = 6;
+			comp.addChild(sprite);
+			hbox.addChild(comp);			
+			
+			_shipTorpedoesText = getNewText("0");
+			_shipTorpedoesText.width = 25;
+			_shipTorpedoesText.setStyle("textAlign", "right");
+			hbox.addChild(_shipTorpedoesText);
+			comp = new UIComponent();
+			comp.width = 50;
+			sprite = new Sprite();
+			sprite.graphics.beginBitmapFill(Assets.TORPEDO_DATA, null, false, false);
+			sprite.graphics.drawRect(0, 0, Assets.TORPEDO_DATA.rect.width, Assets.TORPEDO_DATA.rect.height);
+			sprite.graphics.endFill();
+			sprite.y = 4;
+			comp.addChild(sprite);
+			hbox.addChild(comp);			
+			_container.addChild(hbox);
+		}
+		
+		public function getNewText(value:String = null):Text {
+			var text:Text = new Text();
+			if (value != null)
+				text.text = value;
+			text.setStyle("fontSize", INFO_LABEL_SIZE);
+			text.setStyle("color", INFO_LABEL_COLOR);
+			text.setStyle("fontStyle", INFO_LABEL_WEIGHT);
+			return text;
+		}
+		public function getNewLabel(value:String = null):Label {
+			var text:Label = new Label();
+			if (value != null)
+				text.text = value;
+			text.width = INFO_LABEL_WIDTH;
+			text.setStyle("fontSize", INFO_LABEL_SIZE);
+			text.setStyle("color", INFO_LABEL_COLOR);
+			text.setStyle("fontStyle", INFO_LABEL_WEIGHT);
+			return text;
+		}
+		
+		public function updateShipInfo(ship:Ship):void {
+			_shipSpeedText.text = ship.speed.toString();
+			_shipViewRangeText.text = ship.viewRange.toString();
+			_shipArmorText.text = ship.armor.toString();
+			_shipAmmoText.text = ship.ammo.toString();
+			_shipTorpedoesText.text = ship.torpedoes.toString();
+		}
+		
 		private function createTabNavigator():void {
 			_tabNavigator = new TabNavigator();
 			_tabNavigator.addEventListener(IndexChangedEvent.CHANGE, function (event:IndexChangedEvent):void {
 				_currentMode = event.newIndex;
 				dispatchModeChanged(event.newIndex);
 			});
-			_tabNavigator.x = 10;
-			_tabNavigator.y = 10;
 			_tabNavigator.width = 220;
-			_tabNavigator.height = 180;
-			addChild(_tabNavigator);
+			_tabNavigator.height = 170;
+			_container.addChild(_tabNavigator);
 		}
 		
 		private function createMoveTab():void {
