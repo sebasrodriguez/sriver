@@ -636,7 +636,9 @@ package components
 		// Chequea si esta en puerto
 		private function checkPort(ship:Ship):Boolean
 		{
-			return _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortCoordinates());
+			var result:Boolean = _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortHalfCoordinates());
+			result = result || _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortOneCoordinates());
+			return result;
 		}
 		
 		// Chequea si gano
@@ -645,7 +647,7 @@ package components
 			var result:Boolean = false;
 			
 			if (ship == _redShipComponent)
-				result = _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortCoordinates());
+				result = _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getGoalCoordinates());
 			else
 				result = false;
 			return result;

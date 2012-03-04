@@ -84,7 +84,6 @@ package components
 		public function getPortHalfCoordinates():Array {
 			var arr:Array = new Array();
 			var f:int, c:int;
-			//zona sureste
 			for (f = 7; f < 9; f ++) {
 				for (c = 19; c < 22; c ++) {
 					arr.push(new Coordinate(f, c));
@@ -94,7 +93,8 @@ package components
 		}
 		//puerto que recarga el total de un solo atributo
 		public function getPortOneCoordinates():Array {
-			//zona suroeste
+			var arr:Array = new Array();
+			var f:int, c:int;
 			for (f = 14; f < 17; f ++) {
 				for (c = 10; c < 12; c ++) {
 					arr.push(new Coordinate(f, c));
