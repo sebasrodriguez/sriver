@@ -41,7 +41,7 @@ package components
 		public function Info()
 		{
 			_shape = new Shape();
-			_shape.graphics.beginFill(0x000000, 0.6);
+			_shape.graphics.beginFill(0x000000, 0.8);
 			_shape.graphics.drawRoundRect(0, 0, 240, 200, 10, 10);
 			left = 10;
 			top = 10;
