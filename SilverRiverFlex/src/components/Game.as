@@ -167,6 +167,7 @@ package components
 			_blueShipComponent1.show();
 			_blueShipComponent2.show();
 			_blueShipComponent3.show();
+			centerOnShip(_me.getShip());
 			
 			// Cargamos informacion de usuarios y barcos
 			_info.redPlayerUsername = _redPlayer.username;
@@ -443,6 +444,7 @@ package components
 						_selectedShip.selected = false;
 					_selectedShip = ship;
 					_selectedShip.selected = true;
+					centerOnShip(_selectedShip);
 					refreshMode();
 				}
 			}
@@ -551,7 +553,7 @@ package components
 				// Actualizamos las celdas bloqueadas por el barco
 				_gridComponent.unblockCells(ship.coordinates);				
 				// Seteamos la nueva direccion del barco
-				ship.direction = direction;
+				ship.direction = direction;				
 				_isAnimating = true;
 				// Rotamos el barco
 				ship.rotateTo(direction.cardinal, function():void
@@ -565,7 +567,7 @@ package components
 						if (checkPort(ship))
 							trace("estoy en puerto");
 						if (checkGoal(ship))
-							trace("ganoo");
+							trace("ganoo");		
 						if (func != null)
 							func.call();
 					});
@@ -693,6 +695,7 @@ package components
 		public function centerOnShip(ship:Ship):void
 		{
 			_scrollControl.centerMapToXY(ship.currentPos.x, ship.currentPos.y);
+			
 		}
 	}
 }

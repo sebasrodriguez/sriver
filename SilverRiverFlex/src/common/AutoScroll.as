@@ -3,6 +3,7 @@ package common
 	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;
 	import mx.containers.Canvas;
+	import mx.effects.Tween;
 	/**
 	 * ...
 	 * @author pablo
@@ -52,8 +53,19 @@ package common
 		}
 		
 		public function centerMapToXY(x:Number, y:Number):void {
-			_board.x = -(x - _main.stage.stageWidth / 2 );
-			_board.y = -(y - _main.stage.stageHeight / 2 );
+			var xinit:Number = _board.x;
+			var yinit:Number = _board.y;
+			var xscroll:Number = -(x - _main.stage.stageWidth / 2 );
+			var yscroll:Number = -(y - _main.stage.stageHeight / 2 );
+			
+			new Tween(this, xinit, xscroll, 2000, 20, function(newX:Number):void
+			{
+				_board.x = newX;
+			}, function():void{});
+			new Tween(this, yinit, yscroll, 2000, 20, function(newY:Number):void
+			{
+				_board.y = newY;
+			}, function():void{});
 		}
 		
 	}
