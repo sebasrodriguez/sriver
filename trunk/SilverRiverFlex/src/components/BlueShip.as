@@ -9,9 +9,9 @@ package components
 	public class BlueShip extends Ship
 	{
 		
-		public function BlueShip(id:int, c:Coordinate, d:Cardinal, s:int, size:int)
+		public function BlueShip(id:int, c:Coordinate, d:Cardinal, s:int, size:int, armor:int, ammo:int, torpedoes:int)
 		{
-			super(id, c, d, s, size);
+			super(id, c, d, s, size, armor, ammo, torpedoes);
 			this.setBitmap(Assets.BLUESHIP_DATA);
 			fixCenter();
 		}
