@@ -4,8 +4,6 @@ import java.util.Iterator;
 
 import entities.Cardinal;
 import entities.Coordinate;
-import entities.Weapon;
-
 import logic.Facade;
 import logic.actions.FireAction;
 import logic.actions.MoveAction;
@@ -74,8 +72,13 @@ public class pruebaFacade {
 	
 	
 	private static void printFireAction(FireAction frAc){
-		System.out.print("FireAction: " + frAc.getShip().getId() + " (" + frAc.getHitCoordinate().getX() + "," +
-				frAc.getHitCoordinate().getY() +") " + frAc.getHit() + 	" " + frAc.getWeaponType().getWeapon());
+		System.out.print("FireAction: " + frAc.getShip().getId());
+		
+		if(frAc.getHitCoordinate() != null){
+			System.out.print(" (" + frAc.getHitCoordinate().getX() + "," + frAc.getHitCoordinate().getY());
+		}	
+		System.out.print(") " + frAc.getHit() + 	" " + frAc.getWeaponType().getWeapon());
+		
 		if(frAc.getAffectedShip() != null){
 			System.out.println(" " + frAc.getAffectedShip().getId());
 		}else{
@@ -92,8 +95,7 @@ public class pruebaFacade {
 		
 		facadePrueba = Facade.getInstance();	
 		Coordinate position = null;
-		Cardinal orientation = null;
-		Weapon weaponType = null;
+		Cardinal orientation = null;		
 		MoveAction moveAction = null;
 		RotateAction rotateAction = null;
 		FireAction fireAction = null;
@@ -163,9 +165,8 @@ public class pruebaFacade {
 		System.out.println("--------------------------------------------");	
 		
 		System.out.println("Disparando desde el barco con id 0 al punto (25,25)");
-		weaponType = new Weapon(1);
 		position = new Coordinate(25,25);
-		fireAction = facadePrueba.fire(0, 0, position, weaponType);
+		fireAction = facadePrueba.fireAmmo(0, 0, position);
 		printShips(0);
 		printTurn(0);
 		printFireAction(fireAction);
@@ -186,10 +187,9 @@ public class pruebaFacade {
 		printRotateAction(rotateAction);
 		System.out.println("--------------------------------------------");
 		
-		System.out.println("Disparando desde el barco con id 3 al punto (12,12)");
-		weaponType = new Weapon(0);
+		System.out.println("Disparando torpedo desde el barco con id 3");
 		position = new Coordinate(12,12);
-		fireAction = facadePrueba.fire(0, 3, position, weaponType);
+		fireAction = facadePrueba.fireTorpedo(0, 3);
 		printShips(0);
 		printTurn(0);
 		printFireAction(fireAction);
@@ -211,10 +211,9 @@ public class pruebaFacade {
 		printMoveAction(moveAction);
 		System.out.println("--------------------------------------------");
 		
-		System.out.println("Disparando desde el barco con id 3 al punto (12,12)");
-		weaponType = new Weapon(1);
+		System.out.println("Disparando metralleta desde el barco con id 3");
 		position = new Coordinate(12,12);
-		fireAction = facadePrueba.fire(0, 3, position, weaponType);
+		fireAction = facadePrueba.fireAmmo(0, 3, position);
 		printShips(0);
 		printTurn(0);
 		printFireAction(fireAction);
@@ -244,10 +243,9 @@ public class pruebaFacade {
 		System.out.println(facadePrueba.getActions(1, "Jugador 4").length);		
 		System.out.println("--------------------------------------------");
 		
-		System.out.println("Disparando desde el barco con id 0 al punto (20,20)");
-		weaponType = new Weapon(1);
+		System.out.println("Disparando metralleta desde el barco con id 0");
 		position = new Coordinate(20,20);
-		fireAction = facadePrueba.fire(1, 0, position, weaponType);
+		fireAction = facadePrueba.fireAmmo(1, 0, position);
 		printShips(1);
 		printTurn(1);
 		printFireAction(fireAction);
@@ -274,9 +272,8 @@ public class pruebaFacade {
 		System.out.println("--------------------------------------------");
 		
 		System.out.println("Disparando desde el barco con id 3 al punto (12,10)");
-		weaponType = new Weapon(0);
 		position = new Coordinate(12,10);
-		fireAction = facadePrueba.fire(1,3, position, weaponType);
+		fireAction = facadePrueba.fireTorpedo(1,3);
 		printShips(1);
 		printTurn(1);
 		printFireAction(fireAction);
@@ -304,10 +301,9 @@ public class pruebaFacade {
 		System.out.println(facadePrueba.getActions(1, "Jugador 4").length);		
 		System.out.println("--------------------------------------------");
 		
-		System.out.println("Disparando desde el barco con id 1 al punto (12,10)");
-		weaponType = new Weapon(0);
+		System.out.println("Disparando torpedo desde el barco con id 1");
 		position = new Coordinate(12,10);
-		fireAction = facadePrueba.fire(1,1, position, weaponType);
+		fireAction = facadePrueba.fireTorpedo(1,1);
 		printShips(1);
 		printTurn(1);
 		printFireAction(fireAction);
