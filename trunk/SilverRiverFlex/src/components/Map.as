@@ -14,7 +14,7 @@ package components
 			this.setBitmap(Assets.MAP_DATA);
 			
 		}
-		
+		//devuelve una arreglo de celdas bloqueadas por el mapa
 		public function getInitialBlockedCoordinates():Array {
 			var arr:Array = new Array();
 			var f:int, c:int;
@@ -61,6 +61,7 @@ package components
 			return arr;
 		}
 		
+		//devuelve las coordenadas en las que el barco tiene que estar para ganar
 		public function getGoalCoordinates():Array {
 			var arr:Array = new Array();
 			var f:int, c:int;
@@ -79,7 +80,8 @@ package components
 			return arr;
 		}
 		
-		public function getPortCoordinates():Array {
+		//puerto que recarga la mitad de todo
+		public function getPortHalfCoordinates():Array {
 			var arr:Array = new Array();
 			var f:int, c:int;
 			//zona sureste
@@ -88,6 +90,10 @@ package components
 					arr.push(new Coordinate(f, c));
 				}
 			}
+			return arr;
+		}
+		//puerto que recarga el total de un solo atributo
+		public function getPortOneCoordinates():Array {
 			//zona suroeste
 			for (f = 14; f < 17; f ++) {
 				for (c = 10; c < 12; c ++) {

@@ -1,13 +1,24 @@
 package components
 {
 	import flash.display.Shape;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	import mx.accessibility.ButtonAccImpl;
+	import mx.accessibility.PanelAccImpl;
+	import mx.containers.Box;
+	import mx.containers.Panel;
+	import mx.containers.VBox;
 	import mx.controls.Button;
 	import mx.controls.Label;
 	import mx.controls.Text;
+	import mx.controls.videoClasses.VideoPlayerQueuedCommand;
 	import mx.core.Container;
 	import mx.core.UIComponent;
 	import common.*;
+	import mx.effects.Fade;
+	import mx.events.TweenEvent;
+	import org.osmf.events.TimeEvent;
+	import spark.components.BorderContainer;
 	
 	/**
 	 * ...
@@ -15,13 +26,12 @@ package components
 	 */
 	public class Info extends UIComponent
 	{
-		private static const INFO_LABEL_WIDTH:int = 240;
-		private static const INFO_LABEL_HEIGHT:int = 25;
 		private static const INFO_LABEL_FONT_SIZE:int = 15;
-		private static const INFO_LABEL_FONT_COLOR:uint = 0xFFCC33;
+		private static const INFO_LABEL_FONT_COLOR:uint = 0xFFFFFFFF;
 		private static const INFO_LABEL_FONT_STYLE_BOLD:String = "bold";
 		
 		private var _shape:Shape;
+		private var _container:VBox;
 		
 		private var _movesLeftLabel:Label;
 		private var _movesLeftText:String;
@@ -38,8 +48,11 @@ package components
 		private var _redPlayerUsername:String;
 		private var _bluePlayerUsername:String;
 		
+		private var _toastQueue:Array;
+		
 		public function Info()
 		{
+			
 			_shape = new Shape();
 			_shape.graphics.beginFill(0x000000, 0.8);
 			_shape.graphics.drawRoundRect(0, 0, 240, 200, 10, 10);
@@ -47,6 +60,12 @@ package components
 			top = 10;
 			_shape.graphics.endFill();
 			addChild(_shape);
+			_container = new VBox();
+			_container.x = 10;
+			_container.y = 10;
+			_container.width = 240;
+			_container.height = 160;
+			addChild(_container);
 			createLabels();
 		}
 		
@@ -55,31 +74,26 @@ package components
 			//label movimientos restantes
 			_movesLeftLabel = new Label();
 			formatInfoLabels(_movesLeftLabel);
-			addChild(_movesLeftLabel);
+			_container.addChild(_movesLeftLabel);
 			
 			//label tiempo restante
 			_timeLeftLabel = new Label();
 			formatInfoLabels(_timeLeftLabel);
-			_movesLeftLabel.y = INFO_LABEL_HEIGHT * 1;
-			addChild(_timeLeftLabel);
+			_container.addChild(_timeLeftLabel);
 			
 			// Label de jugador rojo
 			_redPlayerLabel = new Label();
 			formatInfoLabels(_redPlayerLabel);
-			_redPlayerLabel.y = INFO_LABEL_HEIGHT * 2;
-			addChild(_redPlayerLabel);
+			_container.addChild(_redPlayerLabel);
 			
 			// Label de jugador azul
 			_bluePlayerLabel = new Label();
 			formatInfoLabels(_bluePlayerLabel);
-			_bluePlayerLabel.y = INFO_LABEL_HEIGHT * 3;
-			addChild(_bluePlayerLabel);
+			_container.addChild(_bluePlayerLabel);
 		}
-		
+				
 		public function formatInfoLabels(l:Label):void
 		{
-			l.width = INFO_LABEL_WIDTH;
-			l.height = INFO_LABEL_HEIGHT;
 			l.setStyle("fontSize", INFO_LABEL_FONT_SIZE);
 			l.setStyle("color", INFO_LABEL_FONT_COLOR);
 			l.setStyle("fontStyle", INFO_LABEL_FONT_STYLE_BOLD);
@@ -106,7 +120,7 @@ package components
 		{
 			_bluePlayerUsername = value;
 		}
-		
+				
 		public function setActivePlayer(isRedPlayerActive:Boolean):void
 		{
 			if (isRedPlayerActive)
@@ -120,5 +134,6 @@ package components
 				_bluePlayerLabel.text = "Jugador azul: " + _bluePlayerUsername + " (*)";
 			}
 		}
+		
 	}
 }
