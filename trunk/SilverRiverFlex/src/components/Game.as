@@ -68,7 +68,7 @@ package components
 			_myUsername = username;
 			_actionQueue = new ArrayList();
 			_main.wsRequest.newGame(username);
-		}		
+		}
 		
 		private function initializeGame(game:Object):void
 		{
@@ -89,12 +89,7 @@ package components
 			_blueShipComponent1 = new BlueShip(blueShip1.id, new Coordinate(blueShip1.position.y, blueShip1.position.x), new Cardinal(blueShip1.orientation.direction), blueShip1.speed, blueShip1.size, blueShip1.armor, blueShip1.ammo, blueShip1.torpedo, blueShip1.viewRange);
 			_blueShipComponent2 = new BlueShip(blueShip2.id, new Coordinate(blueShip2.position.y, blueShip2.position.x), new Cardinal(blueShip2.orientation.direction), blueShip2.speed, blueShip2.size, blueShip2.armor, blueShip2.ammo, blueShip2.torpedo, blueShip2.viewRange);
 			_blueShipComponent3 = new BlueShip(blueShip3.id, new Coordinate(blueShip3.position.y, blueShip3.position.x), new Cardinal(blueShip3.orientation.direction), blueShip3.speed, blueShip3.size, blueShip3.armor, blueShip3.ammo, blueShip3.torpedo, blueShip3.viewRange);
-			/*
-			   _redShipComponent = new RedShip(redShip.id, new Coordinate(redShip.position.y, redShip.position.x), new Cardinal(redShip.orientation.direction), redShip.speed, redShip.size);
-			   _blueShipComponent1 = new BlueShip(blueShip1.id, new Coordinate(blueShip1.position.y, blueShip1.position.x), new Cardinal(blueShip1.orientation.direction), blueShip1.speed, blueShip1.size);
-			   _blueShipComponent2 = new BlueShip(blueShip2.id, new Coordinate(blueShip2.position.y, blueShip2.position.x), new Cardinal(blueShip2.orientation.direction), blueShip2.speed, blueShip2.size);
-			   _blueShipComponent3 = new BlueShip(blueShip3.id, new Coordinate(blueShip3.position.y, blueShip3.position.x), new Cardinal(blueShip3.orientation.direction), blueShip3.speed, blueShip3.size);
-			 */
+			
 			_shipList = new Array(_redShipComponent, _blueShipComponent1, _blueShipComponent2, _blueShipComponent3);
 			_redPlayer.addShip(_redShipComponent);
 			_bluePlayer.addShip(_blueShipComponent1);
@@ -205,13 +200,13 @@ package components
 			
 			_toastManager = new ToastManager();
 			_main.addElement(_toastManager);
-		}		
+		}
 		
 		/**
 		 * ************************************************
 		 *
 		 *  TIME HELPERS
-		 * 
+		 *
 		 * ************************************************
 		 * */
 		public function startSyncronizing():void
@@ -256,17 +251,17 @@ package components
 			{
 				_main.wsRequest.endTurn(_gameId);
 			}
-		}			
+		}
 		
 		/**
 		 * ************************************************
 		 *
 		 *  HANDLERS
-		 * 
+		 *
 		 * ************************************************
 		 * */
 		
-		 public function newGameHandler(response:ResultEvent):void
+		public function newGameHandler(response:ResultEvent):void
 		{
 			var gameId:int = response.result as int;
 			if (gameId >= 0)
@@ -305,8 +300,19 @@ package components
 		{
 			if (response.result != null)
 			{
-				// Agregamos las nuevas acciones a ejecutar a la cola de acciones
-				_actionQueue.addItem(response.result);
+				// Si el resultado es un array significa que vinieron mas de una accion juntas, las agrego a la cola
+				if (response.result is ArrayCollection)
+				{
+					for (var i:int = 0; i < response.result.length; i++)
+					{
+						_actionQueue.addItem(response.result[i]);
+					}
+				}
+				else
+				{
+					// Agregamos las nuevas acciones a ejecutar a la cola de acciones
+					_actionQueue.addItem(response.result);
+				}
 				
 				consumeNextAction();
 			}
@@ -314,7 +320,7 @@ package components
 		
 		public function consumeActionsFaultHandler(response:FaultEvent):void
 		{
-			trace("fallo llamada a consumir acciones");
+			_toastManager.addToast("Fallo la llamada a consumeActions");
 		}
 		
 		public function fireHandler(response:ResultEvent):void
@@ -333,14 +339,6 @@ package components
 				affectedShip = getShipById(response.result.affectedShip.id);
 				newArmor = response.result.affectedShip.armor;
 			}
-			if (response.result.hit == true)
-			{
-				trace("pego");
-			}
-			else
-			{
-				trace("fallo");
-			}
 			fireAction(_selectedShip, affectedShip, newArmor, response.result.hit, coordinate, response.result.weaponType.weapon);
 		}
 		
@@ -356,8 +354,8 @@ package components
 		
 		public function endTurnFaultHandler(response:FaultEvent):void
 		{
-			trace("error al invocar WS");
-		}		
+			_toastManager.addToast("fallo la llamada a endTurnWS");
+		}
 		
 		public function getGameHandler(response:ResultEvent):void
 		{
@@ -367,14 +365,13 @@ package components
 		
 		public function moveHandler(response:ResultEvent):void
 		{
-			trace("el server se actualizo con la nueva posicion del barco");
 		}
 		
 		/**
 		 * ************************************************
 		 *
 		 *  EVENTS
-		 * 
+		 *
 		 * ************************************************
 		 * */
 		
@@ -417,15 +414,15 @@ package components
 						}
 						else
 						{
-							if(!_selectedShip.hasAmmo())
-								trace("666: barco sin ammo");
+							if (!_selectedShip.hasAmmo())
+								_toastManager.addToast("El barco no tiene municiones");
 							if (!_selectedShip.isInFireRange(ship.currentPos))
-								trace("666: barco no en el range de disparo");
+								_toastManager.addToast("El barco seleccionado esta fuera del rango de disparo");
 						}
 					}
 				}
 			}
-		}	
+		}
 		
 		// Evento disparado cuando se selecciona una celda de la grilla
 		private function selectedCellEvent(event:CellEvent):void
@@ -443,12 +440,12 @@ package components
 				}
 			}
 		}
-			
+		
 		/**
 		 * ************************************************
 		 *
 		 *  ACTIONS
-		 * 
+		 *
 		 * ************************************************
 		 * */
 		
@@ -474,8 +471,7 @@ package components
 			ship.moveTo(coordinate, function():void
 				{
 					_isAnimating = false;
-					if (isActivePlayer() && !_turn.hasMovesLeft())
-						_main.wsRequest.endTurn(_gameId);
+					endTurnIfNoMovesLeftAndActivePlayer();
 					//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
 					if (checkPort(ship))
 						_toastManager.addToast("Esta en puerto");
@@ -513,8 +509,7 @@ package components
 				ship.rotateTo(direction.cardinal, function():void
 					{
 						_isAnimating = false;
-						if (isActivePlayer() && !_turn.hasMovesLeft())
-							_main.wsRequest.endTurn(_gameId);
+						endTurnIfNoMovesLeftAndActivePlayer()
 						// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
 						_gridComponent.blockCells(ship.coordinates);
 						//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
@@ -542,10 +537,12 @@ package components
 			
 			if (isActivePlayer())
 			{
+				_toastManager.addToast("Es tu turno");
 				_gameMode.gameMode = GameMode.PLAYING;
 			}
 			else
 			{
+				_toastManager.addToast("Es el turno de tu oponente");
 				_gameMode.gameMode = GameMode.WAITING_PLAYER_TURN;
 			}
 		}
@@ -555,20 +552,23 @@ package components
 		{
 			_isAnimating = true;
 			updateMovesLeft();
+			
 			if (projectile == Projectile.WEAPON_TYPE_BULLET)
 			{
-				if (isActivePlayer() && !_turn.hasMovesLeft())
-					_main.wsRequest.endTurn(_gameId);
 				// Decremento la cantidad de balas
 				firingShip.decreaseAmmo();
 				// Ejecuto la accion de disparar
 				firingShip.fireBullet(target, function():void
 					{
+						endTurnIfNoMovesLeftAndActivePlayer();
 						// Actualizo el daño recibido en el barco
 						if (hit && affectedShip != null)
 						{
 							affectedShip.armor = newArmor;
+							checkAffectedShip(affectedShip);							
 						}
+						if (!hit)
+							_toastManager.addToast("El disparo no impacto en el barco enemigo");
 						_isAnimating = false;
 						if (func != null)
 							func.call();
@@ -591,14 +591,14 @@ package components
 				// Ejecuto la accion de disparar
 				firingShip.fireTorpedo(coordinate, function():void
 					{
+						endTurnIfNoMovesLeftAndActivePlayer();
 						// Actualizo el daño recibido en el barco
 						if (hit && affectedShip != null)
 						{
 							affectedShip.armor = newArmor;
+							checkAffectedShip(affectedShip);
 						}
 						_isAnimating = false;
-						if (isActivePlayer() && !_turn.hasMovesLeft())
-							_main.wsRequest.endTurn(_gameId);
 						if (func != null)
 							func.call();
 					});
@@ -606,14 +606,13 @@ package components
 			_menu.updateShipInfo(firingShip);
 		}
 		
-		
 		/**
 		 * ************************************************
 		 *
 		 *  HELPERS
-		 * 
+		 *
 		 * ************************************************
-		 * */		
+		 * */
 		
 		// Dado un id de un barco lo retorna/
 		private function getShipById(shipId:int):Ship
@@ -685,7 +684,7 @@ package components
 			_scrollControl.centerMapToXY(ship.currentPos.x, ship.currentPos.y);
 		
 		}
-	
+		
 		// Actualiza los movimientos del turno y refleja en el UI la cantidad de movimientos restantes
 		private function updateMovesLeft():void
 		{
@@ -712,8 +711,8 @@ package components
 				}
 			}
 			return currentPos;
-		}		
-	
+		}
+		
 		public function enableMovement(ship:Ship):void
 		{
 			var nomore:Boolean = false;
@@ -749,7 +748,7 @@ package components
 					nomore = true;
 				i++;
 			}
-		}		
+		}
 		
 		public function consumeNextAction():void
 		{
@@ -773,11 +772,15 @@ package components
 					var coordinate:Coordinate = null;
 					var affectedShip:Ship = null;
 					var newArmor:int = -1;
+					if (action.weaponType.weapon == Projectile.WEAPON_TYPE_BULLET)
+						coordinate = new Coordinate(action.hitCoordinate.y, action.hitCoordinate.x);
+					else if (action.hitCoordinate != null)					
+						coordinate = new Coordinate(action.hitCoordinate.y, action.hitCoordinate.x);					
+					
 					if (action.hit && action.affectedShip != null)
 					{
 						affectedShip = getShipById(action.affectedShip.id);
 						newArmor = action.affectedShip.armor;
-						coordinate = new Coordinate(action.hitCoordinate.y, action.hitCoordinate.x);
 					}
 					
 					fireAction(ship, affectedShip, newArmor, action.hit, coordinate, action.weaponType.weapon, consumeNextAction);
@@ -817,6 +820,28 @@ package components
 					case Menu.MENU_MODE_FIRE: 
 						break;
 				}
+			}
+		}
+		
+		private function endTurnIfNoMovesLeftAndActivePlayer():void
+		{
+			// Si soy el usuario activo y no me quedan movimientos termino el turno
+			if (isActivePlayer() && !_turn.hasMovesLeft())
+				_main.wsRequest.endTurn(_gameId);
+		}
+		
+		private function checkAffectedShip(ship:Ship):void
+		{
+			// Si la armadura del barco llego a cero el mismo fue hundido entonces lo ocultamos
+			if (ship.armor == 0)
+			{
+				_toastManager.addToast("Barco hundido");
+				// affectedShip.visible = false;
+				ship.setPosition(new Coordinate(0, 0));
+			}
+			else
+			{
+				_toastManager.addToast("El disparo impacto en el barco enemigo");
 			}
 		}
 		
