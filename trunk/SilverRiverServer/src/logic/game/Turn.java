@@ -58,6 +58,20 @@ public class Turn implements Serializable{
 	}
 	
 	/*
+	 * Devuelve el tiempo del turno
+	 */
+	public int getTimeLeft(){
+		return this.timeLeft;
+	}
+	
+	/*
+	 * Setea el tiempo restante
+	 */
+	public void setTimeLeft(int time){
+		this.timeLeft = time;
+	}
+	
+	/*
 	 * Termina el turno y le da paso al otro jugador
 	 * Recibe al siguiente jugador para colocarlo como activo
 	 * Coloca la cantidad de movimientos en 5, "resetea" la cantidad  de movimientos restantes

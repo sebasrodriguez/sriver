@@ -29,12 +29,16 @@ import logic.ship.*;
 public class Facade {	
 	
 	private ArrayList<Game> activeGames;
+	private ArrayList<String> loadingGamePlayers;
 	private Game gameWithoutBluePlayer;
 	private static Facade facade;
-	private static int maxAxisX = 64;
-	private static int maxAxisY = 32;
-	private static int minAxisX = 0;
-	private static int minAxisY = 0;
+	private static final int maxAxisX = 64;
+	private static final int maxAxisY = 32;
+	private static final int minAxisX = 0;
+	private static final int minAxisY = 0;
+	private static final int loading = 0;
+	private static final int playing = 1;
+
 	
 		
 	/*
@@ -54,6 +58,7 @@ public class Facade {
 		
 		this.activeGames = new ArrayList<Game>();
 		this.gameWithoutBluePlayer = null;		
+		this.loadingGamePlayers = new ArrayList<String>();
 	}	
 	
 
@@ -322,32 +327,128 @@ public class Facade {
 	public void saveGame(int gameId){
 		
 		Data data = new Data();
-		Game gameToSave = this.findGame(gameId);		
+		Game gameToSave = this.findGame(gameId);
+		gameToSave.setStatus(loading);
 		
 		data.saveGame(gameToSave);		
 	}
 	
+	
+	
 	/*
-	 * Entrada: los nombres de los dos usuarios que conforman la partida a buscar
-	 * Salida: Id de la partida o -1 en caso de no existir la misma en la BD
+	 * Entrada: nombre del usuario que quiere cargar una partida
+	 * Salida: el id de la partida o -1 en caso de no encotrarlo
 	 * Procedimiento:
-	 * 	Si existe la partida, la guarda en el ArrayList y devuelve el id 
-	 * 	sino devuelve -1
-	 */
-	public int loadGame(String redPlayerUsername, String bluePlayerUsername){
+	 * 	Si la lista esta vacia entonces
+	 * 		Agrego al jugador a la lista de espera
+	 * 		retorno -1
+	 *  sino
+	 *  	Mientras hayan usuario en la lista de espera y el id a retornar sea -1
+	 *  		si tiene partidas cargadas entonces
+	 *  			cargo la partida en las partidas activas
+	 *  			le cambio el estado a loading
+	 *  			borro al jugador de la lista de espera
+	 *  			devuelvo el id de la partida
+	 *  	Si no se encontraro partidas entonces
+	 *  		agrego al jugador a la lista de espera	 *   
+	 */		
+	public int loadGame(String username){
+		Iterator<String> loadingGamesPlayersIt = this.loadingGamePlayers.iterator();
+		Data data = new Data();	
+		int gameIdToReturn = -1;		
+		Game gameLoaded = null;
 		
-		Data data = new Data();
-		
-		Game gameLoaded = data.loadGame(redPlayerUsername, bluePlayerUsername);
-		if(gameLoaded != null){
-			this.activeGames.add(gameLoaded);
-			return gameLoaded.getId();
+		if(this.loadingGamePlayers.isEmpty()){
+			//esta vacia entonces agrego al usuario a la cola de espera
+			this.loadingGamePlayers.add(username);			
 		}else{
-			return -1;
+			//hay usuarios en la lista de espera
+			while(loadingGamesPlayersIt.hasNext() && gameIdToReturn == -1){
+				String playerWaiting = loadingGamesPlayersIt.next();
+				if(data.loadGame(username, playerWaiting) != null){
+					//encontre
+					gameLoaded = data.loadGame(username, playerWaiting);
+					gameIdToReturn = gameLoaded.getId();
+					gameLoaded.setStatus(loading);
+					gameLoaded.getTurn().setTimeLeft(60);
+					this.activeGames.add(gameLoaded);
+					this.loadingGamePlayers.remove(this.loadingGamePlayers.indexOf(username));
+				}else{
+					if(data.loadGame(playerWaiting,username) != null){
+						//encontre
+						gameLoaded = data.loadGame(playerWaiting, username);
+						gameIdToReturn = gameLoaded.getId();
+						gameLoaded.setStatus(loading);
+						gameLoaded.getTurn().setTimeLeft(60);
+						this.activeGames.add(gameLoaded);
+						this.loadingGamePlayers.remove(this.loadingGamePlayers.indexOf(username));
+					}
+				}
+			}			
+			//si no encontre una partida con nadie, cargo el username a la lista de espera
+			if(gameIdToReturn == -1){
+				this.loadingGamePlayers.add(username);
+			}			
 		}
 		
-	
+		return gameIdToReturn;
 	}
+	
+	
+	/*
+	 * Entrada: nombre del usuario que esta esperando por contrincante en una partida cargada
+	 * Salida: id de la partida si se logueo el contrincante o -1
+	 * Procedimiento:
+	 * 		Si su nombre de usuario existe en alguna partida en activeGames y ademas su satus es loading entonces
+	 * 			colocar el status en playing
+	 * 			retornar el id de la partida
+	 *		sino
+	 *			retornar -1
+	 */
+	public int getGameIdLoading(String usernameWaiting){
+		Iterator<Game> gameIt = this.activeGames.iterator();
+		Game auxGame = null;
+		int gameIdToReturn = -1;
+		
+		while(gameIt.hasNext() && gameIdToReturn == -1){
+			auxGame = gameIt.next();
+			if(auxGame.getRedPlayer().getUsername() == usernameWaiting || auxGame.getBluePlayer().getUsername() == usernameWaiting){
+				gameIdToReturn = auxGame.getId();
+				auxGame.setStatus(playing);
+				auxGame.getTurn().setTimeLeft(60);
+			}			
+		}
+		return gameIdToReturn;		
+	}
+	
+	
+	/*
+	 * Entrada: el nombre del jugador
+	 * Salida: -1 si no existe la partida o el numero de la partida
+	 * Procedimiento:
+	 * 		Si existe una partida en status loading con mi nombre en uno de los jugadores entonces
+	 * 			cambio el estado a playing,
+	 * 			devuelvo el gameId
+	 * 		sino
+	 * 			retorno -1 		
+	 
+	public int checkLoadedGameId(String username){
+		int gameId = -1;
+		Iterator<Game> activeGameIt = this.activeGames.iterator();
+		Game aux = null;
+		
+		while(activeGameIt.hasNext() && gameId == -1){
+			aux = activeGameIt.next();
+			if(aux.getStatus() == this.loading){
+				if(aux.getRedPlayer().getUsername() == username || aux.getBluePlayer().getUsername() == username){
+					gameId = aux.getId();
+					this.findGame(gameId).setStatus(playing);
+				}
+			}
+		}
+		return gameId;		
+	}*/
+	
 	
 	/*
 	 * Entrada: Id del game a eliminar de la memoria}
@@ -517,10 +618,12 @@ public class Facade {
 		Player bluePlayer = new Player(username);		
 		Game gameToInsert = gameWithoutBluePlayer.clone();
 		gameWithoutBluePlayer = null;
+		gameToInsert.setStatus(playing);
 		
-		gameToInsert.setBluePlayer(bluePlayer);
-		//this.activeGames.add(gameToInsert.getId(), gameToInsert);
+		gameToInsert.setBluePlayer(bluePlayer);		
+		gameToInsert.setStatus(playing);
 		this.activeGames.add(gameToInsert);
+		
 		
 		return gameToInsert.getId();		
 	}
@@ -634,6 +737,31 @@ public class Facade {
 		return coordinatesToReturn;
 	}
 	
+	
+	/*
+	 * Entrada: los nombres de los dos usuarios que conforman la partida a buscar
+	 * Salida: Id de la partida o -1 en caso de no existir la misma en la BD
+	 * Procedimiento:
+	 * 	Si existe la partida entonces
+	 * 		cambia el id de la partida
+	 * 		La guarda en el ArrayList
+	 * 		Devuelve el id 
+	 * 	sino devuelve -1
+	 
+	private int loadGame(String redPlayerUsername, String bluePlayerUsername){
+		
+		Data data = new Data();
+		
+		Game gameLoaded = data.loadGame(redPlayerUsername, bluePlayerUsername);
+		if(gameLoaded != null){
+			gameLoaded.setId(this.nextFreeIndex());
+			this.activeGames.add(gameLoaded);
+			return gameLoaded.getId();
+		}else{
+			return -1;
+		}	
+	}
+	*/
 	//OJO QUE HAY QUE BORRARLOOOOO
 	public Iterator<Game> devolverITerator(){
 		return this.activeGames.iterator();
