@@ -835,8 +835,9 @@ package components
 			// Si la armadura del barco llego a cero el mismo fue hundido entonces lo ocultamos
 			if (ship.armor == 0)
 			{
-				_toastManager.addToast("Barco hundido");
-				// affectedShip.visible = false;
+				_toastManager.addToast("Barco hundido");				
+				ship.visible = false;
+				_gridComponent.unblockCells(ship.currentPos);				
 				ship.setPosition(new Coordinate(0, 0));
 			}
 			else
