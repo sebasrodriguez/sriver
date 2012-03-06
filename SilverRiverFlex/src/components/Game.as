@@ -28,6 +28,8 @@ package components
 	{
 		public static const GAME_BOARD_COLS:Number = 64;
 		public static const GAME_BOARD_ROWS:Number = 36;
+		public static const NEW_GAME:String = "new";
+		public static const LOAD_GAME:String = "load";
 		
 		private var _main:Main;
 		private var _board:Canvas;
@@ -58,6 +60,7 @@ package components
 		public var _redPlayer:Player;
 		public var _bluePlayer:Player;
 		public var _me:Player;
+		public var _messageModal:Modal;
 		private var _gameId:int;
 		
 		public function Game(main:Main, username:String)
@@ -65,9 +68,19 @@ package components
 			// initialize variables
 			_main = main;
 			_gameMode = new GameMode(GameMode.NEWGAME);
-			_myUsername = username;
 			_actionQueue = new ArrayList();
-			_main.wsRequest.newGame(username);
+			var modal:GameModal = new GameModal(_main);
+			modal.addEventListener(ModalEvent.GAME_SELECTED, function(event:ModalEvent):void {
+				switch(event.game) {
+					case NEW_GAME:						
+						_myUsername = event.username;
+						_main.wsRequest.newGame(_myUsername);
+						break;
+					case LOAD_GAME:
+						break;
+				}
+			} );
+			loadUserInterface();
 		}
 		
 		private function initializeGame(game:Object):void
@@ -135,7 +148,8 @@ package components
 			_info.bluePlayerUsername = _bluePlayer.username;
 			_info.movesLeftText = _turn.movesLeft.toString();
 			_info.timeLeftText = _turn.timeLeft.toString();
-			_info.setActivePlayer(_turn.activePlayer.username == _redPlayer.username);
+			_info.setActivePlayer(_me == _redPlayer);			
+			
 		}
 		
 		private function loadUserInterface():void
@@ -272,14 +286,16 @@ package components
 			}
 			else
 			{
-				_waitingPlayerLabel = new Label();
+				//aca va el modal
+				_messageModal = new Modal(_main, "", 300, 130, "Esperando a un segundo jugador");
+				/*_waitingPlayerLabel = new Label();
 				_waitingPlayerLabel.text = "Esperando un segundo jugador...";
 				_waitingPlayerLabel.x = _main.width / 3;
 				_waitingPlayerLabel.y = _main.height / 3;
 				_waitingPlayerLabel.setStyle("fontSize", 30);
 				_waitingPlayerLabel.setStyle("color", 0x000000);
 				_waitingPlayerLabel.setStyle("fontStyle", "bold");
-				_main.addElement(_waitingPlayerLabel);
+				_main.addElement(_waitingPlayerLabel);*/
 				_gameMode.gameMode = GameMode.WAITING_FOR_PLAYER;
 			}
 			startSyncronizing();
@@ -359,7 +375,7 @@ package components
 		
 		public function getGameHandler(response:ResultEvent):void
 		{
-			loadUserInterface();
+			
 			initializeGame(response.result);
 		}
 		
@@ -472,11 +488,10 @@ package components
 				{
 					_isAnimating = false;
 					endTurnIfNoMovesLeftAndActivePlayer();
-					//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
-					if (checkPort(ship))
-						_toastManager.addToast("Esta en puerto");
-					if (checkGoal(ship))
-						trace("ganoooooooooo");
+					if(isActivePlayer()){
+						checkPort(ship);
+						checkGoal(ship);
+					}
 					// Se muestran nuevas celdas de movimiento basadas en la nueva posicion del barco
 					refreshMode();
 					// Bloqueamos la nueva posicion del barco
@@ -512,11 +527,10 @@ package components
 						endTurnIfNoMovesLeftAndActivePlayer()
 						// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
 						_gridComponent.blockCells(ship.coordinates);
-						//TODO: se llamarian las funciones luego de terminada la animacion como por ejemplo el chequeo de puerto o ganar
-						if (checkPort(ship))
-							trace("estoy en puerto");
-						if (checkGoal(ship))
-							trace("ganoo");
+						if(isActivePlayer()){
+							checkPort(ship);
+							checkGoal(ship);
+						}
 						if (func != null)
 							func.call();
 					});
@@ -632,13 +646,25 @@ package components
 			return _turn.activePlayer.username == _myUsername;
 		}
 		
-		// Chequea si esta en puerto
-		private function checkPort(ship:Ship):Boolean
+		// Chequea si esta en puertos 
+		private function checkPort(ship:Ship):void
 		{
-			var result:Boolean = _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortHalfCoordinates());
-			result = result || _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortOneCoordinates());
-			return result;
-		}
+			if (_mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortHalfCoordinates())) {
+				ship.reloadHalfAttributes();
+				_menu.updateShipInfo(ship);
+				_toastManager.addToast("Haz entrado en puerto, se han recargado la mitad de los atributos del barco");
+				_main.wsRequest.endTurn(_gameId);				
+			}
+			if (_mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortOneCoordinates())) {
+				var modal:RechargeModal = new RechargeModal(_main);
+				modal.addEventListener(ModalEvent.ATTRIBUTE_SELECTED, function(event:ModalEvent):void {
+					ship.reloadOneAttribute(event.attribute);
+					_menu.updateShipInfo(ship);
+					_toastManager.addToast("Se ha recargado el total del atributo que haz seleccionado");
+					_main.wsRequest.endTurn(_gameId)					
+				} );				
+			}
+		}		
 		
 		// Chequea si gano
 		private function checkGoal(ship:Ship):Boolean
