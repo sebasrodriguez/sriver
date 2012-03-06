@@ -34,8 +34,7 @@ package common
 					_board.x += GAME_SCROLL_INCREMENT;
 			}
 			if (e.stageX > (_main.stage.stageWidth - GAME_SCROLL_SENSOR))
-			{ //scrollear derecha	
-				//trace("left myCanvasX " + myCanvas.x +" - myCanvasWidth - " + myCanvas.width + " - stagewidth - " + stage.stageWidth);	
+			{ //scrollear derecha		
 				if (_board.x > _main.stage.stageWidth - _board.width)
 					_board.x -= GAME_SCROLL_INCREMENT;
 			}
@@ -57,6 +56,10 @@ package common
 			var yinit:Number = _board.y;
 			var xscroll:Number = -(x - _main.stage.stageWidth / 2 );
 			var yscroll:Number = -(y - _main.stage.stageHeight / 2 );
+			if (xscroll > 0) xscroll = 0;
+			if (xscroll < _main.stage.stageWidth - _board.width) xscroll = _main.stage.stageWidth - _board.width;
+			if (yscroll > 0) yscroll = 0;
+			if (yscroll < _main.stage.stageHeight - _board.height) yscroll = _main.stage.stageHeight - _board.height;
 			
 			new Tween(this, xinit, xscroll, 1000, 20, function(newX:Number):void
 			{

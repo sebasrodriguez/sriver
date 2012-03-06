@@ -93,6 +93,7 @@ package components
 			createRotateTab();
 			createFireTab();
 			dispatchModeChanged(MENU_MODE_MOVE);
+			createFooter();
 			
 		}
 		private function createShipInfo():void {
@@ -299,6 +300,16 @@ package components
 			hbox.addChild(button2);
 			box.addChild(hbox);
 			_tabNavigator.addChild(box);	
+		}
+		
+		private function createFooter():void {
+			var button:Button = new Button();
+			button.label = "Saltear turno";
+			button.addEventListener(MouseEvent.CLICK, function ():void {
+				var turnSkipEvent:ActionEvent = new ActionEvent(ActionEvent.TURN_SKIP);
+				dispatchEvent(turnSkipEvent);
+			} );
+			_container.addChild(button);
 		}
 		
 		

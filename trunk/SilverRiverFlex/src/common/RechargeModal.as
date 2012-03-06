@@ -26,6 +26,7 @@ package common
 			
 			button = new Button();
 			button.label = "Blindaje";
+			button.setStyle("fontSize", 20);
 			button.width = 100;
 			button.height = 100;		
 			button.addEventListener(MouseEvent.CLICK, function():void { dispatchAttributeSelectedEvent( Ship.VARIABLE_ATTRIBUTE_ARMOR); } );
@@ -33,6 +34,7 @@ package common
 			
 			button = new Button();
 			button.label = "Cañon";
+			button.setStyle("fontSize", 20);
 			button.width = 100;
 			button.height = 100;	
 			button.addEventListener(MouseEvent.CLICK, function():void { dispatchAttributeSelectedEvent( Ship.VARIABLE_ATTRIBUTE_AMMO); } );
@@ -40,6 +42,7 @@ package common
 			
 			button = new Button();
 			button.label = "Torpedo";
+			button.setStyle("fontSize", 20);
 			button.width = 100;
 			button.height = 100;
 			button.addEventListener(MouseEvent.CLICK, function():void { dispatchAttributeSelectedEvent( Ship.VARIABLE_ATTRIBUTE_TORPEDOES); } );

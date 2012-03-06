@@ -39,6 +39,16 @@ package components
 		public function getShip(index:int = 0):Ship {
 			return _shipCollection[index];
 		}
+		
+		public function hasAliveShips():Boolean {
+			var result:Boolean = false;
+			var i:int = 0;
+			while (!result && i < _shipCollection.length) {
+				result = _shipCollection[i].isAlive();
+				i ++;
+			}
+			return result;
+		}
 	}
 
 }

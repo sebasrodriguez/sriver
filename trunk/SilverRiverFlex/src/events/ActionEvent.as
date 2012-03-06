@@ -13,6 +13,7 @@ package events
 		public static const ROTATION_CLICKED:String = "actionEventRotationClicked";
 		public static const MOVE_CLICKED:String = "actionEventMoveClicked";
 		public static const FIRE_MODE_CHANGED:String = "actionEventFireModeChanged";
+		public static const TURN_SKIP:String = "actionEventTurnSkip";
 		public var mode:int;
 		public var rotation:int;
 		public var fireMode:int;
