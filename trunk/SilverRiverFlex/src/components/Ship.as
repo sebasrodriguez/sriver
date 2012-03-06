@@ -14,6 +14,10 @@ package components
 	 */
 	public class Ship extends GameUIComponent
 	{
+		public static const VARIABLE_ATTRIBUTE_ARMOR:String = "armor";
+		public static const VARIABLE_ATTRIBUTE_AMMO:String = "ammo";
+		public static const VARIABLE_ATTRIBUTE_TORPEDOES:String = "torpedoes";
+		
 		private var _id:int;
 		private var _ship:Ship;
 		private var _direction:Cardinal;
@@ -26,6 +30,10 @@ package components
 		private var _coordinates:Array;
 		private var _selected:Boolean;
 		
+		private var _maxAmmo:int;
+		private var _maxTorpedoes:int;
+		private var _maxArmor:int;
+		
 		public function Ship(id:int, c:Coordinate, d:Cardinal, s:int, size:int, armor:int, ammo:int, torpedoes:int, viewRange:int)
 		{
 			super(c);
@@ -35,8 +43,11 @@ package components
 			_speed = s;
 			_size = size;
 			_armor = armor;
+			_maxArmor = armor;
 			_ammo = ammo;
+			_maxAmmo = ammo;
 			_torpedoes = torpedoes;
+			_maxTorpedoes = torpedoes;
 			_viewRange = viewRange;
 			this.rotation = d.cardinal;
 			updateCoordinates();
@@ -261,6 +272,29 @@ package components
 				isInFireRange = false;
 			
 			return isInFireRange;
+		}
+		
+		public function reloadHalfAttributes():void {
+			if (_armor < _maxArmor / 2)
+				_armor = _maxArmor / 2;
+			if (_ammo < _maxAmmo)
+				_ammo = _maxAmmo / 2;
+			if (_torpedoes < _maxTorpedoes)
+				_torpedoes = _maxTorpedoes / 2;
+		}
+		public function reloadOneAttribute(attribute:String):void {
+			switch(attribute) {
+				case VARIABLE_ATTRIBUTE_ARMOR:
+					_armor = _maxArmor;
+					break;
+				case VARIABLE_ATTRIBUTE_AMMO:
+					_ammo = _maxAmmo;
+					break;
+				case VARIABLE_ATTRIBUTE_TORPEDOES:
+					_torpedoes = _maxTorpedoes;
+					break;
+				default:
+			}
 		}
 	}
 

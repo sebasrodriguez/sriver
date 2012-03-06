@@ -25,6 +25,7 @@
 				//new TestMap();
 				new TestInfo(this);
 				new TestMenu(this);
+				new TestModal(this);
 				
 			}			
 			
