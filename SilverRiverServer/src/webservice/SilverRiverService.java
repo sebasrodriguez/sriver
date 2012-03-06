@@ -36,9 +36,17 @@ public class SilverRiverService {
 		 Facade.getInstance().saveGame(gameId);
 	}
 	
-	public void loadGame(String redPlayerUsername, String bluePlayerUsername){
+	/*public void loadGame(String redPlayerUsername, String bluePlayerUsername){
 		Facade.getInstance().loadGame(redPlayerUsername, bluePlayerUsername);
+	}*/
+	
+	public int getGameIdLoading(String usernameWaiting){
+		return Facade.getInstance().getGameIdLoading(usernameWaiting);
 	}
+	
+	public int loadGame(String username){
+		return Facade.getInstance().loadGame(username);
+	}	
 	
 	public void endGame(int gameId){
 		Facade.getInstance().endGame(gameId);

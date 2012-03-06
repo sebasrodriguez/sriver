@@ -30,6 +30,7 @@ public class Game implements Serializable
 	private ArrayList<Action> blueActionQueue;
 	private ArrayList<Ship> ships;
 	private Turn turn;
+	private int status; //0 loading, 1 playing
 	
 	/*
 	 * Constructores
@@ -47,6 +48,7 @@ public class Game implements Serializable
 		this.blueActionQueue = new ArrayList<Action>();
 		this.ships = this.createShipsArray();
 		this.turn = new Turn(redPlayer);
+		this.status = 0;
 	}
 	
 	/*
@@ -148,6 +150,20 @@ public class Game implements Serializable
 	}
 	
 	/*
+	 * Setea el status
+	 */
+	public void setStatus(int status){
+		this.status = status;
+	}
+	
+	/*
+	 * Devuelve el status
+	 */
+	public int getStatus(){
+		return this.status;
+	}
+	
+	/*
 	 * Devuelve el barco a partir de su id, en caso de no econtrarlo devuelve null
 	 * Precondicion: el barco debe existir en el array
 	 */
@@ -240,6 +256,7 @@ public class Game implements Serializable
 		gameToReturn.blueActionQueue = this.blueActionQueue;
 		gameToReturn.ships = this.ships;
 		gameToReturn.turn = this.turn;
+		gameToReturn.status = this.status;
 		
 		return gameToReturn;
 	}

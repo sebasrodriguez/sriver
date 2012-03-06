@@ -17,10 +17,16 @@ import logic.game.Game;
 
 public class Data {
 	
+	/*
+	 * Constructor
+	 */
 	public Data(){
 		
 	}
 	
+	/*
+	 * Devuelve el game si existe o null de lo contrario
+	 */
 	public Game loadGame(String redPlayerUsername, String bluePlayerUsername){
 		
 		Object deSerializedGame = null;
@@ -39,11 +45,11 @@ public class Data {
 			Queries query = new Queries();
 			
 			String loadGame = query.loadGame();
-			PreparedStatement pepe = con.prepareStatement(loadGame);
-			pepe.setString(1, redPlayerUsername);
-			pepe.setString(2, bluePlayerUsername);
+			PreparedStatement aux = con.prepareStatement(loadGame);
+			aux.setString(1, redPlayerUsername);
+			aux.setString(2, bluePlayerUsername);
 			
-			ResultSet rs = pepe.executeQuery();
+			ResultSet rs = aux.executeQuery();
 			
 			if(rs.next()){			
 				byte[] buf = rs.getBytes(4);
@@ -72,7 +78,9 @@ public class Data {
 		return (Game) deSerializedGame;
 	}
 	
-	
+	/*
+	 * Guarda el game en la BD
+	 */
 	public void saveGame(Game gameToSave){	
 		
 		 try {
@@ -96,22 +104,19 @@ public class Data {
 			
 		    pstmt.executeUpdate();					   
 			pstmt.close();
-			
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	    
-	    
-	}
-	
+		
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}    
+	}	
 }
