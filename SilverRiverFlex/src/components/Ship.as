@@ -33,6 +33,7 @@ package components
 		private var _maxAmmo:int;
 		private var _maxTorpedoes:int;
 		private var _maxArmor:int;
+		private var _portEnabled:Boolean;
 		
 		public function Ship(id:int, c:Coordinate, d:Cardinal, s:int, size:int, armor:int, ammo:int, torpedoes:int, viewRange:int)
 		{
@@ -49,6 +50,7 @@ package components
 			_torpedoes = torpedoes;
 			_maxTorpedoes = torpedoes;
 			_viewRange = viewRange;
+			_portEnabled = true;
 			this.rotation = d.cardinal;
 			updateCoordinates();
 			this.addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void
@@ -183,6 +185,16 @@ package components
 			_viewRange = value;
 		}
 		
+		public function get portEnabled():Boolean 
+		{
+			return _portEnabled;
+		}
+		
+		public function set portEnabled(value:Boolean):void 
+		{
+			_portEnabled = value;
+		}
+		
 		public function updateCoordinates():void
 		{
 			var arr:Array = new Array();
@@ -282,6 +294,7 @@ package components
 			if (_torpedoes < _maxTorpedoes)
 				_torpedoes = _maxTorpedoes / 2;
 		}
+		
 		public function reloadOneAttribute(attribute:String):void {
 			switch(attribute) {
 				case VARIABLE_ATTRIBUTE_ARMOR:
@@ -295,6 +308,10 @@ package components
 					break;
 				default:
 			}
+		}
+		
+		public function isAlive():Boolean {
+			return armor > 0;
 		}
 	}
 

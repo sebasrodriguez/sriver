@@ -12,6 +12,7 @@ package common
 	public class Modal extends TitleWindow 
 	{
 		private var _canvas:Canvas;
+		private var _isOpened:Boolean;
 		
 		public function Modal(p:DisplayObject, t:String, w:int, h:int, m:String = "") 
 		{
@@ -28,10 +29,12 @@ package common
 			}
 			PopUpManager.addPopUp(this, p, true);
 			PopUpManager.centerPopUp(this);
+			_isOpened = true;
 		}
 		
 		public function close():void {
-			PopUpManager.removePopUp(this);			
+			PopUpManager.removePopUp(this);
+			_isOpened = false;
 		}
 		
 		public function get canvas():Canvas 
@@ -42,6 +45,16 @@ package common
 		public function set canvas(value:Canvas):void 
 		{
 			_canvas = value;
+		}
+		
+		public function get isOpened():Boolean 
+		{
+			return _isOpened;
+		}
+		
+		public function set isOpened(value:Boolean):void 
+		{
+			_isOpened = value;
 		}
 		
 	}

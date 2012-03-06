@@ -23,7 +23,7 @@ package common
 		
 		public function GameModal(p:DisplayObject) 
 		{
-			super(p, "Bienvenido a SilverRiver", 340, 120);
+			super(p, "Bienvenido a SilverRiver", 330, 130);
 			var container:VBox = new VBox();
 			container.x = 10;
 			container.y = 10;
@@ -31,27 +31,32 @@ package common
 			
 			var hContainer:HBox;
 			
-			hContainer= new HBox();
+			hContainer = new HBox();
 			container.addChild(hContainer);
 			var lblUsuario:Label = new Label();
 			lblUsuario.text = "Usuario: ";
+			lblUsuario.setStyle("fontSize", 20);	
 			hContainer.addChild(lblUsuario);
 			_txtUsuario = new TextInput();
+			_txtUsuario.setStyle("fontSize", 20);
 			_txtUsuario.addEventListener(FocusEvent.FOCUS_IN, function():void { _lblError.text = ""; } );
 			hContainer.addChild(_txtUsuario);			
 			_lblError = new Label();
 			_lblError.text = "";
 			_lblError.setStyle("color", 0xFF0000);
+			_lblError.setStyle("fontSize", 20);
+			_lblError.setStyle("fontStyle", "bold");	
 			hContainer.addChild(_lblError);
 			
-			hContainer= new HBox();
+			hContainer = new HBox();
 			container.addChild(hContainer);
 			var button:Button;
 			
 			button = new Button();
 			button.label = "Juego Nuevo";
 			button.width = 150;
-			button.height = 70;		
+			button.height = 70;	
+			button.setStyle("fontSize", 20);			
 			button.addEventListener(MouseEvent.CLICK, function():void { dispatchGameSelectedEvent( Game.NEW_GAME);} );
 			hContainer.addChild(button);
 			
@@ -59,6 +64,7 @@ package common
 			button.label = "Cargar Juego";
 			button.width = 150;
 			button.height = 70;	
+			button.setStyle("fontSize", 20);
 			button.addEventListener(MouseEvent.CLICK, function():void { dispatchGameSelectedEvent(Game.LOAD_GAME);} );
 			hContainer.addChild(button);
 			
