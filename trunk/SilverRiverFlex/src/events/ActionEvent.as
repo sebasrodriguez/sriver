@@ -14,6 +14,7 @@ package events
 		public static const MOVE_CLICKED:String = "actionEventMoveClicked";
 		public static const FIRE_MODE_CHANGED:String = "actionEventFireModeChanged";
 		public static const TURN_SKIP:String = "actionEventTurnSkip";
+		public static const SAVE_GAME:String = "actionEventSaveGame";
 		public var mode:int;
 		public var rotation:int;
 		public var fireMode:int;

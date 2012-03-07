@@ -47,6 +47,7 @@ package components
 		private var _waitingPlayerLabel:Label;
 		private var _info:Info;
 		private var _toastManager:ToastManager;
+		private var timer:Timer;
 		
 		public var _gridComponent:GameGrid;
 		public var _redShipComponent:RedShip;
@@ -71,16 +72,18 @@ package components
 			_gameMode = new GameMode(GameMode.NEWGAME);
 			_actionQueue = new ArrayList();
 			var modal:GameModal = new GameModal(_main);
-			modal.addEventListener(ModalEvent.GAME_SELECTED, function(event:ModalEvent):void {
-				switch(event.game) {
-					case NEW_GAME:						
-						_myUsername = event.username;
-						_main.wsRequest.newGame(_myUsername);
-						break;
-					case LOAD_GAME:
-						break;
-				}
-			} );
+			modal.addEventListener(ModalEvent.GAME_SELECTED, function(event:ModalEvent):void
+				{
+					switch (event.game)
+					{
+						case NEW_GAME: 
+							_myUsername = event.username;
+							_main.wsRequest.newGame(_myUsername);
+							break;
+						case LOAD_GAME: 
+							break;
+					}
+				});
 			loadUserInterface();
 		}
 		
@@ -109,7 +112,6 @@ package components
 			_bluePlayer.addShip(_blueShipComponent1);
 			_bluePlayer.addShip(_blueShipComponent2);
 			_bluePlayer.addShip(_blueShipComponent3);
-			
 			
 			_turn = new Turn(turn.movesLeft, _redPlayer, turn.timeLeft);
 			
@@ -149,11 +151,12 @@ package components
 			_info.bluePlayerUsername = _bluePlayer.username;
 			_info.movesLeftText = _turn.movesLeft.toString();
 			_info.timeLeftText = _turn.timeLeft.toString();
-			_info.setActivePlayer(_turn.activePlayer == _redPlayer);			
-			
+			_info.setActivePlayer(_turn.activePlayer == _redPlayer);
+		
 		}
 		
-		private function selectShip(ship:Ship):void {
+		private function selectShip(ship:Ship):void
+		{
 			if (_selectedShip != null)
 				_selectedShip.selected = false;
 			_selectedShip = ship;
@@ -198,9 +201,9 @@ package components
 			
 			_menu = new Menu(Menu.MENU_POSITION_BOTTOM_LEFT);
 			_menu.addEventListener(ActionEvent.MODE_CHANGED, function(event:ActionEvent):void
-			{
-				refreshMode();
-			});
+				{
+					refreshMode();
+				});
 			_menu.addEventListener(ActionEvent.ROTATION_CLICKED, function(event:ActionEvent):void
 				{
 					if (_selectedShip != null)
@@ -216,10 +219,16 @@ package components
 						_main.wsRequest.fireTorpedo(_gameId, _selectedShip.shipId);
 					}
 				});
-			_menu.addEventListener(ActionEvent.TURN_SKIP, function():void {
-				if (isActivePlayer())
-					_main.wsRequest.endTurn(_gameId);
-			} );
+			_menu.addEventListener(ActionEvent.TURN_SKIP, function():void
+				{
+					if (isActivePlayer())
+						_main.wsRequest.endTurn(_gameId);
+				});
+			_menu.addEventListener(ActionEvent.SAVE_GAME, function():void
+				{
+					if (isActivePlayer())
+						_main.wsRequest.saveGame(_gameId);
+				});
 			_main.addElement(_menu);
 			
 			_info = new Info();
@@ -238,7 +247,7 @@ package components
 		 * */
 		public function startSyncronizing():void
 		{
-			var timer:Timer = new Timer(500, 0);
+			timer = new Timer(500, 0);
 			timer.addEventListener(TimerEvent.TIMER, timerHandler);
 			timer.start();
 		}
@@ -250,8 +259,8 @@ package components
 				_main.wsRequest.checkGameId();
 			}
 			else if (_gameMode.gameMode == GameMode.PLAYING)
-			{				
-				if(_messageModal != null && _messageModal.isOpened)
+			{
+				if (_messageModal != null && _messageModal.isOpened)
 					_messageModal.close();
 			}
 			else if (_gameMode.gameMode == GameMode.WAITING_PLAYER_TURN)
@@ -279,7 +288,7 @@ package components
 			{
 				if (_rechargeModal != null && _rechargeModal.isOpened)
 					_rechargeModal.close();
-					_main.wsRequest.endTurn(_gameId);
+				_main.wsRequest.endTurn(_gameId);
 			}
 		}
 		
@@ -302,10 +311,15 @@ package components
 			}
 			else
 			{
-				_messageModal = new Modal(_main, "Esperando a un segundo jugador...", 300, 130);				
+				_messageModal = new Modal(_main, "Esperando a un segundo jugador...", 300, 130);
 				_gameMode.gameMode = GameMode.WAITING_FOR_PLAYER;
 			}
 			startSyncronizing();
+		}
+		
+		public function saveGameHandler(response:ResultEvent):void
+		{
+			saveGameAction();
 		}
 		
 		public function checkGameIdHandler(response:ResultEvent):void
@@ -491,7 +505,8 @@ package components
 				{
 					_isAnimating = false;
 					endTurnIfNoMovesLeftAndActivePlayer();
-					if(isActivePlayer()){
+					if (isActivePlayer())
+					{
 						checkPort(ship);
 						checkGoal(ship);
 					}
@@ -530,7 +545,8 @@ package components
 						endTurnIfNoMovesLeftAndActivePlayer()
 						// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
 						_gridComponent.blockCells(ship.coordinates);
-						if(isActivePlayer()){
+						if (isActivePlayer())
+						{
 							checkPort(ship);
 							checkGoal(ship);
 						}
@@ -583,6 +599,8 @@ package components
 						{
 							affectedShip.armor = newArmor;
 							checkAffectedShip(affectedShip);							
+							if (!_me.hasAliveShips())
+								_toastManager.addToast("Perdiste el juego");
 						}
 						if (!hit)
 							_toastManager.addToast("El disparo no impacto en el barco enemigo");
@@ -623,6 +641,22 @@ package components
 			_menu.updateShipInfo(firingShip);
 		}
 		
+		private function endGameAction():void
+		{
+			
+		}
+		
+		// Finaliza el juego y muestra el mensaje de juego salvado
+		private function saveGameAction():void
+		{
+			if (isActivePlayer())
+				_toastManager.addToast("El juego fue guardado", 10);
+			else
+				_toastManager.addToast("Tu contrincante guardo el juego", 10);
+			if (timer != null)
+				timer.stop();
+		}
+		
 		/**
 		 * ************************************************
 		 *
@@ -652,37 +686,42 @@ package components
 		// Chequea si esta en puertos 
 		private function checkPort(ship:Ship):void
 		{
-			if (_turn.hasMovesLeft() && ship.portEnabled && _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortHalfCoordinates())) {
+			if (_turn.hasMovesLeft() && ship.portEnabled && _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortHalfCoordinates()))
+			{
 				ship.reloadHalfAttributes();
 				_menu.updateShipInfo(ship);
 				_toastManager.addToast("Haz entrado en puerto, se han recargado la mitad de los atributos del barco");
-				_main.wsRequest.endTurn(_gameId);	
+				_main.wsRequest.endTurn(_gameId);
 				ship.portEnabled = false;
 			}
-			if (_turn.hasMovesLeft() && ship.portEnabled && _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortOneCoordinates())) {
+			if (_turn.hasMovesLeft() && ship.portEnabled && _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortOneCoordinates()))
+			{
 				_rechargeModal = new RechargeModal(_main);
-				_rechargeModal.addEventListener(ModalEvent.ATTRIBUTE_SELECTED, function(event:ModalEvent):void {
-					ship.reloadOneAttribute(event.attribute);
-					_menu.updateShipInfo(ship);
-					_toastManager.addToast("Se ha recargado el total del atributo que haz seleccionado");
-					_main.wsRequest.endTurn(_gameId);
-					ship.portEnabled = false;
-				} );				
+				_rechargeModal.addEventListener(ModalEvent.ATTRIBUTE_SELECTED, function(event:ModalEvent):void
+					{
+						ship.reloadOneAttribute(event.attribute);
+						_menu.updateShipInfo(ship);
+						_toastManager.addToast("Se ha recargado el total del atributo que haz seleccionado");
+						_main.wsRequest.endTurn(_gameId);
+						ship.portEnabled = false;
+					});
 			}
-		}		
+		}
 		
 		// Chequea si gano
 		private function checkGoal(ship:Ship):void
 		{
-			if (!_redPlayer.hasAliveShips()) {
-				trace("gano el Azul");
+			if (!_redPlayer.hasAliveShips())
+			{
+				_toastManager.addToast("Gano el equipo azul", 10);
 			}
-			if (!_bluePlayer.hasAliveShips()) {				
-				trace("gano el Rojo");
-			}			
-			if ( _me == _redPlayer && _me.isMyShip(ship))
+			if (!_bluePlayer.hasAliveShips())
+			{
+				_toastManager.addToast("Gano el equipo rojo", 10);
+			}
+			if (_me == _redPlayer && _me.isMyShip(ship))
 				if (_mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getGoalCoordinates()))
-					trace("gano el Rojo");
+					_toastManager.addToast("Gano el equipo rojo", 10);
 		}
 		
 		//verifica si hay celdas bloqueadas que impidan la rotacion
@@ -807,8 +846,8 @@ package components
 					var newArmor:int = -1;
 					if (action.weaponType.weapon == Projectile.WEAPON_TYPE_BULLET)
 						coordinate = new Coordinate(action.hitCoordinate.y, action.hitCoordinate.x);
-					else if (action.hitCoordinate != null)					
-						coordinate = new Coordinate(action.hitCoordinate.y, action.hitCoordinate.x);					
+					else if (action.hitCoordinate != null)
+						coordinate = new Coordinate(action.hitCoordinate.y, action.hitCoordinate.x);
 					
 					if (action.hit && action.affectedShip != null)
 					{
@@ -833,6 +872,10 @@ package components
 				else if (action.actionType == "EndGameAction")
 				{
 					trace("EndGameAction");
+				}
+				else if (action.actionType == "SaveGameAction")
+				{
+					saveGameAction();
 				}
 				_actionQueue.removeItemAt(0);
 			}
@@ -868,9 +911,13 @@ package components
 			// Si la armadura del barco llego a cero el mismo fue hundido entonces lo ocultamos
 			if (ship.armor == 0)
 			{
-				_toastManager.addToast("Barco hundido");				
+				// Muestro mensaje
+				_toastManager.addToast("Barco hundido");
+				// oculto el barco
 				ship.visible = false;
-				_gridComponent.unblockCells(ship.currentPos);				
+				// dejo como disponibles las celdas que ocupaba el barco
+				_gridComponent.unblockCells(ship.currentPos);
+				// posiciono el barco en la celda 0, 0
 				ship.setPosition(new Coordinate(0, 0));
 			}
 			else
@@ -882,6 +929,6 @@ package components
 		public function clearMode():void
 		{
 			_gridComponent.disableCells();
-		}		
+		}
 	}
 }
