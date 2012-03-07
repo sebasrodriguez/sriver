@@ -17,6 +17,7 @@
 					  <s:operation name="fireTorpedo" resultFormat="object" result="_game.fireHandler(event);"  />
 					  <s:operation name="endTurn" resultFormat="object" result="_game.endTurnHandler(event);"  fault="_game.endTurnFaultHandler(event)" />
 					  <s:operation name="getActions" resultFormat="object" result="_game.consumeActionsHandler(event);" fault="_game.consumeActionsFaultHandler(event)"  />
+					  <s:operation name="saveGame" resultFormat="object" result="_game.saveGameHandler(event);"  />
 		</s:WebService>
 	</fx:Declarations>	
 	<fx:Script>
