@@ -19,7 +19,7 @@ public class pruebaFacadeSave {
 		
 		GameVO gameToSave = null;
 				
-		System.out.println(facadePrueba.newGame("Jugador Rojo 1"));
+		System.out.println(facadePrueba.newGame("Jugador Rojo 2"));
 		int gameId = facadePrueba.newGame("Jugador Azul 1");
 		System.out.println(gameId);
 		
