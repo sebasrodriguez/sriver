@@ -20,7 +20,7 @@ public class pruebaFacadeSave {
 		GameVO gameToSave = null;
 				
 		System.out.println(facadePrueba.newGame("Jugador Rojo 2"));
-		int gameId = facadePrueba.newGame("Jugador Azul 1");
+		int gameId = facadePrueba.newGame("Jugador Azul 2");
 		System.out.println(gameId);
 		
 		gameToSave = facadePrueba.getGame(gameId);
@@ -46,6 +46,14 @@ public class pruebaFacadeSave {
 		facadePrueba.saveGame(gameId);
 		System.out.println("----------------------------------");
 		
+	/*	System.out.println(facadePrueba.newGame("Jugador Rojo 1"));
+		gameId = facadePrueba.newGame("Jugador Azul 2");
+		facadePrueba.saveGame(gameId);
+		
+		System.out.println(facadePrueba.newGame("Jugador Rojo 2"));
+		gameId = facadePrueba.newGame("Jugador Azul 1");
+		facadePrueba.saveGame(gameId);
+		*/
 		
 	}
 }

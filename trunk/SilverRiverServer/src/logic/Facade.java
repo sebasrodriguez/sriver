@@ -18,6 +18,7 @@ import logic.actions.EndTurnAction;
 import logic.actions.FireAction;
 import logic.actions.MoveAction;
 import logic.actions.RotateAction;
+import logic.actions.SaveGameAction;
 import logic.game.Game;
 import logic.player.Player;
 import logic.ship.*;
@@ -324,13 +325,23 @@ public class Facade {
 	 * Procedimiento:
 	 * Llama al metodo saveGame en la clase Game 
 	 */
-	public void saveGame(int gameId){
+	public SaveGameAction saveGame(int gameId){
 		
+		SaveGameAction saveGameAction = new SaveGameAction(gameId);
 		Data data = new Data();
 		Game gameToSave = this.findGame(gameId);
 		gameToSave.setStatus(loading);
 		
-		data.saveGame(gameToSave);		
+		data.saveGame(gameToSave);
+		
+		//comparo si es redPlayer
+		if(gameToSave.getTurn().getActivePlayer().getUsername().equals(gameToSave.getRedPlayer().getUsername())){
+			gameToSave.insertActionBlueQueue(saveGameAction);
+		}else{
+			gameToSave.insertActionRedQueue(saveGameAction);
+		}
+		
+		return saveGameAction;
 	}
 	
 	
@@ -367,7 +378,8 @@ public class Facade {
 				String playerWaiting = loadingGamesPlayersIt.next();
 				if(data.loadGame(username, playerWaiting) != null){
 					//encontre
-					gameLoaded = data.loadGame(username, playerWaiting);
+					gameLoaded = data.loadGame(username, playerWaiting);					
+					gameLoaded.setId(this.nextFreeIndex());
 					gameIdToReturn = gameLoaded.getId();
 					gameLoaded.setStatus(loading);
 					gameLoaded.getTurn().setTimeLeft(60);
@@ -378,6 +390,7 @@ public class Facade {
 					if(data.loadGame(playerWaiting,username) != null){
 						//encontre
 						gameLoaded = data.loadGame(playerWaiting, username);
+						gameLoaded.setId(this.nextFreeIndex());
 						gameIdToReturn = gameLoaded.getId();
 						gameLoaded.setStatus(loading);
 						gameLoaded.getTurn().setTimeLeft(60);
@@ -420,7 +433,7 @@ public class Facade {
 			if(auxGame.getRedPlayer().getUsername().equals(usernameWaiting) || auxGame.getBluePlayer().getUsername().equals(usernameWaiting)){		
 			
 				gameIdToReturn = auxGame.getId();
-				auxGame.setStatus(playing);
+				//auxGame.setStatus(playing);
 				auxGame.getTurn().setTimeLeft(60);				
 			}
 		}
@@ -547,6 +560,16 @@ public class Facade {
 		
 	}
 	
+	/*
+	 * Devuelvo la partida que estaba en estado loading
+	 * Coloco la partida en estado playing
+	
+	public GameVO getGameLoading(int gameId){	
+		Game aux = this.findGameLoading(gameId);
+		this.findGameLoading(gameId).setStatus(playing);
+		
+		return aux.mapToValueObject();
+	}*/
 	
 	/*
 	 * Metodos privados
@@ -601,16 +624,40 @@ public class Facade {
 	private Game findGame(int gameId){
 		Iterator<Game> gameIterator = this.activeGames.iterator();
 		Game gameToReturn = null;
+		Game aux = null;
 		boolean found = false;
 		
 		while(gameIterator.hasNext() && !found){
-			gameToReturn = gameIterator.next();
-			if(gameToReturn.getId() == gameId ){
+			aux= gameIterator.next();
+			if(aux.getId() == gameId ){
 				found = true;				
 			}			
 		}
+		if(found){
+			gameToReturn = aux;
+		}
 		return gameToReturn;
 	}
+	
+	/*
+	private Game findGameLoading(int gameId){
+		Iterator<Game> gameIterator = this.activeGames.iterator();
+		Game gameToReturn = null;
+		Game aux = null;
+		boolean found = false;
+		
+		while(gameIterator.hasNext() && !found){
+			aux = gameIterator.next();
+			if(aux.getId() == gameId && aux.getStatus() == loading ){
+				found = true;				
+			}			
+		}
+		if(found){
+			gameToReturn = aux;
+		}
+		return gameToReturn;
+	}*/
+	
 	
 	/*
 	 * Entrada: Nombre del segundo jugador
