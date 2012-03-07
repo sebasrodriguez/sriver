@@ -372,7 +372,8 @@ public class Facade {
 					gameLoaded.setStatus(loading);
 					gameLoaded.getTurn().setTimeLeft(60);
 					this.activeGames.add(gameLoaded);
-					this.loadingGamePlayers.remove(this.loadingGamePlayers.indexOf(username));
+					this.removeFromLoadingGamePlayers(playerWaiting);
+					//this.loadingGamePlayers.remove(this.loadingGamePlayers.indexOf(username));
 				}else{
 					if(data.loadGame(playerWaiting,username) != null){
 						//encontre
@@ -381,7 +382,10 @@ public class Facade {
 						gameLoaded.setStatus(loading);
 						gameLoaded.getTurn().setTimeLeft(60);
 						this.activeGames.add(gameLoaded);
-						this.loadingGamePlayers.remove(this.loadingGamePlayers.indexOf(username));
+						this.removeFromLoadingGamePlayers(playerWaiting);
+						//this.loadingGamePlayers.remove(this.loadingGamePlayers.indexOf(username));
+						//System.out.println("ACACACa: " + this.loadingGamePlayers.indexOf(username));
+						//this.loadingGamePlayers.
 					}
 				}
 			}			
@@ -412,11 +416,13 @@ public class Facade {
 		
 		while(gameIt.hasNext() && gameIdToReturn == -1){
 			auxGame = gameIt.next();
-			if(auxGame.getRedPlayer().getUsername() == usernameWaiting || auxGame.getBluePlayer().getUsername() == usernameWaiting){
+			//if(auxGame.getRedPlayer().getUsername() == usernameWaiting || auxGame.getBluePlayer().getUsername() == usernameWaiting){			
+			if(auxGame.getRedPlayer().getUsername().equals(usernameWaiting) || auxGame.getBluePlayer().getUsername().equals(usernameWaiting)){		
+			
 				gameIdToReturn = auxGame.getId();
 				auxGame.setStatus(playing);
-				auxGame.getTurn().setTimeLeft(60);
-			}			
+				auxGame.getTurn().setTimeLeft(60);				
+			}
 		}
 		return gameIdToReturn;		
 	}
@@ -739,6 +745,24 @@ public class Facade {
 	
 	
 	/*
+	 * Remueve al jugador de la cola de espera
+	 */
+	private void removeFromLoadingGamePlayers(String username){
+		int indexToRemove = 0;
+		boolean found = false;
+		
+		while(indexToRemove < this.loadingGamePlayers.size() && !found){
+			if(this.loadingGamePlayers.get(indexToRemove) != username){
+				indexToRemove++;
+			}else{
+				found = true;
+			}
+		}
+		this.loadingGamePlayers.remove(indexToRemove);		
+	}
+	
+	
+	/*
 	 * Entrada: los nombres de los dos usuarios que conforman la partida a buscar
 	 * Salida: Id de la partida o -1 en caso de no existir la misma en la BD
 	 * Procedimiento:
@@ -765,5 +789,10 @@ public class Facade {
 	//OJO QUE HAY QUE BORRARLOOOOO
 	public Iterator<Game> devolverITerator(){
 		return this.activeGames.iterator();
+	}
+	
+	//OJO QUE HAY QUE BORRARLOOOOOOO
+	public Iterator<String> devolverItString(){
+		return this.loadingGamePlayers.iterator();
 	}
 }
