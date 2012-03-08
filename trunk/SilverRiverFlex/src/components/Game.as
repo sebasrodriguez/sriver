@@ -74,13 +74,14 @@ package components
 			var modal:GameModal = new GameModal(_main);
 			modal.addEventListener(ModalEvent.GAME_SELECTED, function(event:ModalEvent):void
 				{
+					_myUsername = event.username;
 					switch (event.game)
 					{
 						case NEW_GAME: 
-							_myUsername = event.username;
 							_main.wsRequest.newGame(_myUsername);
 							break;
 						case LOAD_GAME: 
+							_main.wsRequest.loadGame(_myUsername);
 							break;
 					}
 				});
@@ -113,7 +114,10 @@ package components
 			_bluePlayer.addShip(_blueShipComponent2);
 			_bluePlayer.addShip(_blueShipComponent3);
 			
-			_turn = new Turn(turn.movesLeft, _redPlayer, turn.timeLeft);
+			if (_bluePlayer.username == turn.activePlayer.username)
+				_turn = new Turn(turn.movesLeft, _bluePlayer, turn.timeLeft);
+			else
+				_turn = new Turn(turn.movesLeft, _redPlayer, turn.timeLeft);
 			
 			if (isActivePlayer())
 			{
@@ -152,7 +156,6 @@ package components
 			_info.movesLeftText = _turn.movesLeft.toString();
 			_info.timeLeftText = _turn.timeLeft.toString();
 			_info.setActivePlayer(_turn.activePlayer == _redPlayer);
-		
 		}
 		
 		private function selectShip(ship:Ship):void
@@ -258,6 +261,10 @@ package components
 			{
 				_main.wsRequest.checkGameId();
 			}
+			else if (_gameMode.gameMode == GameMode.WAITING_FOR_LOADING)
+			{
+				_main.wsRequest.getGameIdLoading(_myUsername);
+			}
 			else if (_gameMode.gameMode == GameMode.PLAYING)
 			{
 				if (_messageModal != null && _messageModal.isOpened)
@@ -265,6 +272,8 @@ package components
 			}
 			else if (_gameMode.gameMode == GameMode.WAITING_PLAYER_TURN)
 			{
+				if (_messageModal != null && _messageModal.isOpened)
+					_messageModal.close();
 				_main.wsRequest.getActions(_gameId, _myUsername);
 			}
 			
@@ -313,6 +322,23 @@ package components
 			{
 				_messageModal = new Modal(_main, "Esperando a un segundo jugador...", 300, 130);
 				_gameMode.gameMode = GameMode.WAITING_FOR_PLAYER;
+			}
+			startSyncronizing();
+		}
+		
+		public function loadGameHandler(response:ResultEvent):void
+		{
+			var gameId:int = response.result as int;
+			if (gameId >= 0)
+			{
+				_gameId = gameId;
+				_gameMode.gameMode = GameMode.GETTING_GAME;
+				_main.wsRequest.getGame(gameId);
+			}
+			else
+			{
+				_messageModal = new Modal(_main, "Esperando a un segundo jugador...", 300, 130);
+				_gameMode.gameMode = GameMode.WAITING_FOR_LOADING;
 			}
 			startSyncronizing();
 		}
@@ -396,7 +422,6 @@ package components
 		
 		public function getGameHandler(response:ResultEvent):void
 		{
-			
 			initializeGame(response.result);
 		}
 		
@@ -598,7 +623,7 @@ package components
 						if (hit && affectedShip != null)
 						{
 							affectedShip.armor = newArmor;
-							checkAffectedShip(affectedShip);							
+							checkAffectedShip(affectedShip);
 							if (!_me.hasAliveShips())
 								_toastManager.addToast("Perdiste el juego");
 						}
@@ -643,7 +668,7 @@ package components
 		
 		private function endGameAction():void
 		{
-			
+		
 		}
 		
 		// Finaliza el juego y muestra el mensaje de juego salvado
