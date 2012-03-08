@@ -149,6 +149,8 @@ package components
 			_blueShipComponent2.show();
 			_blueShipComponent3.show();
 			selectShip(_me.getShip());
+			_menu.updateShipInfo(_selectedShip);
+			refreshMode();
 			
 			// Cargamos informacion de usuarios y barcos
 			_info.redPlayerUsername = _redPlayer.username;
@@ -225,12 +227,26 @@ package components
 			_menu.addEventListener(ActionEvent.TURN_SKIP, function():void
 				{
 					if (isActivePlayer())
-						_main.wsRequest.endTurn(_gameId);
+					{
+						if (!_isAnimating)
+							_main.wsRequest.endTurn(_gameId);
+						else
+							_toastManager.addToast("Debes esperar a que se termine la accion antes de poder terminar el turno");
+					}
+					else
+						_toastManager.addToast("Para poder terminar el turno debes ser el jugador activo");
 				});
 			_menu.addEventListener(ActionEvent.SAVE_GAME, function():void
 				{
 					if (isActivePlayer())
-						_main.wsRequest.saveGame(_gameId);
+					{
+						if (!_isAnimating)
+							_main.wsRequest.saveGame(_gameId);
+						else
+							_toastManager.addToast("Debes esperar a que se termine la accion antes de guardar");
+					}
+					else
+						_toastManager.addToast("Para poder guardar debes ser el jugador activo");
 				});
 			_main.addElement(_menu);
 			
@@ -379,7 +395,7 @@ package components
 				
 				consumeNextAction();
 			}
-		}		
+		}
 		
 		public function fireHandler(response:ResultEvent):void
 		{
@@ -408,7 +424,7 @@ package components
 		public function endTurnHandler(response:ResultEvent):void
 		{
 			endTurnAction();
-		}		
+		}
 		
 		public function getGameHandler(response:ResultEvent):void
 		{
