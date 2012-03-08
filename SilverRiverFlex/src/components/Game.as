@@ -722,7 +722,7 @@ package components
 					_menu.updateShipInfo(_selectedShip);
 			}
 			if (!_me.hasAliveShips())
-				_toastManager.addToast("Perdiste el juego");			
+				_toastManager.addToast("Perdiste el juego");
 		}
 		
 		// Dado un id de un barco lo retorna/
@@ -857,9 +857,14 @@ package components
 			{
 				currentPos = Helper.calculateNextCell(currentPos, ship.direction);
 				offsetPos = Helper.calculateNextCell(currentPos, ship.direction, offset);
-				if (!_gridComponent.getCell(offsetPos).blocked || ship.itsMe(offsetPos))
+				if (offsetPos.c < GAME_BOARD_COLS && offsetPos.r < GAME_BOARD_ROWS)
 				{
-					_gridComponent.enableCell(currentPos);
+					if (!_gridComponent.getCell(offsetPos).blocked || ship.itsMe(offsetPos))
+					{
+						_gridComponent.enableCell(currentPos);
+					}
+					else
+						nomore = true;
 				}
 				else
 					nomore = true;
@@ -872,9 +877,14 @@ package components
 			{
 				currentPos = Helper.calculateNextCell(currentPos, Helper.getOppositeDirection(ship.direction));
 				offsetPos = Helper.calculateNextCell(currentPos, Helper.getOppositeDirection(ship.direction), offset);
-				if (!_gridComponent.getCell(offsetPos).blocked)
+				if (offsetPos.c < GAME_BOARD_COLS && offsetPos.r < GAME_BOARD_ROWS)
 				{
-					_gridComponent.enableCell(currentPos);
+					if (!_gridComponent.getCell(offsetPos).blocked)
+					{
+						_gridComponent.enableCell(currentPos);
+					}
+					else
+						nomore = true;
 				}
 				else
 					nomore = true;
