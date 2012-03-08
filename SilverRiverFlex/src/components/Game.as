@@ -628,10 +628,7 @@ package components
 						// Actualizo el daño recibido en el barco
 						if (hit && affectedShip != null)
 						{
-							affectedShip.armor = newArmor;
-							checkAffectedShip(affectedShip);
-							if (!_me.hasAliveShips())
-								_toastManager.addToast("Perdiste el juego");
+							checkFireHit(affectedShip, newArmor);
 						}
 						if (!hit)
 							_toastManager.addToast("El disparo no impacto en el barco enemigo");
@@ -661,15 +658,15 @@ package components
 						// Actualizo el daño recibido en el barco
 						if (hit && affectedShip != null)
 						{
-							affectedShip.armor = newArmor;
-							checkAffectedShip(affectedShip);
+							checkFireHit(affectedShip, newArmor);
 						}
 						_isAnimating = false;
 						if (func != null)
 							func.call();
 					});
 			}
-			_menu.updateShipInfo(firingShip);
+			if (isActivePlayer())
+				_menu.updateShipInfo(firingShip);
 		}
 		
 		private function endGameAction():void
@@ -695,6 +692,38 @@ package components
 		 *
 		 * ************************************************
 		 * */
+		
+		private function checkFireHit(affectedShip:Ship, newArmor:int):void
+		{
+			affectedShip.armor = newArmor;
+			
+			// Si la armadura del barco llego a cero el mismo fue hundido entonces lo ocultamos
+			if (affectedShip.armor == 0)
+			{
+				// Muestro mensaje
+				_toastManager.addToast("Barco hundido");
+				// oculto el barco
+				affectedShip.visible = false;
+				// dejo como disponibles las celdas que ocupaba el barco
+				_gridComponent.unblockCells(affectedShip.currentPos);
+				// Si el barco eliminado es el que tengo seleccionado obtengo el siguiente barco
+				if (affectedShip.shipId == _selectedShip.shipId && _me.hasAliveShips())
+				{
+					_selectedShip = _me.getNextAliveShip();
+					_selectedShip.selected = true;
+					_menu.updateShipInfo(_selectedShip);
+					centerOnShip(_selectedShip);
+				}
+			}
+			else
+			{
+				_toastManager.addToast("El disparo impacto en el barco enemigo");
+				if (affectedShip.shipId == _selectedShip.shipId)
+					_menu.updateShipInfo(_selectedShip);
+			}
+			if (!_me.hasAliveShips())
+				_toastManager.addToast("Perdiste el juego");			
+		}
 		
 		// Dado un id de un barco lo retorna/
 		private function getShipById(shipId:int):Ship
@@ -935,26 +964,6 @@ package components
 			// Si soy el usuario activo y no me quedan movimientos termino el turno
 			if (isActivePlayer() && !_turn.hasMovesLeft())
 				_main.wsRequest.endTurn(_gameId);
-		}
-		
-		private function checkAffectedShip(ship:Ship):void
-		{
-			// Si la armadura del barco llego a cero el mismo fue hundido entonces lo ocultamos
-			if (ship.armor == 0)
-			{
-				// Muestro mensaje
-				_toastManager.addToast("Barco hundido");
-				// oculto el barco
-				ship.visible = false;
-				// dejo como disponibles las celdas que ocupaba el barco
-				_gridComponent.unblockCells(ship.currentPos);
-				// posiciono el barco en la celda 0, 0
-				ship.setPosition(new Coordinate(0, 0));
-			}
-			else
-			{
-				_toastManager.addToast("El disparo impacto en el barco enemigo");
-			}
 		}
 		
 		public function clearMode():void
