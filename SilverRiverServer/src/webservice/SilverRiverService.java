@@ -7,6 +7,7 @@ import logic.actions.EndTurnAction;
 import logic.actions.FireAction;
 import logic.actions.MoveAction;
 import logic.actions.RotateAction;
+import logic.actions.SaveGameAction;
 
 public class SilverRiverService {	
 
@@ -28,17 +29,12 @@ public class SilverRiverService {
 	}
 	
 	public EndTurnAction endTurn(int gameId){
-		System.out.println(gameId);
 		return Facade.getInstance().endTurn(gameId);
 	}
 	
-	public void saveGame(int gameId){
-		 Facade.getInstance().saveGame(gameId);
-	}
-	
-	/*public void loadGame(String redPlayerUsername, String bluePlayerUsername){
-		Facade.getInstance().loadGame(redPlayerUsername, bluePlayerUsername);
-	}*/
+	public SaveGameAction saveGame(int gameId){
+		 return Facade.getInstance().saveGame(gameId);
+	}	
 	
 	public int getGameIdLoading(String usernameWaiting){
 		return Facade.getInstance().getGameIdLoading(usernameWaiting);
