@@ -22,8 +22,8 @@ package components
 		private static const CELL_COLOR_GOAL:uint = 0x00ffff;
 		private static const CELL_COLOR_PORT:uint = 0xffff00;
 		private static const CELL_COLOR_AVAILABLE:uint = 0x0000ff;
-		private static const CELL_ALPHA_NORMAL:Number = 0.3;
-		private static const CELL_ALPHA_BLOCKED:Number = 0.3;
+		private static const CELL_ALPHA_NORMAL:Number = 0.0;
+		private static const CELL_ALPHA_BLOCKED:Number = 0.0;
 		private static const CELL_ALPHA_GOAL:Number = 0.3;
 		private static const CELL_ALPHA_PORT:Number = 0.3;
 		private static const CELL_ALPHA_AVAILABLE:Number = 0.3;
@@ -46,11 +46,11 @@ package components
 			_shape.graphics.beginFill(_fillColor, 1);
 			/*else
 			 _shape.graphics.beginFill(0xff0000, 0.1);*/
-			_shape.graphics.lineStyle(1, _borderColor, 1);
+			//_shape.graphics.lineStyle(1, _borderColor, 1);
 			_shape.graphics.drawRect(0, 0, _size, _size);
 			_shape.graphics.endFill();
 			addChild(_shape);
-			var t:Label = new Label();
+			/*var t:Label = new Label();
 			t.text = "(" + _coordinate.r + "," + _coordinate.c + ")";
 			t.setStyle("color", 0x000000);
 			t.x = 0;
@@ -58,7 +58,7 @@ package components
 			t.width = 50;
 			t.height = 50;
 			t.visible = true;
-			this.addChild(t);
+			this.addChild(t);*/
 		
 		}
 		

@@ -6,7 +6,7 @@
 			   initialize="initializeHandler(event)">			   
 	<fx:Declarations>		
 		<s:WebService id="wsRequest"
-					  wsdl="http://localhost:8080/SilverRiverServer/services/SilverRiverService?wsdl">	
+					  wsdl="http://192.168.1.67:8080/SilverRiverServer/services/SilverRiverService?wsdl">	
 					  <s:operation name="newGame" resultFormat="object" result="_game.newGameHandler(event);"  />
 					  <s:operation name="checkGameId" resultFormat="object" result="_game.checkGameIdHandler(event);"  />
 					  <s:operation name="getGame" resultFormat="object" result="_game.getGameHandler(event);"  />
