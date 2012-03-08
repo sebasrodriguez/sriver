@@ -5,8 +5,7 @@
 			   contentCreationComplete="creationCompleteHandler(event)"
 			   initialize="initializeHandler(event)">			   
 	<fx:Declarations>		
-		<s:WebService id="wsRequest"
-					  wsdl="http://192.168.1.67:8080/SilverRiverServer/services/SilverRiverService?wsdl">	
+		<s:WebService id="wsRequest">	
 					  <s:operation name="newGame" resultFormat="object" result="_game.newGameHandler(event);"  />
 					  <s:operation name="checkGameId" resultFormat="object" result="_game.checkGameIdHandler(event);"  />
 					  <s:operation name="getGame" resultFormat="object" result="_game.getGameHandler(event);"  />
@@ -37,6 +36,11 @@
 			
 			private function initializeHandler(e:Event):void
 			{
+				var wsdlLocation:String = FlexGlobals.topLevelApplication.parameters.SilverRiverService;
+				if (wsdlLocation != null)
+					wsRequest.wsdl = wsdlLocation;
+				else
+					wsRequest.wsdl = "http://localhost:8080/SilverRiverServer/services/SilverRiverService?wsdl";				
 				var username:Number = Math.random() * 100;
 				_game = new Game(this, Math.floor(username).toString());
 			}			
