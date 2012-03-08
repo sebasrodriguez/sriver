@@ -21,33 +21,52 @@ package components
 			return _username;
 		}
 		
-		public function addShip(ship:Ship):void {
+		public function addShip(ship:Ship):void
+		{
 			_shipCollection.push(ship);
 		}
 		
-		public function isMyShip(ship:Ship):Boolean {
+		public function isMyShip(ship:Ship):Boolean
+		{
 			var result:Boolean = false;
 			var i:int = 0;
-			while (!result && i < _shipCollection.length) {
+			while (!result && i < _shipCollection.length)
+			{
 				if (ship == _shipCollection[i])
 					result = true;
-				i ++;
+				i++;
 			}
 			return result;
 		}
 		
-		public function getShip(index:int = 0):Ship {
+		public function getShip(index:int = 0):Ship
+		{
 			return _shipCollection[index];
 		}
 		
-		public function hasAliveShips():Boolean {
+		public function hasAliveShips():Boolean
+		{
 			var result:Boolean = false;
 			var i:int = 0;
-			while (!result && i < _shipCollection.length) {
+			while (!result && i < _shipCollection.length)
+			{
 				result = _shipCollection[i].isAlive();
-				i ++;
+				i++;
 			}
 			return result;
+		}
+		
+		public function getNextAliveShip():Ship
+		{
+			var ship:Ship = null;
+			var i:int = 0;
+			while (ship == null && i < _shipCollection.length)
+			{
+				if (_shipCollection[i].isAlive())
+					ship = _shipCollection[i];
+				i++;
+			}
+			return ship;
 		}
 	}
 

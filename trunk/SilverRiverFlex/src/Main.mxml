@@ -16,7 +16,7 @@
 					  <s:operation name="fireTorpedo" resultFormat="object" result="_game.fireHandler(event);"  />
 					  <s:operation name="endTurn" resultFormat="object" result="_game.endTurnHandler(event);" />
 					  <s:operation name="getActions" resultFormat="object" result="_game.consumeActionsHandler(event);" />
-					  <s:operation name="saveGame" resultFormat="object" result="_game.saveGameHandler(event);"  />
+					  <s:operation name="saveGame" resultFormat="object" result="_game.saveGameHandler(event);" />
 					  <s:operation name="loadGame" resultFormat="object" result="_game.loadGameHandler(event);"  />
 					  <s:operation name="getGameIdLoading" resultFormat="object" result="_game.checkGameIdHandler(event);"  />
 		</s:WebService>

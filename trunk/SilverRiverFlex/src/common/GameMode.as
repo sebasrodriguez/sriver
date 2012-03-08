@@ -13,6 +13,7 @@ package common
 		public static const PLAYING:int = 4;
 		public static const GETTING_GAME:int = 5;
 		public static const WAITING_FOR_LOADING:int = 6;
+		public static const ENDING_GAME:int = 7;
 		
 		private var _gameMode:int;
 		
