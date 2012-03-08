@@ -3,8 +3,7 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark"
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   contentCreationComplete="creationCompleteHandler(event)"
-			   initialize="initializeHandler(event)">
-
+			   initialize="initializeHandler(event)">			   
 	<fx:Declarations>		
 		<s:WebService id="wsRequest"
 					  wsdl="http://localhost:8080/SilverRiverServer/services/SilverRiverService?wsdl">	
@@ -18,6 +17,8 @@
 					  <s:operation name="endTurn" resultFormat="object" result="_game.endTurnHandler(event);"  fault="_game.endTurnFaultHandler(event)" />
 					  <s:operation name="getActions" resultFormat="object" result="_game.consumeActionsHandler(event);" fault="_game.consumeActionsFaultHandler(event)"  />
 					  <s:operation name="saveGame" resultFormat="object" result="_game.saveGameHandler(event);"  />
+					  <s:operation name="loadGame" resultFormat="object" result="_game.loadGameHandler(event);"  />
+					  <s:operation name="getGameIdLoading" resultFormat="object" result="_game.checkGameIdHandler(event);"  />
 		</s:WebService>
 	</fx:Declarations>	
 	<fx:Script>
