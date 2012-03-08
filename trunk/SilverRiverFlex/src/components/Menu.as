@@ -345,6 +345,7 @@ package components
 		
 		private function createFooter():void
 		{
+			var footerContainer:HBox = new HBox();
 			var btnEndTurn:Button = new Button();
 			var btnSaveGame:Button = new Button();
 			btnEndTurn.label = "Saltear turno";
@@ -359,8 +360,9 @@ package components
 					var saveGameEvent:ActionEvent = new ActionEvent(ActionEvent.SAVE_GAME);
 					dispatchEvent(saveGameEvent);
 				});
-			_container.addChild(btnEndTurn);
-			_container.addChild(btnSaveGame);
+			footerContainer.addChild(btnEndTurn);
+			footerContainer.addChild(btnSaveGame);
+			_container.addChild(footerContainer);
 		}
 		
 		private function dispatchRotate(rotation:int):void
