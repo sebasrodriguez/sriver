@@ -379,12 +379,7 @@ package components
 				
 				consumeNextAction();
 			}
-		}
-		
-		public function consumeActionsFaultHandler(response:FaultEvent):void
-		{
-			_toastManager.addToast("Fallo la llamada a consumeActions");
-		}
+		}		
 		
 		public function fireHandler(response:ResultEvent):void
 		{
@@ -413,12 +408,7 @@ package components
 		public function endTurnHandler(response:ResultEvent):void
 		{
 			endTurnAction();
-		}
-		
-		public function endTurnFaultHandler(response:FaultEvent):void
-		{
-			_toastManager.addToast("fallo la llamada a endTurnWS");
-		}
+		}		
 		
 		public function getGameHandler(response:ResultEvent):void
 		{
