@@ -134,6 +134,15 @@ package components
 			_gridComponent.blockCells(_blueShipComponent2.coordinates);
 			_gridComponent.blockCells(_blueShipComponent3.coordinates);
 			
+			if (_redShipComponent.armor <= 0)
+				destroyShip(_redShipComponent);
+			if (_blueShipComponent1.armor <= 0)
+				destroyShip(_blueShipComponent1);
+			if (_blueShipComponent2.armor <= 0)
+				destroyShip(_blueShipComponent2);
+			if (_blueShipComponent3.armor <= 0)
+				destroyShip(_blueShipComponent3);
+			
 			_redShipComponent.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
 			_blueShipComponent1.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
 			_blueShipComponent2.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
@@ -148,7 +157,7 @@ package components
 			_blueShipComponent1.show();
 			_blueShipComponent2.show();
 			_blueShipComponent3.show();
-			selectShip(_me.getShip());
+			selectShip(_me.getNextAliveShip());
 			_menu.updateShipInfo(_selectedShip);
 			refreshMode();
 			
@@ -702,10 +711,7 @@ package components
 			{
 				// Muestro mensaje
 				_toastManager.addToast("Barco hundido");
-				// oculto el barco
-				affectedShip.visible = false;
-				// dejo como disponibles las celdas que ocupaba el barco
-				_gridComponent.unblockCells(affectedShip.currentPos);
+				destroyShip(affectedShip);
 				// Si el barco eliminado es el que tengo seleccionado obtengo el siguiente barco
 				if (affectedShip.shipId == _selectedShip.shipId && _me.hasAliveShips())
 				{
@@ -723,6 +729,14 @@ package components
 			}
 			if (!_me.hasAliveShips())
 				_toastManager.addToast("Perdiste el juego");
+		}
+		
+		private function destroyShip(destroyedShip:Ship):void
+		{
+			// oculto el barco
+			destroyedShip.visible = false;
+			// dejo como disponibles las celdas que ocupaba el barco
+			_gridComponent.unblockCells(destroyedShip.currentPos);
 		}
 		
 		// Dado un id de un barco lo retorna/
