@@ -430,11 +430,13 @@ public class Facade {
 		while(gameIt.hasNext() && gameIdToReturn == -1){
 			auxGame = gameIt.next();
 			//if(auxGame.getRedPlayer().getUsername() == usernameWaiting || auxGame.getBluePlayer().getUsername() == usernameWaiting){			
-			if(auxGame.getRedPlayer().getUsername().equals(usernameWaiting) || auxGame.getBluePlayer().getUsername().equals(usernameWaiting)){		
-			
-				gameIdToReturn = auxGame.getId();
-				//auxGame.setStatus(playing);
-				auxGame.getTurn().setTimeLeft(60);				
+			if(auxGame.getStatus() == this.loading){
+				if(auxGame.getRedPlayer().getUsername().equals(usernameWaiting) || auxGame.getBluePlayer().getUsername().equals(usernameWaiting)){		
+					//encontre
+					gameIdToReturn = auxGame.getId();
+					auxGame.setStatus(playing);
+					auxGame.getTurn().setTimeLeft(60);				
+				}
 			}
 		}
 		return gameIdToReturn;		
@@ -531,6 +533,8 @@ public class Facade {
 		
 		Game activeGame = findGame(gameId);
 		Action[] actionToReturn;
+		boolean mustRemove = false;
+		int i = 0;
 		
 		//comparo si es redPlayer
 		if(activeGame.getRedPlayer().getUsername().compareTo(username) == 0){
@@ -539,6 +543,18 @@ public class Facade {
 		}else{
 			actionToReturn = activeGame.blueActionQueueMapToArray();
 			activeGame.getBlueActionQueue().clear();
+		}
+		
+		
+		while(i < actionToReturn.length && !mustRemove){
+			if(actionToReturn[i].getActionType().equals("SaveGameAction") || actionToReturn[i].getActionType().equals("EndGameAction")){
+				mustRemove = true;
+			}
+			i++;
+		}
+		
+		if(mustRemove){
+			this.activeGames.remove(this.activeGames.indexOf(this.activeGames.get(gameId)));			
 		}
 		
 		return actionToReturn;		
@@ -671,7 +687,7 @@ public class Facade {
 		Player bluePlayer = new Player(username);		
 		Game gameToInsert = gameWithoutBluePlayer.clone();
 		gameWithoutBluePlayer = null;
-		gameToInsert.setStatus(playing);
+		//gameToInsert.setStatus(playing);
 		
 		gameToInsert.setBluePlayer(bluePlayer);		
 		gameToInsert.setStatus(playing);
