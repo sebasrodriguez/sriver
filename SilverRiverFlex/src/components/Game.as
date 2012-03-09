@@ -510,6 +510,10 @@ package components
 					{
 						moveAction(_selectedShip, event.coordinate);
 					}
+					else 
+					{
+						_toastManager.addToast("La celda seleccionada no esta disponible para el movimiento");
+					}
 				}
 			}
 		}

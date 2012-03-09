@@ -21,12 +21,12 @@ package components
 		private static const CELL_COLOR_BLOCKED:uint = 0xff0000;
 		private static const CELL_COLOR_GOAL:uint = 0x00ffff;
 		private static const CELL_COLOR_PORT:uint = 0xffff00;
-		private static const CELL_COLOR_AVAILABLE:uint = 0x0000ff;
+		private static const CELL_COLOR_AVAILABLE:uint = 0x00CC00;
 		private static const CELL_ALPHA_NORMAL:Number = 0.0;
 		private static const CELL_ALPHA_BLOCKED:Number = 0.0;
 		private static const CELL_ALPHA_GOAL:Number = 0.3;
 		private static const CELL_ALPHA_PORT:Number = 0.3;
-		private static const CELL_ALPHA_AVAILABLE:Number = 0.3;
+		private static const CELL_ALPHA_AVAILABLE:Number = 0.5;
 		
 		private var _coordinate:Coordinate;
 		private var _shape:Shape;

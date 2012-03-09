@@ -12,8 +12,9 @@ package components
 		public function Turn(movesLeft:int, activePlayer:Player, timeLeft:int)
 		{
 			_movesLeft = movesLeft;
-			_totalTime = timeLeft;
-			_totalMoves = movesLeft;
+			// TODO: Agregar variables con los totales al server
+			_totalTime = timeLeft;			
+			_totalMoves = 5;
 			_activePlayer = activePlayer;
 			_timeLeft = timeLeft;
 		}
