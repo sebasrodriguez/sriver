@@ -16,6 +16,7 @@ import entities.Weapon;
 import logic.actions.Action;
 import logic.actions.EndGameAction;
 import logic.actions.EndTurnAction;
+import logic.actions.EnterPortAction;
 import logic.actions.FireAction;
 import logic.actions.MoveAction;
 import logic.actions.RotateAction;
@@ -444,34 +445,7 @@ public class Facade {
 	}
 	
 	
-	/*
-	 * Entrada: el nombre del jugador
-	 * Salida: -1 si no existe la partida o el numero de la partida
-	 * Procedimiento:
-	 * 		Si existe una partida en status loading con mi nombre en uno de los jugadores entonces
-	 * 			cambio el estado a playing,
-	 * 			devuelvo el gameId
-	 * 		sino
-	 * 			retorno -1 		
-	 
-	public int checkLoadedGameId(String username){
-		int gameId = -1;
-		Iterator<Game> activeGameIt = this.activeGames.iterator();
-		Game aux = null;
 		
-		while(activeGameIt.hasNext() && gameId == -1){
-			aux = activeGameIt.next();
-			if(aux.getStatus() == this.loading){
-				if(aux.getRedPlayer().getUsername() == username || aux.getBluePlayer().getUsername() == username){
-					gameId = aux.getId();
-					this.findGame(gameId).setStatus(playing);
-				}
-			}
-		}
-		return gameId;		
-	}*/
-	
-	
 	/*
 	 * Entrada: Id del game a eliminar de la memoria}
 	 * Salida: void
@@ -586,16 +560,199 @@ public class Facade {
 		
 	}
 	
-	/*
-	 * Devuelvo la partida que estaba en estado loading
-	 * Coloco la partida en estado playing
 	
-	public GameVO getGameLoading(int gameId){	
-		Game aux = this.findGameLoading(gameId);
-		this.findGameLoading(gameId).setStatus(playing);
+	/*
+	 * Metodo que le suma un 50% a todos los atributos del barco
+	 */
+	public EnterPortAction enterPort1 (int gameId, int shipId){
+		Game activeGame = this.findGame(gameId);
+		Ship shipToRepair = activeGame.getShip(shipId);
+		EnterPortAction enterPortActionToReturn = null;
+		ShipVO shipVO = null;
+		int newAmmo = 0;
+		int newArmor = 0;
+		int newTorpedo = 0;
 		
-		return aux.mapToValueObject();
-	}*/
+		switch (shipToRepair.getId()){
+			//barco rojo
+			case 0:				
+				newAmmo = shipToRepair.getAmmo() + 6;
+				if(newAmmo > 12){
+					newAmmo = 12;
+				}
+				newTorpedo = shipToRepair.getTorpedo() + 2;
+				if(newTorpedo > 4){
+					newTorpedo = 4;
+				}
+				newArmor = shipToRepair.getArmor() + 5;
+				if(newArmor > 10){
+					newArmor = 10;
+				}
+				shipVO = new RedShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());				
+			break;
+			//barco azul 1
+			case 1:				
+				newAmmo = shipToRepair.getAmmo() + 6;
+				if(newAmmo > 12){
+					newAmmo = 12;
+				}
+				newTorpedo = shipToRepair.getTorpedo() + 2;
+				if(newTorpedo > 4){
+					newTorpedo = 4;
+				}
+				newArmor = shipToRepair.getArmor() + 3;
+				if(newArmor > 5){
+					newArmor = 5;
+				}
+				shipVO = new BlueShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());	
+			break;
+			//barco azul 2
+			case 2:
+				newAmmo = shipToRepair.getAmmo() + 3;
+				if(newAmmo > 6){
+					newAmmo = 6;
+				}
+				newTorpedo = shipToRepair.getTorpedo() + 1;
+				if(newTorpedo > 2){
+					newTorpedo = 2;
+				}
+				newArmor = shipToRepair.getArmor() + 3;
+				if(newArmor > 5){
+					newArmor = 5;
+				}
+				shipVO = new BlueShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());	
+			break;
+			//barco azul 3
+			case 3:					
+				newAmmo = shipToRepair.getAmmo() + 3;
+				if(newAmmo > 6){
+					newAmmo = 6;
+				}
+				newTorpedo = shipToRepair.getTorpedo() + 1;
+				if(newTorpedo > 2){
+					newTorpedo = 2;
+				}
+				newArmor = shipToRepair.getArmor() + 3;
+				if(newArmor > 5){
+					newArmor = 5;
+				}
+				shipVO = new BlueShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());
+			break;
+		}		
+		
+		enterPortActionToReturn = new EnterPortAction(shipVO, 1);
+		return enterPortActionToReturn;
+	}
+	
+	/*
+	 * Metodo que le suma 100% solo a un atributo
+	 */
+	public EnterPortAction enterPort2 (int gameId, int shipId, String attribute){
+		
+		Game activeGame = this.findGame(gameId);
+		Ship shipToRepair = activeGame.getShip(shipId);
+		EnterPortAction enterPortActionToReturn = null;
+		ShipVO shipVO = null;
+		int newAmmo = 0;
+		int newArmor = 0;
+		int newTorpedo = 0;
+		
+		
+		switch (shipToRepair.getId()){
+		//barco rojo
+		case 0:			
+			if(attribute.equals("ARMOR")){
+				newAmmo = shipToRepair.getAmmo();
+				newArmor = 10;
+				newTorpedo = shipToRepair.getTorpedo();
+			}else{
+				if(attribute.equals("AMMO")){
+					newAmmo = 12;
+					newArmor = shipToRepair.getArmor();
+					newTorpedo = shipToRepair.getTorpedo();
+					
+				}else{
+					if(attribute.equals("TORPEDO")){
+						newAmmo = shipToRepair.getAmmo();
+						newArmor = shipToRepair.getArmor();
+						newTorpedo = 4;						
+					}
+				}
+			}			
+			shipVO = new RedShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());				
+		break;
+		//barco azul 1
+		case 1:				
+			if(attribute.equals("ARMOR")){
+				newAmmo = shipToRepair.getAmmo();
+				newArmor = 5;
+				newTorpedo = shipToRepair.getTorpedo();
+			}else{
+				if(attribute.equals("AMMO")){
+					newAmmo = 12;
+					newArmor = shipToRepair.getArmor();
+					newTorpedo = shipToRepair.getTorpedo();
+					
+				}else{
+					if(attribute.equals("TORPEDO")){
+						newAmmo = shipToRepair.getAmmo();
+						newArmor = shipToRepair.getArmor();
+						newTorpedo = 4;						
+					}
+				}
+			}			
+			shipVO = new RedShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());	
+		break;
+		//barco azul 2
+		case 2:		
+			if(attribute.equals("ARMOR")){
+				newAmmo = shipToRepair.getAmmo();
+				newArmor = 5;
+				newTorpedo = shipToRepair.getTorpedo();
+			}else{
+				if(attribute.equals("AMMO")){
+					newAmmo = 6;
+					newArmor = shipToRepair.getArmor();
+					newTorpedo = shipToRepair.getTorpedo();
+					
+				}else{
+					if(attribute.equals("TORPEDO")){
+						newAmmo = shipToRepair.getAmmo();
+						newArmor = shipToRepair.getArmor();
+						newTorpedo = 2;						
+					}
+				}
+			}			
+			shipVO = new RedShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());		
+		break;
+		//barco azul 3
+		case 3:					
+			if(attribute.equals("ARMOR")){
+				newAmmo = shipToRepair.getAmmo();
+				newArmor = 5;
+				newTorpedo = shipToRepair.getTorpedo();
+			}else{
+				if(attribute.equals("AMMO")){
+					newAmmo = 6;
+					newArmor = shipToRepair.getArmor();
+					newTorpedo = shipToRepair.getTorpedo();
+					
+				}else{
+					if(attribute.equals("TORPEDO")){
+						newAmmo = shipToRepair.getAmmo();
+						newArmor = shipToRepair.getArmor();
+						newTorpedo = 2;						
+					}
+				}
+			}			
+			shipVO = new RedShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());
+		break;
+		}	
+		
+		enterPortActionToReturn = new EnterPortAction(shipVO, 2);
+		return enterPortActionToReturn;
+	}
+	
 	
 	/*
 	 * Metodos privados
@@ -665,26 +822,7 @@ public class Facade {
 		return gameToReturn;
 	}
 	
-	/*
-	private Game findGameLoading(int gameId){
-		Iterator<Game> gameIterator = this.activeGames.iterator();
-		Game gameToReturn = null;
-		Game aux = null;
-		boolean found = false;
 		
-		while(gameIterator.hasNext() && !found){
-			aux = gameIterator.next();
-			if(aux.getId() == gameId && aux.getStatus() == loading ){
-				found = true;				
-			}			
-		}
-		if(found){
-			gameToReturn = aux;
-		}
-		return gameToReturn;
-	}*/
-	
-	
 	/*
 	 * Entrada: Nombre del segundo jugador
 	 * Salida: el id de la partida 
@@ -834,31 +972,6 @@ public class Facade {
 		this.loadingGamePlayers.remove(indexToRemove);		
 	}
 	
-	
-	/*
-	 * Entrada: los nombres de los dos usuarios que conforman la partida a buscar
-	 * Salida: Id de la partida o -1 en caso de no existir la misma en la BD
-	 * Procedimiento:
-	 * 	Si existe la partida entonces
-	 * 		cambia el id de la partida
-	 * 		La guarda en el ArrayList
-	 * 		Devuelve el id 
-	 * 	sino devuelve -1
-	 
-	private int loadGame(String redPlayerUsername, String bluePlayerUsername){
-		
-		Data data = new Data();
-		
-		Game gameLoaded = data.loadGame(redPlayerUsername, bluePlayerUsername);
-		if(gameLoaded != null){
-			gameLoaded.setId(this.nextFreeIndex());
-			this.activeGames.add(gameLoaded);
-			return gameLoaded.getId();
-		}else{
-			return -1;
-		}	
-	}
-	*/
 	//OJO QUE HAY QUE BORRARLOOOOO
 	public Iterator<Game> devolverITerator(){
 		return this.activeGames.iterator();
