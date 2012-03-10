@@ -61,7 +61,7 @@ package components
 		public var _myUsername:String;
 		public var _redPlayer:Player;
 		public var _bluePlayer:Player;
-		public var _me:Player;
+		public var _me:Player;		
 		public var _messageModal:Modal;
 		public var _rechargeModal:RechargeModal;
 		private var _gameId:int;
@@ -99,9 +99,9 @@ package components
 			
 			_bluePlayer = new Player(game.bluePlayer.username);
 			_redPlayer = new Player(game.redPlayer.username);
-			if (_redPlayer.username == _myUsername)
-				_me = _redPlayer;
-			if (_bluePlayer.username == _myUsername)
+			if (_redPlayer.username == _myUsername)			
+				_me = _redPlayer;			
+			if (_bluePlayer.username == _myUsername)			
 				_me = _bluePlayer;
 			
 			_redShipComponent = new RedShip(redShip.id, new Coordinate(redShip.position.y, redShip.position.x), new Cardinal(redShip.orientation.direction), redShip.speed, redShip.size, redShip.armor, redShip.ammo, redShip.torpedo, redShip.viewRange);
@@ -120,14 +120,10 @@ package components
 			else
 				_turn = new Turn(turn.movesLeft, _redPlayer, turn.timeLeft);
 			
-			if (isActivePlayer())
-			{
-				_gameMode.gameMode = GameMode.PLAYING;
-			}
-			else
-			{
-				_gameMode.gameMode = GameMode.WAITING_PLAYER_TURN;
-			}
+			if (isActivePlayer())			
+				_gameMode.gameMode = GameMode.PLAYING;			
+			else			
+				_gameMode.gameMode = GameMode.WAITING_PLAYER_TURN;			
 			
 			// Agrega los barcos al mapa
 			_gridComponent.blockCells(_redShipComponent.coordinates);
@@ -159,6 +155,7 @@ package components
 			_blueShipComponent2.show();
 			_blueShipComponent3.show();
 			selectShip(_me.getNextAliveShip());
+			setShipsVisibility();
 			
 			// Cargamos informacion de usuarios y barcos
 			_info.redPlayerUsername = _redPlayer.username;
@@ -373,7 +370,7 @@ package components
 					_messageModal = new Modal(_main, "Esperando a un segundo jugador...", 300, 130);
 					_gameMode.gameMode = GameMode.WAITING_FOR_LOADING;
 				}
-				else 
+				else
 				{
 					_toastManager.addToast("El usuario no tiene partidas para cargar");
 				}
@@ -568,9 +565,11 @@ package components
 					_gridComponent.blockCells(ship.coordinates);
 					//refrescamos para que habilite la accion mover nuevamente
 					ship.setPosition(coordinate);
+					// Actualizo la visibilidad de los barcos
+					setShipsVisibility();
 					if (func != null)
 						func.call();
-				}, 10);
+				}, 10);				
 		}
 		
 		// Rota el barco a la direccion dada y actualiza el estado del juego
@@ -767,7 +766,8 @@ package components
 		// Chequea si esta en puertos 
 		private function checkPort(ship:Ship):void
 		{
-			if (isActivePlayer()){
+			if (isActivePlayer())
+			{
 				if (_turn.hasMovesLeft() && ship.portEnabled && _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortHalfCoordinates()))
 				{
 					ship.reloadHalfAttributes();
@@ -796,9 +796,12 @@ package components
 		{
 			if (!_redPlayer.hasAliveShips())
 			{
-				if (_me == _redPlayer) {
+				if (_me == _redPlayer)
+				{
 					Alert.show("El jugador azul ha ganado el juego", "Haz perdido");
-				}else {
+				}
+				else
+				{
 					Alert.show("Haz ganado el juego", "Ganador!!");
 				}
 				if (isActivePlayer())
@@ -806,19 +809,26 @@ package components
 			}
 			if (!_bluePlayer.hasAliveShips())
 			{
-				if (_me == _bluePlayer) {
+				if (_me == _bluePlayer)
+				{
 					Alert.show("El jugador rojo ha ganado el juego", "Haz perdido");
-				}else {
+				}
+				else
+				{
 					Alert.show("Haz ganado el juego", "Ganador!!");
 				}
 				if (isActivePlayer())
 					_main.wsRequest.endGame(_gameId);
 			}
 			if (_me == _redPlayer && _me.isMyShip(ship))
-				if (_mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getGoalCoordinates())) {
-					if (_me == _bluePlayer) {
+				if (_mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getGoalCoordinates()))
+				{
+					if (_me == _bluePlayer)
+					{
 						Alert.show("El jugador rojo ha ganado el juego", "Haz perdido");
-					}else {
+					}
+					else
+					{
 						Alert.show("Haz ganado el juego", "Ganador!!");
 					}
 					if (isActivePlayer())
@@ -1021,6 +1031,38 @@ package components
 		public function clearMode():void
 		{
 			_gridComponent.disableCells();
+		}
+		
+		private function setShipsVisibility():void
+		{
+			for (var i:int = 0; i < _shipList.length; i++)
+			{
+				// Si el barco fue destruido no lo muestro
+				if (!_shipList[i].isAlive())
+					_shipList[i].visible = false;
+				else
+				{
+					// Si es mi barco lo muestro en pantalla
+					if (_me.isMyShip(_shipList[i]))
+						_shipList[i].visible = true;
+					else
+					{
+						// Si no es mi barco detecto las posiciones de mis barcos, si hay alguno
+						// dentro del rango de vision lo muestro
+						var myShips:Array = _me.getAliveShips();
+						var shouldShowShip:Boolean = false;
+						var j:int = 0;
+						while (!shouldShowShip && j < myShips.length)
+						{
+							var distance:int = Helper.distanceBetweenCells(myShips[j].currentPos, _shipList[i].currentPos);							
+							if (distance <= myShips[j].viewRange + 1)
+								shouldShowShip = true;
+							j++;
+						}
+						_shipList[i].visible = shouldShowShip;
+					}
+				}
+			}
 		}
 	}
 }

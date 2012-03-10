@@ -68,6 +68,17 @@ package components
 			}
 			return ship;
 		}
+		
+		public function getAliveShips():Array
+		{
+			var aliveShips:Array = new Array();
+			for (var i:int = 0; i < _shipCollection.length; i++)
+			{
+				if (_shipCollection[i].isAlive())
+					aliveShips.push(_shipCollection[i]);
+			}
+			return aliveShips;
+		}
 	}
 
 }
