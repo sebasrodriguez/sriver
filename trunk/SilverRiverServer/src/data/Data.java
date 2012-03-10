@@ -33,7 +33,8 @@ public class Data {
 		
 		try {
 			Properties prop = new Properties();
-			String archiveName = "src/logic/config.property";
+//			String archiveName = "src/logic/config.properties";
+			String archiveName = "C:/Workspace/Silver River/SilverRiverServer/src/logic/config.properties";
 			prop.load(new FileInputStream(archiveName));
 			
 			String username = prop.getProperty("dbUsername");
@@ -85,7 +86,8 @@ public class Data {
 		
 		 try {
 			Properties prop = new Properties();
-			String archiveName = "src/logic/config.property";
+//			String archiveName = "src/logic/config.properties";
+			String archiveName = "C:/Workspace/Silver River/SilverRiverServer/src/logic/config.properties";
 			prop.load(new FileInputStream(archiveName));
 			
 			String username = prop.getProperty("dbUsername");
@@ -118,5 +120,54 @@ public class Data {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}    
+	}
+	
+	public boolean hasSavedGames (String playerUsername){
+		boolean hasSavedGamesToReturn = false;
+		
+		try {
+			Properties prop = new Properties();
+//			String archiveName = "src/logic/config.properties";	
+			String archiveName = "C:/Workspace/Silver River/SilverRiverServer/src/logic/config.properties";	
+			prop.load(new FileInputStream(archiveName));
+			
+			String username = prop.getProperty("dbUsername");
+			String password = prop.getProperty("dbPassword");
+			String url = prop.getProperty("dbUrl");
+			String driver = prop.getProperty("dbDriver");
+			Class.forName(driver);
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection(url, username, password);
+			Queries query = new Queries();
+			
+			String savedGame = query.hasSavedGames();
+			PreparedStatement aux = con.prepareStatement(savedGame);
+			aux.setString(1, playerUsername);
+			aux.setString(2, playerUsername);
+			
+			ResultSet rs = aux.executeQuery();
+			
+			if(rs.next()){
+				hasSavedGamesToReturn = true;
+			}else{
+				hasSavedGamesToReturn = false;
+			}
+			rs.close();
+			
+	
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return hasSavedGamesToReturn;
 	}	
 }

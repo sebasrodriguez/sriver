@@ -14,6 +14,9 @@ public class Queries {
 		return "INSERT INTO Games (redPlayerUsername,bluePlayerUsername,game) VALUES(?,?,?)";
 	}
 	
+	public String hasSavedGames(){
+		return "SELECT * FROM Games WHERE redPlayerUsername = ? OR bluePlayerUsername = ?";
+	}
 	
 	
 }

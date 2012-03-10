@@ -32,6 +32,7 @@ public class pruebaFacadeLoad {
 		GameVO aux2 = null;
 		GameVO aux3 = null;
 		
+		
 		System.out.println("Probando con un usuario que no tiene partidas guardadas");
 		System.out.println(pruebaFacade.loadGame("jugador"));
 		printArray();
