@@ -157,9 +157,7 @@ package components
 			_blueShipComponent1.show();
 			_blueShipComponent2.show();
 			_blueShipComponent3.show();
-			selectShip(_me.getNextAliveShip());
-			_menu.updateShipInfo(_selectedShip);
-			refreshMode();
+			selectShip(_me.getNextAliveShip());			
 			
 			// Cargamos informacion de usuarios y barcos
 			_info.redPlayerUsername = _redPlayer.username;
@@ -176,6 +174,8 @@ package components
 			_selectedShip = ship;
 			_selectedShip.selected = true;
 			centerOnShip(_selectedShip);
+			_menu.updateShipInfo(_selectedShip);
+			refreshMode();
 		}
 		
 		private function loadUserInterface():void
@@ -231,6 +231,10 @@ package components
 					if (isActivePlayer() && !_isAnimating && _selectedShip != null && _menu.currentFireMode == Menu.MENU_FIRE_MODE_TORPEDO && _selectedShip.hasTorpedoes())
 					{
 						_main.wsRequest.fireTorpedo(_gameId, _selectedShip.shipId);
+					}
+					else if (isActivePlayer && _selectedShip != null && _menu.currentFireMode == Menu.MENU_FIRE_MODE_BULLET) 
+					{
+						_toastManager.addToast("Haz click sobre un barco enemigo al cual dispararle");
 					}
 				});
 			_menu.addEventListener(ActionEvent.TURN_SKIP, function():void
@@ -460,12 +464,8 @@ package components
 			if (_me.isMyShip(ship))
 			{
 				//si el barco es distinto al seleccionado, desseleccionamos el anterior y seleccionamos el nuevo
-				if (_selectedShip != ship)
-				{
-					selectShip(ship);
-					_menu.updateShipInfo(_selectedShip);
-					refreshMode();
-				}
+				if (_selectedShip != ship)				
+					selectShip(ship);				
 			}
 			else
 			{
@@ -717,13 +717,8 @@ package components
 				_toastManager.addToast("Barco hundido");
 				destroyShip(affectedShip);
 				// Si el barco eliminado es el que tengo seleccionado obtengo el siguiente barco
-				if (affectedShip.shipId == _selectedShip.shipId && _me.hasAliveShips())
-				{
-					_selectedShip = _me.getNextAliveShip();
-					_selectedShip.selected = true;
-					_menu.updateShipInfo(_selectedShip);
-					centerOnShip(_selectedShip);
-				}
+				if (affectedShip.shipId == _selectedShip.shipId && _me.hasAliveShips())				
+					selectShip(_me.getNextAliveShip());				
 			}
 			else
 			{
@@ -997,6 +992,6 @@ package components
 		public function clearMode():void
 		{
 			_gridComponent.disableCells();
-		}
+		}		
 	}
 }
