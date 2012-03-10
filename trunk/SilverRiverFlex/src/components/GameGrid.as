@@ -40,7 +40,7 @@ package components
 					this.addChild(_gridMatrix[r][c]);
 					_gridMatrix[r][c].x = c * _cellSize;
 					_gridMatrix[r][c].y = r * _cellSize;
-					_gridMatrix[r][c].blocked = false;
+					/*_gridMatrix[r][c].blocked = false;*/
 					_gridMatrix[r][c].addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void
 						{
 							var cellEvent:CellEvent = new CellEvent();
