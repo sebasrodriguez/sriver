@@ -43,7 +43,8 @@ package components
 			_coordinate = c;
 			_shape = new Shape();
 			/*if(c.r % 2 == 0)*/
-			_shape.graphics.beginFill(_fillColor, 1);
+			_shape.graphics.beginFill(CELL_COLOR_NORMAL, 1);
+			alpha = CELL_ALPHA_NORMAL;
 			/*else
 			 _shape.graphics.beginFill(0xff0000, 0.1);*/
 			//_shape.graphics.lineStyle(1, _borderColor, 1);
@@ -90,7 +91,8 @@ package components
 		
 		public function set blocked(value:Boolean):void
 		{
-			if (value)
+			//descomentar para debuggear
+			/*if (value)
 				changeColor(CELL_COLOR_BLOCKED, CELL_ALPHA_BLOCKED);
 			else{
 				if(_portCell)
@@ -100,7 +102,7 @@ package components
 						changeColor(CELL_COLOR_GOAL, CELL_ALPHA_GOAL);
 					else
 						changeColor(CELL_COLOR_NORMAL, CELL_ALPHA_NORMAL);						
-			}
+			}*/
 			_blocked = value;
 		}
 		
@@ -175,7 +177,7 @@ package components
 		{
 			var ct:ColorTransform = new ColorTransform();
 			ct.color = c;
-			this.alpha = a;
+			alpha = a;
 			_shape.transform.colorTransform = ct;
 		}
 	

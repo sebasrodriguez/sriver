@@ -84,8 +84,8 @@ package components
 		public function getPortHalfCoordinates():Array {
 			var arr:Array = new Array();
 			var f:int, c:int;
-			for (f = 7; f < 9; f ++) {
-				for (c = 19; c < 22; c ++) {
+			for (f = 7; f < 10; f ++) {
+				for (c = 19; c < 23; c ++) {
 					arr.push(new Coordinate(f, c));
 				}
 			}
@@ -95,8 +95,8 @@ package components
 		public function getPortOneCoordinates():Array {
 			var arr:Array = new Array();
 			var f:int, c:int;
-			for (f = 14; f < 17; f ++) {
-				for (c = 10; c < 12; c ++) {
+			for (f = 13; f < 17; f ++) {
+				for (c = 10; c < 13; c ++) {
 					arr.push(new Coordinate(f, c));
 				}
 			}

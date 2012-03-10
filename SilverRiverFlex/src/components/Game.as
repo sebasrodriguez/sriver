@@ -19,6 +19,7 @@ package components
 	import mx.rpc.soap.Operation;
 	import common.*;
 	import events.*;
+	import mx.controls.Alert;
 	
 	/**
 	 * ...
@@ -559,11 +560,8 @@ package components
 				{
 					_isAnimating = false;
 					endTurnIfNoMovesLeftAndActivePlayer();
-					if (isActivePlayer())
-					{
-						checkPort(ship);
-						checkGoal(ship);
-					}
+					checkPort(ship);
+					checkGoal(ship);
 					// Se muestran nuevas celdas de movimiento basadas en la nueva posicion del barco
 					refreshMode();
 					// Bloqueamos la nueva posicion del barco
@@ -599,11 +597,8 @@ package components
 						endTurnIfNoMovesLeftAndActivePlayer()
 						// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
 						_gridComponent.blockCells(ship.coordinates);
-						if (isActivePlayer())
-						{
-							checkPort(ship);
-							checkGoal(ship);
-						}
+						checkPort(ship);
+						checkGoal(ship);
 						if (func != null)
 							func.call();
 					});
@@ -748,7 +743,7 @@ package components
 			// oculto el barco
 			destroyedShip.visible = false;
 			// dejo como disponibles las celdas que ocupaba el barco
-			_gridComponent.unblockCells(destroyedShip.currentPos);
+			_gridComponent.unblockCells(destroyedShip.coordinates);
 		}
 		
 		// Dado un id de un barco lo retorna/
@@ -772,25 +767,27 @@ package components
 		// Chequea si esta en puertos 
 		private function checkPort(ship:Ship):void
 		{
-			if (_turn.hasMovesLeft() && ship.portEnabled && _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortHalfCoordinates()))
-			{
-				ship.reloadHalfAttributes();
-				_menu.updateShipInfo(ship);
-				_toastManager.addToast("Haz entrado en puerto, se han recargado la mitad de los atributos del barco");
-				_main.wsRequest.endTurn(_gameId);
-				ship.portEnabled = false;
-			}
-			if (_turn.hasMovesLeft() && ship.portEnabled && _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortOneCoordinates()))
-			{
-				_rechargeModal = new RechargeModal(_main);
-				_rechargeModal.addEventListener(ModalEvent.ATTRIBUTE_SELECTED, function(event:ModalEvent):void
-					{
-						ship.reloadOneAttribute(event.attribute);
-						_menu.updateShipInfo(ship);
-						_toastManager.addToast("Se ha recargado el total del atributo que haz seleccionado");
-						_main.wsRequest.endTurn(_gameId);
-						ship.portEnabled = false;
-					});
+			if (isActivePlayer()){
+				if (_turn.hasMovesLeft() && ship.portEnabled && _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortHalfCoordinates()))
+				{
+					ship.reloadHalfAttributes();
+					_menu.updateShipInfo(ship);
+					_toastManager.addToast("Haz entrado en puerto, se han recargado la mitad de los atributos del barco");
+					_main.wsRequest.endTurn(_gameId);
+					ship.portEnabled = false;
+				}
+				if (_turn.hasMovesLeft() && ship.portEnabled && _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortOneCoordinates()))
+				{
+					_rechargeModal = new RechargeModal(_main);
+					_rechargeModal.addEventListener(ModalEvent.ATTRIBUTE_SELECTED, function(event:ModalEvent):void
+						{
+							ship.reloadOneAttribute(event.attribute);
+							_menu.updateShipInfo(ship);
+							_toastManager.addToast("Se ha recargado el total del atributo que haz seleccionado");
+							_main.wsRequest.endTurn(_gameId);
+							ship.portEnabled = false;
+						});
+				}
 			}
 		}
 		
@@ -799,15 +796,34 @@ package components
 		{
 			if (!_redPlayer.hasAliveShips())
 			{
-				_toastManager.addToast("Gano el equipo azul", 10);
+				if (_me == _redPlayer) {
+					Alert.show("El jugador azul ha ganado el juego", "Haz perdido");
+				}else {
+					Alert.show("Haz ganado el juego", "Ganador!!");
+				}
+				if (isActivePlayer())
+					_main.wsRequest.endGame(_gameId);
 			}
 			if (!_bluePlayer.hasAliveShips())
 			{
-				_toastManager.addToast("Gano el equipo rojo", 10);
+				if (_me == _bluePlayer) {
+					Alert.show("El jugador rojo ha ganado el juego", "Haz perdido");
+				}else {
+					Alert.show("Haz ganado el juego", "Ganador!!");
+				}
+				if (isActivePlayer())
+					_main.wsRequest.endGame(_gameId);
 			}
 			if (_me == _redPlayer && _me.isMyShip(ship))
-				if (_mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getGoalCoordinates()))
-					_toastManager.addToast("Gano el equipo rojo", 10);
+				if (_mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getGoalCoordinates())) {
+					if (_me == _bluePlayer) {
+						Alert.show("El jugador rojo ha ganado el juego", "Haz perdido");
+					}else {
+						Alert.show("Haz ganado el juego", "Ganador!!");
+					}
+					if (isActivePlayer())
+						_main.wsRequest.endGame(_gameId);
+				}
 		}
 		
 		//verifica si hay celdas bloqueadas que impidan la rotacion
