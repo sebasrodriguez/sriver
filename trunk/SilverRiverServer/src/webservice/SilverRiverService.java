@@ -4,6 +4,7 @@ import entities.*;
 import logic.Facade;
 import logic.actions.Action;
 import logic.actions.EndTurnAction;
+import logic.actions.EnterPortAction;
 import logic.actions.FireAction;
 import logic.actions.MoveAction;
 import logic.actions.RotateAction;
@@ -63,6 +64,14 @@ public class SilverRiverService {
 	public Action[] getActions(int gameId, String username){		
 		return Facade.getInstance().getActions(gameId, username);
 	}	
+	
+	public EnterPortAction enterPort1 (int gameId, int shipId){
+		return Facade.getInstance().enterPort1(gameId, shipId);
+	}
+	
+	public EnterPortAction enterPort2 (int gameId, int shipId, String attribute){
+		return Facade.getInstance().enterPort2(gameId, shipId, attribute);
+	}
 	
 	/*public Action[] pruebaActions(){
 		return Facade.getInstance().pruebaActions();

@@ -204,16 +204,6 @@ public class Game implements Serializable
 	
 	
 	/*
-	 * En caso de hundimiento de barco elimina el mismo del ArrayList
-	 */
-	/*public void destroyedShip(int shipId){		
-		Ship shipToRemove = this.getShip(shipId);
-		int indexToRemove = this.ships.indexOf(shipToRemove);
-		this.ships.remove(indexToRemove);
-
-	}*/
-	
-	/*
 	 * Inserta la accion en la cola del jugador rojo
 	 */
 	public void insertActionRedQueue(Action action){
@@ -342,7 +332,7 @@ public class Game implements Serializable
 		x = this.randomX(19,60);
 		Coordinate position = new Coordinate(x,y);
 		Cardinal cardinal = this.randomCardinal();
-		Ship redShip = new RedShip(0,10,10,12,3,10,3,position, cardinal);
+		Ship redShip = new RedShip(0,10,10,12,4,10,3,position, cardinal);
 		shipsToReturn.add(redShip);
 		
 		//barcoAzul1
@@ -350,7 +340,7 @@ public class Game implements Serializable
 		x = this.randomX(19,60);
 		position = new Coordinate(x,y);
 		cardinal = this.randomCardinal();
-		Ship blueShip1 = new BlueShip(1,10,5,12,3,10,1,position, cardinal);
+		Ship blueShip1 = new BlueShip(1,10,5,12,4,10,1,position, cardinal);
 		shipsToReturn.add(blueShip1);
 		
 		//barcoAzul2
@@ -358,7 +348,7 @@ public class Game implements Serializable
 		x = this.randomX(19,60);
 		position = new Coordinate(x,y);
 		cardinal = this.randomCardinal();
-		Ship blueShip2 = new BlueShip(2,10,5,6,1,5,1,position, cardinal);
+		Ship blueShip2 = new BlueShip(2,10,5,6,2,5,1,position, cardinal);
 		shipsToReturn.add(blueShip2);
 		
 		//barcoAzul3
@@ -366,7 +356,7 @@ public class Game implements Serializable
 		x = this.randomX(19,60);
 		position = new Coordinate(x,y);
 		cardinal = this.randomCardinal();
-		Ship blueShip3 = new BlueShip(3,10,5,6,1,5,1,position, cardinal);		
+		Ship blueShip3 = new BlueShip(3,10,5,6,2,5,1,position, cardinal);		
 		shipsToReturn.add(blueShip3);
 		
 		return shipsToReturn;		
