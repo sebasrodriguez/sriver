@@ -103,7 +103,7 @@ public class Facade {
 			
 			
 			//Comparo si es igual al jugador ROJO
-			if(activeGame.getTurn().getActivePlayer().equals(activeGame.getRedPlayer())){
+			if(activeGame.getTurn().getActivePlayer().getUsername().compareTo(activeGame.getRedPlayer().getUsername()) == 0){
 				activeGame.getBlueActionQueue().add(moveActionToReturn);
 			}else{
 				activeGame.getRedActionQueue().add(moveActionToReturn);
@@ -348,7 +348,7 @@ public class Facade {
 			saveGameAction = new SaveGameAction(gameId);
 		
 			//comparo si es redPlayer
-			if(gameToSave.getTurn().getActivePlayer().getUsername().equals(gameToSave.getRedPlayer().getUsername())){
+			if(gameToSave.getTurn().getActivePlayer().getUsername().compareTo(gameToSave.getRedPlayer().getUsername()) == 0){
 				gameToSave.insertActionBlueQueue(saveGameAction);
 			}else{
 				gameToSave.insertActionRedQueue(saveGameAction);
@@ -382,27 +382,17 @@ public class Facade {
 		int gameIdToReturn = -1;		
 		Game gameLoaded = null;
 		
-		if(this.loadingGamePlayers.isEmpty()){
-			//esta vacia entonces agrego al usuario a la cola de espera
-			this.loadingGamePlayers.add(username);			
-		}else{
-			//hay usuarios en la lista de espera
-			while(loadingGamesPlayersIt.hasNext() && gameIdToReturn == -1){
-				String playerWaiting = loadingGamesPlayersIt.next();
-				if(data.loadGame(username, playerWaiting) != null){
-					//encontre
-					gameLoaded = data.loadGame(username, playerWaiting);					
-					gameLoaded.setId(this.nextFreeIndex());
-					gameIdToReturn = gameLoaded.getId();
-					gameLoaded.setStatus(loading);
-					gameLoaded.getTurn().setTimeLeft(60);
-					this.activeGames.add(gameLoaded);
-					this.removeFromLoadingGamePlayers(playerWaiting);
-					//this.loadingGamePlayers.remove(this.loadingGamePlayers.indexOf(username));
-				}else{
-					if(data.loadGame(playerWaiting,username) != null){
+		if(data.hasSavedGames(username)){		
+			if(this.loadingGamePlayers.isEmpty()){
+				//esta vacia entonces agrego al usuario a la cola de espera
+				this.loadingGamePlayers.add(username);			
+			}else{
+				//hay usuarios en la lista de espera
+				while(loadingGamesPlayersIt.hasNext() && gameIdToReturn == -1){
+					String playerWaiting = loadingGamesPlayersIt.next();
+					if(data.loadGame(username, playerWaiting) != null){
 						//encontre
-						gameLoaded = data.loadGame(playerWaiting, username);
+						gameLoaded = data.loadGame(username, playerWaiting);					
 						gameLoaded.setId(this.nextFreeIndex());
 						gameIdToReturn = gameLoaded.getId();
 						gameLoaded.setStatus(loading);
@@ -410,17 +400,30 @@ public class Facade {
 						this.activeGames.add(gameLoaded);
 						this.removeFromLoadingGamePlayers(playerWaiting);
 						//this.loadingGamePlayers.remove(this.loadingGamePlayers.indexOf(username));
-						//System.out.println("ACACACa: " + this.loadingGamePlayers.indexOf(username));
-						//this.loadingGamePlayers.
+					}else{
+						if(data.loadGame(playerWaiting,username) != null){
+							//encontre
+							gameLoaded = data.loadGame(playerWaiting, username);
+							gameLoaded.setId(this.nextFreeIndex());
+							gameIdToReturn = gameLoaded.getId();
+							gameLoaded.setStatus(loading);
+							gameLoaded.getTurn().setTimeLeft(60);
+							this.activeGames.add(gameLoaded);
+							this.removeFromLoadingGamePlayers(playerWaiting);
+							//this.loadingGamePlayers.remove(this.loadingGamePlayers.indexOf(username));
+							//System.out.println("ACACACa: " + this.loadingGamePlayers.indexOf(username));
+							//this.loadingGamePlayers.
+						}
 					}
-				}
-			}			
-			//si no encontre una partida con nadie, cargo el username a la lista de espera
-			if(gameIdToReturn == -1){
-				this.loadingGamePlayers.add(username);
-			}			
+				}			
+				//si no encontre una partida con nadie, cargo el username a la lista de espera
+				if(gameIdToReturn == -1){
+					this.loadingGamePlayers.add(username);
+				}			
+			}
+		}else{
+			gameIdToReturn = -2;
 		}
-		
 		return gameIdToReturn;
 	}
 	
@@ -444,7 +447,7 @@ public class Facade {
 			auxGame = gameIt.next();
 			//if(auxGame.getRedPlayer().getUsername() == usernameWaiting || auxGame.getBluePlayer().getUsername() == usernameWaiting){			
 			if(auxGame.getStatus() == this.loading){
-				if(auxGame.getRedPlayer().getUsername().equals(usernameWaiting) || auxGame.getBluePlayer().getUsername().equals(usernameWaiting)){		
+				if(auxGame.getRedPlayer().getUsername().compareTo(usernameWaiting) == 0 || auxGame.getBluePlayer().getUsername().compareTo(usernameWaiting) == 0){		
 					//encontre
 					gameIdToReturn = auxGame.getId();
 					auxGame.setStatus(playing);
@@ -486,18 +489,23 @@ public class Facade {
 	 *Procedimiento:
 	 *	Si gameWithoutBluePlayer = null entonces crea el game y retorna -1 para que el UI sepa que no es una partida activa
 	 *	sino llama al metodo addBluePlayerToGame con el jugador y retorna el id de la partida
+	 *	retorna -2 en caso de que sea un usuario invalido
 	 */
 	public int newGame(String username){
-		
+		int gameIdToReturn = 0;
 		if(this.gameWithoutBluePlayer == null){
 			int nextIdToUse = this.nextFreeIndex();			
 			Player redPlayer = new Player(username);			
 			this.gameWithoutBluePlayer = new Game(nextIdToUse, redPlayer, null);
-			return -1;
+			gameIdToReturn =  -1;
 		}else{
-			return this.addBluePlayerToGame(username);
-			
-		}				
+			if(this.gameWithoutBluePlayer.getRedPlayer().getUsername().compareTo(username) == 0){
+				gameIdToReturn = -2;
+			}else{
+				gameIdToReturn = this.addBluePlayerToGame(username);
+			}			
+		}
+		return gameIdToReturn;
 	}
 	
 	
@@ -544,7 +552,7 @@ public class Facade {
 			
 			
 			while(i < actionToReturn.length && !mustRemove){
-				if(actionToReturn[i].getActionType().equals("SaveGameAction") || actionToReturn[i].getActionType().equals("EndGameAction")){
+				if(actionToReturn[i].getActionType().compareTo("SaveGameAction") == 0 || actionToReturn[i].getActionType().compareTo("EndGameAction") == 0){
 					mustRemove = true;
 				}
 				i++;
@@ -681,18 +689,18 @@ public class Facade {
 			switch (shipToRepair.getId()){
 			//barco rojo
 			case 0:			
-				if(attribute.equals("ARMOR")){
+				if(attribute.compareTo("armor") == 0){
 					newAmmo = shipToRepair.getAmmo();
 					newArmor = 10;
 					newTorpedo = shipToRepair.getTorpedo();
 				}else{
-					if(attribute.equals("AMMO")){
+					if(attribute.compareTo("ammo") == 0){
 						newAmmo = 12;
 						newArmor = shipToRepair.getArmor();
 						newTorpedo = shipToRepair.getTorpedo();
 						
 					}else{
-						if(attribute.equals("TORPEDO")){
+						if(attribute.compareTo("torpedo") == 0){
 							newAmmo = shipToRepair.getAmmo();
 							newArmor = shipToRepair.getArmor();
 							newTorpedo = 4;						
@@ -703,18 +711,18 @@ public class Facade {
 			break;
 			//barco azul 1
 			case 1:				
-				if(attribute.equals("ARMOR")){
+				if(attribute.compareTo("ARMOR") == 0){
 					newAmmo = shipToRepair.getAmmo();
 					newArmor = 5;
 					newTorpedo = shipToRepair.getTorpedo();
 				}else{
-					if(attribute.equals("AMMO")){
+					if(attribute.compareTo("AMMO") == 0){
 						newAmmo = 12;
 						newArmor = shipToRepair.getArmor();
 						newTorpedo = shipToRepair.getTorpedo();
 						
 					}else{
-						if(attribute.equals("TORPEDO")){
+						if(attribute.compareTo("TORPEDO") == 0){
 							newAmmo = shipToRepair.getAmmo();
 							newArmor = shipToRepair.getArmor();
 							newTorpedo = 4;						
@@ -725,18 +733,18 @@ public class Facade {
 			break;
 			//barco azul 2
 			case 2:		
-				if(attribute.equals("ARMOR")){
+				if(attribute.compareTo("ARMOR") == 0){
 					newAmmo = shipToRepair.getAmmo();
 					newArmor = 5;
 					newTorpedo = shipToRepair.getTorpedo();
 				}else{
-					if(attribute.equals("AMMO")){
+					if(attribute.compareTo("AMMO") == 0){
 						newAmmo = 6;
 						newArmor = shipToRepair.getArmor();
 						newTorpedo = shipToRepair.getTorpedo();
 						
 					}else{
-						if(attribute.equals("TORPEDO")){
+						if(attribute.compareTo("TORPEDO") == 0){
 							newAmmo = shipToRepair.getAmmo();
 							newArmor = shipToRepair.getArmor();
 							newTorpedo = 2;						
@@ -747,18 +755,18 @@ public class Facade {
 			break;
 			//barco azul 3
 			case 3:					
-				if(attribute.equals("ARMOR")){
+				if(attribute.compareTo("ARMOR") == 0){
 					newAmmo = shipToRepair.getAmmo();
 					newArmor = 5;
 					newTorpedo = shipToRepair.getTorpedo();
 				}else{
-					if(attribute.equals("AMMO")){
+					if(attribute.compareTo("AMMO") == 0){
 						newAmmo = 6;
 						newArmor = shipToRepair.getArmor();
 						newTorpedo = shipToRepair.getTorpedo();
 						
 					}else{
-						if(attribute.equals("TORPEDO")){
+						if(attribute.compareTo("TORPEDO") == 0){
 							newAmmo = shipToRepair.getAmmo();
 							newArmor = shipToRepair.getArmor();
 							newTorpedo = 2;						
