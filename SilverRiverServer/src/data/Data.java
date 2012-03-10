@@ -34,7 +34,8 @@ public class Data {
 		try {
 			Properties prop = new Properties();
 //			String archiveName = "src/logic/config.properties";
-			String archiveName = "C:/Workspace/Silver River/SilverRiverServer/src/logic/config.properties";
+//			String archiveName = "C:/Workspace/Silver River/SilverRiverServer/src/logic/config.properties";
+			String archiveName = "C:/Tomcat7.0/webapps/SilverRiverServer/WEB-INF/classes/logic/config.properties";
 			prop.load(new FileInputStream(archiveName));
 			
 			String username = prop.getProperty("dbUsername");
@@ -87,7 +88,8 @@ public class Data {
 		 try {
 			Properties prop = new Properties();
 //			String archiveName = "src/logic/config.properties";
-			String archiveName = "C:/Workspace/Silver River/SilverRiverServer/src/logic/config.properties";
+			//String archiveName = "C:/Workspace/Silver River/SilverRiverServer/src/logic/config.properties";
+			String archiveName = "C:/Tomcat7.0/webapps/SilverRiverServer/WEB-INF/classes/logic/config.properties";
 			prop.load(new FileInputStream(archiveName));
 			
 			String username = prop.getProperty("dbUsername");
@@ -128,7 +130,8 @@ public class Data {
 		try {
 			Properties prop = new Properties();
 //			String archiveName = "src/logic/config.properties";	
-			String archiveName = "C:/Workspace/Silver River/SilverRiverServer/src/logic/config.properties";	
+			//String archiveName = "C:/Workspace/Silver River/SilverRiverServer/src/logic/config.properties";
+			String archiveName = "C:/Tomcat7.0/webapps/SilverRiverServer/WEB-INF/classes/logic/config.properties";
 			prop.load(new FileInputStream(archiveName));
 			
 			String username = prop.getProperty("dbUsername");
