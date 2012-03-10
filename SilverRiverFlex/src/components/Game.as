@@ -163,6 +163,7 @@ package components
 			_info.movesLeftText = _turn.movesLeft.toString();
 			_info.timeLeftText = _turn.timeLeft.toString();
 			_info.setActivePlayer(_turn.activePlayer == _redPlayer);
+			
 		}
 		
 		private function selectShip(ship:Ship):void
@@ -336,6 +337,11 @@ package components
 		 * ************************************************
 		 * */
 		
+		 
+		public function endGameFault(response:FaultEvent):void {
+			trace(response);
+		}
+		
 		public function newGameHandler(response:ResultEvent):void
 		{
 			var gameId:int = response.result as int;
@@ -456,6 +462,19 @@ package components
 		{
 		}
 		
+		public function endGameHandler(response:ResultEvent):void {
+			
+		}
+		
+		public function enterPortHandler(response:ResultEvent):void {
+			if (response.result.ship != null)
+			{
+				//DeveloperUtils.trObject(response.result.ship);
+				var ship:Ship = getShipById(response.result.ship.id);
+				enterPortAction(ship, response.result.ship.armor, response.result.ship.ammo, response.result.ship.torpedo);
+			}
+		}
+		
 		/**
 		 * ************************************************
 		 *
@@ -557,14 +576,14 @@ package components
 				{
 					_isAnimating = false;
 					endTurnIfNoMovesLeftAndActivePlayer();
-					checkPort(ship);
-					checkGoal(ship);
 					// Se muestran nuevas celdas de movimiento basadas en la nueva posicion del barco
 					refreshMode();
 					// Bloqueamos la nueva posicion del barco
 					_gridComponent.blockCells(ship.coordinates);
 					//refrescamos para que habilite la accion mover nuevamente
 					ship.setPosition(coordinate);
+					checkPort(ship);
+					checkGoal(ship);
 					// Actualizo la visibilidad de los barcos
 					setShipsVisibility();
 					if (func != null)
@@ -686,9 +705,21 @@ package components
 				_menu.updateShipInfo(firingShip);
 		}
 		
+		private function enterPortAction(ship:Ship, newArmor:int, newAmmo:int, newTorpedoes:int):void {
+			ship.armor = newArmor;
+			ship.ammo = newAmmo;
+			ship.torpedoes = newTorpedoes;
+			if (isActivePlayer()) {
+				if(ship.selected)
+					_menu.updateShipInfo(ship);
+				_main.wsRequest.endTurn(_gameId);
+			}
+			
+		}
+		
 		private function endGameAction():void
 		{
-		
+			timer.stop();
 		}
 		
 		// Finaliza el juego y muestra el mensaje de juego salvado
@@ -768,24 +799,20 @@ package components
 		{
 			if (isActivePlayer())
 			{
-				if (_turn.hasMovesLeft() && ship.portEnabled && _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortHalfCoordinates()))
+				if (ship.port1Enabled && _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortHalfCoordinates()))
 				{
-					ship.reloadHalfAttributes();
-					_menu.updateShipInfo(ship);
-					_toastManager.addToast("Haz entrado en puerto, se han recargado la mitad de los atributos del barco");
-					_main.wsRequest.endTurn(_gameId);
-					ship.portEnabled = false;
+					_main.wsRequest.enterPort1(_gameId, ship.shipId);
+					ship.port1Enabled = false;
+					_toastManager.addToast("Haz entrado en puerto, se recargará la mitad de los atributos del barco");
 				}
-				if (_turn.hasMovesLeft() && ship.portEnabled && _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortOneCoordinates()))
+				if (ship.port2Enabled && _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortOneCoordinates()))
 				{
 					_rechargeModal = new RechargeModal(_main);
 					_rechargeModal.addEventListener(ModalEvent.ATTRIBUTE_SELECTED, function(event:ModalEvent):void
 						{
-							ship.reloadOneAttribute(event.attribute);
-							_menu.updateShipInfo(ship);
-							_toastManager.addToast("Se ha recargado el total del atributo que haz seleccionado");
-							_main.wsRequest.endTurn(_gameId);
-							ship.portEnabled = false;
+							_main.wsRequest.enterPort2(_gameId, ship.shipId, event.attribute);							
+							ship.port2Enabled = false;
+							_toastManager.addToast("Se recargará el total del atributo que haz seleccionado");
 						});
 				}
 			}
@@ -993,7 +1020,7 @@ package components
 				}
 				else if (action.actionType == "EndGameAction")
 				{
-					trace("EndGameAction");
+					endGameAction();
 				}
 				else if (action.actionType == "SaveGameAction")
 				{
@@ -1031,7 +1058,7 @@ package components
 		public function clearMode():void
 		{
 			_gridComponent.disableCells();
-		}
+		}		
 		
 		private function setShipsVisibility():void
 		{
