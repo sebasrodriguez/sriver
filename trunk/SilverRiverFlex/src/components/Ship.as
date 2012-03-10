@@ -33,7 +33,8 @@ package components
 		private var _maxAmmo:int;
 		private var _maxTorpedoes:int;
 		private var _maxArmor:int;
-		private var _portEnabled:Boolean;
+		private var _port1Enabled:Boolean;
+		private var _port2Enabled:Boolean;
 		
 		public function Ship(id:int, c:Coordinate, d:Cardinal, s:int, size:int, armor:int, ammo:int, torpedoes:int, viewRange:int)
 		{
@@ -50,7 +51,8 @@ package components
 			_torpedoes = torpedoes;
 			_maxTorpedoes = torpedoes;
 			_viewRange = viewRange;
-			_portEnabled = true;
+			_port1Enabled = true;
+			_port2Enabled = true;
 			this.rotation = d.cardinal;
 			updateCoordinates();
 			this.addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void
@@ -185,14 +187,24 @@ package components
 			_viewRange = value;
 		}
 		
-		public function get portEnabled():Boolean 
+		public function get port1Enabled():Boolean 
 		{
-			return _portEnabled;
+			return _port1Enabled;
 		}
 		
-		public function set portEnabled(value:Boolean):void 
+		public function set port1Enabled(value:Boolean):void 
 		{
-			_portEnabled = value;
+			_port1Enabled = value;
+		}
+		
+		public function get port2Enabled():Boolean 
+		{
+			return _port2Enabled;
+		}
+		
+		public function set port2Enabled(value:Boolean):void 
+		{
+			_port2Enabled = value;
 		}
 		
 		public function updateCoordinates():void
@@ -285,31 +297,7 @@ package components
 			
 			return isInFireRange;
 		}
-		
-		public function reloadHalfAttributes():void {
-			if (_armor < _maxArmor / 2)
-				_armor = _maxArmor / 2;
-			if (_ammo < _maxAmmo)
-				_ammo = _maxAmmo / 2;
-			if (_torpedoes < _maxTorpedoes)
-				_torpedoes = _maxTorpedoes / 2;
-		}
-		
-		public function reloadOneAttribute(attribute:String):void {
-			switch(attribute) {
-				case VARIABLE_ATTRIBUTE_ARMOR:
-					_armor = _maxArmor;
-					break;
-				case VARIABLE_ATTRIBUTE_AMMO:
-					_ammo = _maxAmmo;
-					break;
-				case VARIABLE_ATTRIBUTE_TORPEDOES:
-					_torpedoes = _maxTorpedoes;
-					break;
-				default:
-			}
-		}
-		
+				
 		public function isAlive():Boolean {
 			return armor > 0;
 		}
