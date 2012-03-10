@@ -125,13 +125,13 @@ package components
 		{
 			if (isRedPlayerActive)
 			{
-				_redPlayerLabel.text = "Jugador rojo:  " + _redPlayerUsername + " (*)";
+				_redPlayerLabel.text = "Jugador rojo:  " + _redPlayerUsername + " (Activo)";
 				_bluePlayerLabel.text = "Jugador azul: " + _bluePlayerUsername;
 			}
 			else
 			{
 				_redPlayerLabel.text = "Jugador rojo:  " + _redPlayerUsername;
-				_bluePlayerLabel.text = "Jugador azul: " + _bluePlayerUsername + " (*)";
+				_bluePlayerLabel.text = "Jugador azul: " + _bluePlayerUsername + " (Activo)";
 			}
 		}
 		
