@@ -11,11 +11,12 @@ public class TurnVO implements Serializable {
 	private PlayerVO activePlayer;
 	private int movesLeft;
 	private int timeLeft;
+	private int initialMoves;
 	
 	/*
 	 * Constructor
 	 */
-	public TurnVO(PlayerVO activePlayer, int movesLeft, int timeLeft){		
+	public TurnVO(PlayerVO activePlayer, int movesLeft, int timeLeft, int initialMoves){		
 		this.activePlayer = activePlayer;
 		this.movesLeft = movesLeft;
 		this.timeLeft = timeLeft;
@@ -42,4 +43,11 @@ public class TurnVO implements Serializable {
 	public int getTimeLeft(){
 		return this.timeLeft;
 	}	
+	
+	/*
+	 * Devuelve la cantidad de movimientos iniciales
+	 */
+	public int getInitialMoves(){
+		return this.initialMoves;
+	}
 }
