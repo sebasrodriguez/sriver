@@ -15,6 +15,7 @@ public class Turn implements Serializable{
 	private Player activePlayer;
 	private int movesLeft;
 	private int timeLeft;
+	private int initialMoves;
 	
 	public Turn(){
 		
@@ -25,8 +26,9 @@ public class Turn implements Serializable{
 	 */
 	public Turn(Player activePlayer){	
 		this.activePlayer = activePlayer;
-		this.movesLeft = 5;
+		this.initialMoves = 5;
 		this.timeLeft = 60;		
+		this.movesLeft = this.initialMoves;
 	}
 
 	/*
@@ -72,6 +74,20 @@ public class Turn implements Serializable{
 	}
 	
 	/*
+	 * Devuelve la cantidad de movimientos inicial
+	 */
+	public int getInitialMoves(){
+		return this.initialMoves;
+	}
+	
+	/*
+	 * Setea la cantidad de movimientos inicial
+	 */
+	public void setInitialMoves(int initialMoves){
+		this.initialMoves = initialMoves;
+	}
+	
+	/*
 	 * Termina el turno y le da paso al otro jugador
 	 * Recibe al siguiente jugador para colocarlo como activo
 	 * Coloca la cantidad de movimientos en 5, "resetea" la cantidad  de movimientos restantes
@@ -94,7 +110,7 @@ public class Turn implements Serializable{
 	 */
 	public TurnVO mapToValueObject(){
 		PlayerVO playerVO = this.activePlayer.mapToValueObject();
-		TurnVO turnVOToReturn = new TurnVO(playerVO,this.movesLeft,this.timeLeft);
+		TurnVO turnVOToReturn = new TurnVO(playerVO,this.movesLeft,this.timeLeft, this.initialMoves);
 		
 		return turnVOToReturn;
 	}
