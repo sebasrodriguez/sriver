@@ -108,8 +108,8 @@ public class Facade {
 			}else{
 				activeGame.getRedActionQueue().add(moveActionToReturn);
 			}
-		}		
-		activeGame.getTurn().consumeMovement();		
+			activeGame.getTurn().consumeMovement();	
+		}				
 		return moveActionToReturn;	
 	}
 	
@@ -139,48 +139,49 @@ public class Facade {
 		Coordinate exactFiringPoint = this.calculateHitPoint(activeGame.getShip(shipFiringId), firingPoint);
 	
 		
-		
-		if(activeGame.getShipFiredId(exactFiringPoint) != -1){
-			//acerto	
-			hit = true;			
-			affectedShip = activeGame.getShip(activeGame.getShipFiredId(exactFiringPoint));
-			int newArmor = affectedShip.getArmor() - 1;
-			affectedShip.setArmor(newArmor);
-				
+		if(activeGame != null){
+			if(activeGame.getShipFiredId(exactFiringPoint) != -1){
+				//acerto	
+				hit = true;			
+				affectedShip = activeGame.getShip(activeGame.getShipFiredId(exactFiringPoint));
+				int newArmor = affectedShip.getArmor() - 1;
+				affectedShip.setArmor(newArmor);
 					
-			//Comapro si el barco dañado es rojo
-			if(affectedShip.getId() == 0){
-				firedShipVO = new RedShipVO(affectedShip.getId(), affectedShip.getSpeed(), affectedShip.getArmor(), affectedShip.getAmmo(), affectedShip.getTorpedo(), affectedShip.getViewRange(), affectedShip.getSize(), affectedShip.getPosition(), affectedShip.getOrientation());
+						
+				//Comapro si el barco dañado es rojo
+				if(affectedShip.getId() == 0){
+					firedShipVO = new RedShipVO(affectedShip.getId(), affectedShip.getSpeed(), affectedShip.getArmor(), affectedShip.getAmmo(), affectedShip.getTorpedo(), affectedShip.getViewRange(), affectedShip.getSize(), affectedShip.getPosition(), affectedShip.getOrientation());
+				}else{
+					firedShipVO = new BlueShipVO(affectedShip.getId(), affectedShip.getSpeed(), affectedShip.getArmor(), affectedShip.getAmmo(), affectedShip.getTorpedo(), affectedShip.getViewRange(), affectedShip.getSize(), affectedShip.getPosition(), affectedShip.getOrientation());
+				}			
+			}
+			
+			//Calculo la nueva cantidad de balas del barco
+			aux = activeGame.getShip(shipFiringId);
+			newAmunition = aux.getAmmo() - 1;
+			aux.setAmmo(newAmunition);
+			
+			//Comparo si el barco que disparo es rojo
+			if(aux.getId() == 0){
+				firingShipVO = new RedShipVO(aux.getId(), aux.getSpeed(), aux.getArmor(), aux.getAmmo(), aux.getTorpedo(), aux.getViewRange(), aux.getSize(), aux.getPosition(), aux.getOrientation());
 			}else{
-				firedShipVO = new BlueShipVO(affectedShip.getId(), affectedShip.getSpeed(), affectedShip.getArmor(), affectedShip.getAmmo(), affectedShip.getTorpedo(), affectedShip.getViewRange(), affectedShip.getSize(), affectedShip.getPosition(), affectedShip.getOrientation());
-			}			
+				firingShipVO = new BlueShipVO(aux.getId(), aux.getSpeed(), aux.getArmor(), aux.getAmmo(), aux.getTorpedo(), aux.getViewRange(), aux.getSize(), aux.getPosition(), aux.getOrientation());
+			}
+			
+			
+			Weapon weapon = new Weapon(Weapon.MACHINEGUN);
+			fireActionToReturn = new FireAction(firingShipVO, weapon, exactFiringPoint, hit, firedShipVO);
+			
+			
+			//Comparo si es igual al jugador ROJO
+			if(activeGame.getTurn().getActivePlayer().getUsername().compareTo(activeGame.getRedPlayer().getUsername()) == 0){
+				activeGame.getBlueActionQueue().add(fireActionToReturn);
+			}else{
+				activeGame.getRedActionQueue().add(fireActionToReturn);
+			}
+			
+			activeGame.getTurn().consumeMovement();
 		}
-		
-		//Calculo la nueva cantidad de balas del barco
-		aux = activeGame.getShip(shipFiringId);
-		newAmunition = aux.getAmmo() - 1;
-		aux.setAmmo(newAmunition);
-		
-		//Comparo si el barco que disparo es rojo
-		if(aux.getId() == 0){
-			firingShipVO = new RedShipVO(aux.getId(), aux.getSpeed(), aux.getArmor(), aux.getAmmo(), aux.getTorpedo(), aux.getViewRange(), aux.getSize(), aux.getPosition(), aux.getOrientation());
-		}else{
-			firingShipVO = new BlueShipVO(aux.getId(), aux.getSpeed(), aux.getArmor(), aux.getAmmo(), aux.getTorpedo(), aux.getViewRange(), aux.getSize(), aux.getPosition(), aux.getOrientation());
-		}
-		
-		
-		Weapon weapon = new Weapon(Weapon.MACHINEGUN);
-		fireActionToReturn = new FireAction(firingShipVO, weapon, exactFiringPoint, hit, firedShipVO);
-		
-		
-		//Comparo si es igual al jugador ROJO
-		if(activeGame.getTurn().getActivePlayer().getUsername().compareTo(activeGame.getRedPlayer().getUsername()) == 0){
-			activeGame.getBlueActionQueue().add(fireActionToReturn);
-		}else{
-			activeGame.getRedActionQueue().add(fireActionToReturn);
-		}
-		
-		activeGame.getTurn().consumeMovement();
 		return fireActionToReturn;
 	}
 	
@@ -198,60 +199,65 @@ public class Facade {
 		
 		Game activeGame = this.findGame(gameId);
 		FireAction fireActionToReturn = null;		
-		Ship shipFiring = activeGame.getShip(shipFiringId);
-		ArrayList<Coordinate> coordinates = this.straightCoordinates(shipFiring.getPosition(), shipFiring.getOrientation());
-		Iterator<Coordinate> coordinatesIt = coordinates.iterator();
+		Ship shipFiring = null;
+		ArrayList<Coordinate> coordinates = null;
+		Iterator<Coordinate> coordinatesIt = null;
 		boolean hitted = false;
 		Coordinate coordinateHitted = null;
 		ShipVO firedShipVO = null;
 		ShipVO firingShipVO = null;
 		
-		
-		while(coordinatesIt.hasNext() && hitted == false){
-			Coordinate coordinateAux = coordinatesIt.next();	
-			System.out.println("Coord: (" + coordinateAux.getX() + "," + coordinateAux.getY() + ")" );
-			if(activeGame.getShipFiredId(coordinateAux) != -1){
-				//acerto	
-				hitted = true;			
-				coordinateHitted = coordinateAux;
+		if(activeGame != null){
+			shipFiring =  activeGame.getShip(shipFiringId);
+			coordinates = this.straightCoordinates(shipFiring.getPosition(), shipFiring.getOrientation());
+			coordinatesIt = coordinates.iterator();
+			
+			while(coordinatesIt.hasNext() && hitted == false){
+				Coordinate coordinateAux = coordinatesIt.next();	
+				System.out.println("Coord: (" + coordinateAux.getX() + "," + coordinateAux.getY() + ")" );
+				if(activeGame.getShipFiredId(coordinateAux) != -1){
+					//acerto	
+					hitted = true;			
+					coordinateHitted = coordinateAux;
+				}
 			}
-		}
-		
-		if(hitted){
-			Ship affectedShip = activeGame.getShip(activeGame.getShipFiredId(coordinateHitted));
-			int newArmor = affectedShip.getArmor() - 1;
-			affectedShip.setArmor(newArmor);						
-			//Comapro si el barco dañado es rojo
-			if(affectedShip.getId() == 0){
-				firedShipVO = new RedShipVO(affectedShip.getId(), affectedShip.getSpeed(), affectedShip.getArmor(), affectedShip.getAmmo(), affectedShip.getTorpedo(), affectedShip.getViewRange(), affectedShip.getSize(), affectedShip.getPosition(), affectedShip.getOrientation());
+			
+			if(hitted){
+				Ship affectedShip = activeGame.getShip(activeGame.getShipFiredId(coordinateHitted));
+				int newArmor = affectedShip.getArmor() - 1;
+				affectedShip.setArmor(newArmor);						
+				//Comapro si el barco dañado es rojo
+				if(affectedShip.getId() == 0){
+					firedShipVO = new RedShipVO(affectedShip.getId(), affectedShip.getSpeed(), affectedShip.getArmor(), affectedShip.getAmmo(), affectedShip.getTorpedo(), affectedShip.getViewRange(), affectedShip.getSize(), affectedShip.getPosition(), affectedShip.getOrientation());
+				}else{
+					firedShipVO = new BlueShipVO(affectedShip.getId(), affectedShip.getSpeed(), affectedShip.getArmor(), affectedShip.getAmmo(), affectedShip.getTorpedo(), affectedShip.getViewRange(), affectedShip.getSize(), affectedShip.getPosition(), affectedShip.getOrientation());
+				}			
+			}
+				
+			//Calculo la nueva cantidad de balas del barco	
+			int	newAmunition = shipFiring.getTorpedo() - 1;
+			shipFiring.setTorpedo(newAmunition);		
+				
+			//Comparo si el barco que disparo es rojo
+			if(shipFiring.getId() == 0){
+				firingShipVO = new RedShipVO(shipFiring.getId(), shipFiring.getSpeed(), shipFiring.getArmor(), shipFiring.getAmmo(), shipFiring.getTorpedo(), shipFiring.getViewRange(), shipFiring.getSize(), shipFiring.getPosition(), shipFiring.getOrientation());
 			}else{
-				firedShipVO = new BlueShipVO(affectedShip.getId(), affectedShip.getSpeed(), affectedShip.getArmor(), affectedShip.getAmmo(), affectedShip.getTorpedo(), affectedShip.getViewRange(), affectedShip.getSize(), affectedShip.getPosition(), affectedShip.getOrientation());
+				firingShipVO = new BlueShipVO(shipFiring.getId(), shipFiring.getSpeed(), shipFiring.getArmor(), shipFiring.getAmmo(), shipFiring.getTorpedo(), shipFiring.getViewRange(), shipFiring.getSize(), shipFiring.getPosition(), shipFiring.getOrientation());
 			}			
+				
+			Weapon weapon = new Weapon(Weapon.TORPEDO);
+			fireActionToReturn = new FireAction(firingShipVO, weapon, coordinateHitted, hitted, firedShipVO);
+				
+				
+			//Comparo si es igual al jugador ROJO
+			if(activeGame.getTurn().getActivePlayer().getUsername().compareTo(activeGame.getRedPlayer().getUsername()) == 0){
+				activeGame.getBlueActionQueue().add(fireActionToReturn);
+			}else{
+				activeGame.getRedActionQueue().add(fireActionToReturn);
+			}
+			
+			activeGame.getTurn().consumeMovement();
 		}
-			
-		//Calculo la nueva cantidad de balas del barco	
-		int	newAmunition = shipFiring.getTorpedo() - 1;
-		shipFiring.setTorpedo(newAmunition);		
-			
-		//Comparo si el barco que disparo es rojo
-		if(shipFiring.getId() == 0){
-			firingShipVO = new RedShipVO(shipFiring.getId(), shipFiring.getSpeed(), shipFiring.getArmor(), shipFiring.getAmmo(), shipFiring.getTorpedo(), shipFiring.getViewRange(), shipFiring.getSize(), shipFiring.getPosition(), shipFiring.getOrientation());
-		}else{
-			firingShipVO = new BlueShipVO(shipFiring.getId(), shipFiring.getSpeed(), shipFiring.getArmor(), shipFiring.getAmmo(), shipFiring.getTorpedo(), shipFiring.getViewRange(), shipFiring.getSize(), shipFiring.getPosition(), shipFiring.getOrientation());
-		}			
-			
-		Weapon weapon = new Weapon(Weapon.TORPEDO);
-		fireActionToReturn = new FireAction(firingShipVO, weapon, coordinateHitted, hitted, firedShipVO);
-			
-			
-		//Comparo si es igual al jugador ROJO
-		if(activeGame.getTurn().getActivePlayer().getUsername().compareTo(activeGame.getRedPlayer().getUsername()) == 0){
-			activeGame.getBlueActionQueue().add(fireActionToReturn);
-		}else{
-			activeGame.getRedActionQueue().add(fireActionToReturn);
-		}
-		
-		activeGame.getTurn().consumeMovement();
 		return fireActionToReturn;
 	}
 	
@@ -288,9 +294,10 @@ public class Facade {
 				activeGame.getBlueActionQueue().add(rotateActionToReturn);
 			}else{
 				activeGame.getRedActionQueue().add(rotateActionToReturn);
-			}			
+			}
+			activeGame.getTurn().consumeMovement();	
 		}
-		activeGame.getTurn().consumeMovement();		
+			
 		return rotateActionToReturn;		
 	}
 	
@@ -308,16 +315,18 @@ public class Facade {
 		Game activeGame = this.findGame(gameId);
 		EndTurnAction endTurnActionToReturn = null;
 		
-		//comparo si el jugador actual es el rojo
-		if(activeGame.getTurn().getActivePlayer().getUsername().compareTo(activeGame.getRedPlayer().getUsername()) == 0){
-			activeGame.getTurn().endTurn(activeGame.getBluePlayer());
-			endTurnActionToReturn = new EndTurnAction(gameId, activeGame.getBluePlayer());
-			activeGame.insertActionBlueQueue(endTurnActionToReturn);
-		}else{
-			activeGame.getTurn().endTurn(activeGame.getRedPlayer());
-			endTurnActionToReturn = new EndTurnAction(gameId, activeGame.getRedPlayer());
-			activeGame.insertActionRedQueue(endTurnActionToReturn);
-		}		
+		if(activeGame != null){
+			//comparo si el jugador actual es el rojo
+			if(activeGame.getTurn().getActivePlayer().getUsername().compareTo(activeGame.getRedPlayer().getUsername()) == 0){
+				activeGame.getTurn().endTurn(activeGame.getBluePlayer());
+				endTurnActionToReturn = new EndTurnAction(gameId, activeGame.getBluePlayer());
+				activeGame.insertActionBlueQueue(endTurnActionToReturn);
+			}else{
+				activeGame.getTurn().endTurn(activeGame.getRedPlayer());
+				endTurnActionToReturn = new EndTurnAction(gameId, activeGame.getRedPlayer());
+				activeGame.insertActionRedQueue(endTurnActionToReturn);
+			}
+		}
 		return endTurnActionToReturn;		
 	}
 	
@@ -329,20 +338,22 @@ public class Facade {
 	 */
 	public SaveGameAction saveGame(int gameId){
 		
-		SaveGameAction saveGameAction = new SaveGameAction(gameId);
+		SaveGameAction saveGameAction = null;
 		Data data = new Data();
 		Game gameToSave = this.findGame(gameId);
-		gameToSave.setStatus(loading);
 		
-		data.saveGame(gameToSave);
+		if(gameToSave != null){
+			gameToSave.setStatus(loading);		
+			data.saveGame(gameToSave);
+			saveGameAction = new SaveGameAction(gameId);
 		
-		//comparo si es redPlayer
-		if(gameToSave.getTurn().getActivePlayer().getUsername().equals(gameToSave.getRedPlayer().getUsername())){
-			gameToSave.insertActionBlueQueue(saveGameAction);
-		}else{
-			gameToSave.insertActionRedQueue(saveGameAction);
-		}
-		
+			//comparo si es redPlayer
+			if(gameToSave.getTurn().getActivePlayer().getUsername().equals(gameToSave.getRedPlayer().getUsername())){
+				gameToSave.insertActionBlueQueue(saveGameAction);
+			}else{
+				gameToSave.insertActionRedQueue(saveGameAction);
+			}
+		}		
 		return saveGameAction;
 	}
 	
@@ -454,17 +465,18 @@ public class Facade {
 	 * 	Elimina el Game en ese index del ArrayList
 	 */
 	public EndGameAction endGame(int gameId){	
-		EndGameAction endGameActionToReturn = new EndGameAction(gameId);
+		EndGameAction endGameActionToReturn = null;
 		Game activeGame = this.findGame(gameId);
 		
-		//Comparo si es igual al jugador ROJO
-		if(activeGame.getTurn().getActivePlayer().getUsername().compareTo(activeGame.getRedPlayer().getUsername()) == 0){
-			activeGame.getBlueActionQueue().add(endGameActionToReturn);
-		}else{
-			activeGame.getRedActionQueue().add(endGameActionToReturn);
-		}			
-		
-		
+		if(activeGame != null){
+			endGameActionToReturn = new EndGameAction(gameId); 
+			//Comparo si es igual al jugador ROJO
+			if(activeGame.getTurn().getActivePlayer().getUsername().compareTo(activeGame.getRedPlayer().getUsername()) == 0){
+				activeGame.getBlueActionQueue().add(endGameActionToReturn);
+			}else{
+				activeGame.getRedActionQueue().add(endGameActionToReturn);
+			}	
+		}		
 		return endGameActionToReturn;		
 	}
 	
@@ -516,31 +528,32 @@ public class Facade {
 	public Action[] getActions(int gameId, String username){
 		
 		Game activeGame = findGame(gameId);
-		Action[] actionToReturn;
+		Action[] actionToReturn = null;
 		boolean mustRemove = false;
 		int i = 0;
 		
-		//comparo si es redPlayer
-		if(activeGame.getRedPlayer().getUsername().compareTo(username) == 0){
-			actionToReturn = activeGame.redActionQueueMapToArray();
-			activeGame.getRedActionQueue().clear();
-		}else{
-			actionToReturn = activeGame.blueActionQueueMapToArray();
-			activeGame.getBlueActionQueue().clear();
-		}
-		
-		
-		while(i < actionToReturn.length && !mustRemove){
-			if(actionToReturn[i].getActionType().equals("SaveGameAction") || actionToReturn[i].getActionType().equals("EndGameAction")){
-				mustRemove = true;
+		if(activeGame != null){
+			//comparo si es redPlayer
+			if(activeGame.getRedPlayer().getUsername().compareTo(username) == 0){
+				actionToReturn = activeGame.redActionQueueMapToArray();
+				activeGame.getRedActionQueue().clear();
+			}else{
+				actionToReturn = activeGame.blueActionQueueMapToArray();
+				activeGame.getBlueActionQueue().clear();
 			}
-			i++;
-		}
-		
-		if(mustRemove){
-			this.activeGames.remove(this.activeGames.indexOf(this.activeGames.get(gameId)));			
-		}
-		
+			
+			
+			while(i < actionToReturn.length && !mustRemove){
+				if(actionToReturn[i].getActionType().equals("SaveGameAction") || actionToReturn[i].getActionType().equals("EndGameAction")){
+					mustRemove = true;
+				}
+				i++;
+			}
+			
+			if(mustRemove){
+				this.activeGames.remove(this.activeGames.indexOf(this.activeGames.get(gameId)));			
+			}
+		}			
 		return actionToReturn;		
 	}
 	
@@ -555,9 +568,12 @@ public class Facade {
 	 */
 	public GameVO getGame(int gameId){
 		Game aux = this.findGame(gameId);		
+		GameVO gameVOToReturn = null;
 		
-		return aux.mapToValueObject();		
-		
+		if(aux != null){
+			gameVOToReturn =  aux.mapToValueObject();
+		}
+		return gameVOToReturn;
 	}
 	
 	
@@ -566,81 +582,84 @@ public class Facade {
 	 */
 	public EnterPortAction enterPort1 (int gameId, int shipId){
 		Game activeGame = this.findGame(gameId);
-		Ship shipToRepair = activeGame.getShip(shipId);
+		Ship shipToRepair = null;
 		EnterPortAction enterPortActionToReturn = null;
 		ShipVO shipVO = null;
 		int newAmmo = 0;
 		int newArmor = 0;
 		int newTorpedo = 0;
 		
-		switch (shipToRepair.getId()){
-			//barco rojo
-			case 0:				
-				newAmmo = shipToRepair.getAmmo() + 6;
-				if(newAmmo > 12){
-					newAmmo = 12;
-				}
-				newTorpedo = shipToRepair.getTorpedo() + 2;
-				if(newTorpedo > 4){
-					newTorpedo = 4;
-				}
-				newArmor = shipToRepair.getArmor() + 5;
-				if(newArmor > 10){
-					newArmor = 10;
-				}
-				shipVO = new RedShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());				
-			break;
-			//barco azul 1
-			case 1:				
-				newAmmo = shipToRepair.getAmmo() + 6;
-				if(newAmmo > 12){
-					newAmmo = 12;
-				}
-				newTorpedo = shipToRepair.getTorpedo() + 2;
-				if(newTorpedo > 4){
-					newTorpedo = 4;
-				}
-				newArmor = shipToRepair.getArmor() + 3;
-				if(newArmor > 5){
-					newArmor = 5;
-				}
-				shipVO = new BlueShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());	
-			break;
-			//barco azul 2
-			case 2:
-				newAmmo = shipToRepair.getAmmo() + 3;
-				if(newAmmo > 6){
-					newAmmo = 6;
-				}
-				newTorpedo = shipToRepair.getTorpedo() + 1;
-				if(newTorpedo > 2){
-					newTorpedo = 2;
-				}
-				newArmor = shipToRepair.getArmor() + 3;
-				if(newArmor > 5){
-					newArmor = 5;
-				}
-				shipVO = new BlueShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());	
-			break;
-			//barco azul 3
-			case 3:					
-				newAmmo = shipToRepair.getAmmo() + 3;
-				if(newAmmo > 6){
-					newAmmo = 6;
-				}
-				newTorpedo = shipToRepair.getTorpedo() + 1;
-				if(newTorpedo > 2){
-					newTorpedo = 2;
-				}
-				newArmor = shipToRepair.getArmor() + 3;
-				if(newArmor > 5){
-					newArmor = 5;
-				}
-				shipVO = new BlueShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());
-			break;
-		}		
-		
-		enterPortActionToReturn = new EnterPortAction(shipVO, 1);
+		if(activeGame != null){
+			shipToRepair = activeGame.getShip(shipId);
+			switch (shipToRepair.getId()){
+				//barco rojo
+				case 0:				
+					newAmmo = shipToRepair.getAmmo() + 6;
+					if(newAmmo > 12){
+						newAmmo = 12;
+					}
+					newTorpedo = shipToRepair.getTorpedo() + 2;
+					if(newTorpedo > 4){
+						newTorpedo = 4;
+					}
+					newArmor = shipToRepair.getArmor() + 5;
+					if(newArmor > 10){
+						newArmor = 10;
+					}
+					shipVO = new RedShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());				
+				break;
+				//barco azul 1
+				case 1:				
+					newAmmo = shipToRepair.getAmmo() + 6;
+					if(newAmmo > 12){
+						newAmmo = 12;
+					}
+					newTorpedo = shipToRepair.getTorpedo() + 2;
+					if(newTorpedo > 4){
+						newTorpedo = 4;
+					}
+					newArmor = shipToRepair.getArmor() + 3;
+					if(newArmor > 5){
+						newArmor = 5;
+					}
+					shipVO = new BlueShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());	
+				break;
+				//barco azul 2
+				case 2:
+					newAmmo = shipToRepair.getAmmo() + 3;
+					if(newAmmo > 6){
+						newAmmo = 6;
+					}
+					newTorpedo = shipToRepair.getTorpedo() + 1;
+					if(newTorpedo > 2){
+						newTorpedo = 2;
+					}
+					newArmor = shipToRepair.getArmor() + 3;
+					if(newArmor > 5){
+						newArmor = 5;
+					}
+					shipVO = new BlueShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());	
+				break;
+				//barco azul 3
+				case 3:					
+					newAmmo = shipToRepair.getAmmo() + 3;
+					if(newAmmo > 6){
+						newAmmo = 6;
+					}
+					newTorpedo = shipToRepair.getTorpedo() + 1;
+					if(newTorpedo > 2){
+						newTorpedo = 2;
+					}
+					newArmor = shipToRepair.getArmor() + 3;
+					if(newArmor > 5){
+						newArmor = 5;
+					}
+					shipVO = new BlueShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());
+				break;
+			}		
+			
+			enterPortActionToReturn = new EnterPortAction(shipVO, 1);
+		}
 		return enterPortActionToReturn;
 	}
 	
@@ -650,106 +669,108 @@ public class Facade {
 	public EnterPortAction enterPort2 (int gameId, int shipId, String attribute){
 		
 		Game activeGame = this.findGame(gameId);
-		Ship shipToRepair = activeGame.getShip(shipId);
+		Ship shipToRepair = null;
 		EnterPortAction enterPortActionToReturn = null;
 		ShipVO shipVO = null;
 		int newAmmo = 0;
 		int newArmor = 0;
 		int newTorpedo = 0;
 		
-		
-		switch (shipToRepair.getId()){
-		//barco rojo
-		case 0:			
-			if(attribute.equals("ARMOR")){
-				newAmmo = shipToRepair.getAmmo();
-				newArmor = 10;
-				newTorpedo = shipToRepair.getTorpedo();
-			}else{
-				if(attribute.equals("AMMO")){
-					newAmmo = 12;
-					newArmor = shipToRepair.getArmor();
+		if(activeGame != null){
+			shipToRepair = activeGame.getShip(shipId);
+			switch (shipToRepair.getId()){
+			//barco rojo
+			case 0:			
+				if(attribute.equals("ARMOR")){
+					newAmmo = shipToRepair.getAmmo();
+					newArmor = 10;
 					newTorpedo = shipToRepair.getTorpedo();
-					
 				}else{
-					if(attribute.equals("TORPEDO")){
-						newAmmo = shipToRepair.getAmmo();
+					if(attribute.equals("AMMO")){
+						newAmmo = 12;
 						newArmor = shipToRepair.getArmor();
-						newTorpedo = 4;						
+						newTorpedo = shipToRepair.getTorpedo();
+						
+					}else{
+						if(attribute.equals("TORPEDO")){
+							newAmmo = shipToRepair.getAmmo();
+							newArmor = shipToRepair.getArmor();
+							newTorpedo = 4;						
+						}
 					}
-				}
-			}			
-			shipVO = new RedShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());				
-		break;
-		//barco azul 1
-		case 1:				
-			if(attribute.equals("ARMOR")){
-				newAmmo = shipToRepair.getAmmo();
-				newArmor = 5;
-				newTorpedo = shipToRepair.getTorpedo();
-			}else{
-				if(attribute.equals("AMMO")){
-					newAmmo = 12;
-					newArmor = shipToRepair.getArmor();
+				}			
+				shipVO = new RedShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());				
+			break;
+			//barco azul 1
+			case 1:				
+				if(attribute.equals("ARMOR")){
+					newAmmo = shipToRepair.getAmmo();
+					newArmor = 5;
 					newTorpedo = shipToRepair.getTorpedo();
-					
 				}else{
-					if(attribute.equals("TORPEDO")){
-						newAmmo = shipToRepair.getAmmo();
+					if(attribute.equals("AMMO")){
+						newAmmo = 12;
 						newArmor = shipToRepair.getArmor();
-						newTorpedo = 4;						
+						newTorpedo = shipToRepair.getTorpedo();
+						
+					}else{
+						if(attribute.equals("TORPEDO")){
+							newAmmo = shipToRepair.getAmmo();
+							newArmor = shipToRepair.getArmor();
+							newTorpedo = 4;						
+						}
 					}
-				}
-			}			
-			shipVO = new RedShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());	
-		break;
-		//barco azul 2
-		case 2:		
-			if(attribute.equals("ARMOR")){
-				newAmmo = shipToRepair.getAmmo();
-				newArmor = 5;
-				newTorpedo = shipToRepair.getTorpedo();
-			}else{
-				if(attribute.equals("AMMO")){
-					newAmmo = 6;
-					newArmor = shipToRepair.getArmor();
+				}			
+				shipVO = new RedShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());	
+			break;
+			//barco azul 2
+			case 2:		
+				if(attribute.equals("ARMOR")){
+					newAmmo = shipToRepair.getAmmo();
+					newArmor = 5;
 					newTorpedo = shipToRepair.getTorpedo();
-					
 				}else{
-					if(attribute.equals("TORPEDO")){
-						newAmmo = shipToRepair.getAmmo();
+					if(attribute.equals("AMMO")){
+						newAmmo = 6;
 						newArmor = shipToRepair.getArmor();
-						newTorpedo = 2;						
+						newTorpedo = shipToRepair.getTorpedo();
+						
+					}else{
+						if(attribute.equals("TORPEDO")){
+							newAmmo = shipToRepair.getAmmo();
+							newArmor = shipToRepair.getArmor();
+							newTorpedo = 2;						
+						}
 					}
-				}
-			}			
-			shipVO = new RedShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());		
-		break;
-		//barco azul 3
-		case 3:					
-			if(attribute.equals("ARMOR")){
-				newAmmo = shipToRepair.getAmmo();
-				newArmor = 5;
-				newTorpedo = shipToRepair.getTorpedo();
-			}else{
-				if(attribute.equals("AMMO")){
-					newAmmo = 6;
-					newArmor = shipToRepair.getArmor();
+				}			
+				shipVO = new RedShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());		
+			break;
+			//barco azul 3
+			case 3:					
+				if(attribute.equals("ARMOR")){
+					newAmmo = shipToRepair.getAmmo();
+					newArmor = 5;
 					newTorpedo = shipToRepair.getTorpedo();
-					
 				}else{
-					if(attribute.equals("TORPEDO")){
-						newAmmo = shipToRepair.getAmmo();
+					if(attribute.equals("AMMO")){
+						newAmmo = 6;
 						newArmor = shipToRepair.getArmor();
-						newTorpedo = 2;						
+						newTorpedo = shipToRepair.getTorpedo();
+						
+					}else{
+						if(attribute.equals("TORPEDO")){
+							newAmmo = shipToRepair.getAmmo();
+							newArmor = shipToRepair.getArmor();
+							newTorpedo = 2;						
+						}
 					}
-				}
-			}			
-			shipVO = new RedShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());
-		break;
-		}	
-		
-		enterPortActionToReturn = new EnterPortAction(shipVO, 2);
+				}			
+				shipVO = new RedShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());
+			break;
+			}	
+			
+			enterPortActionToReturn = new EnterPortAction(shipVO, 2);
+		}
 		return enterPortActionToReturn;
 	}
 	
