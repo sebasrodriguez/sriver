@@ -14,6 +14,7 @@ import entities.ShipVO;
 import entities.Weapon;
 
 import logic.actions.Action;
+import logic.actions.EndGameAction;
 import logic.actions.EndTurnAction;
 import logic.actions.FireAction;
 import logic.actions.MoveAction;
@@ -478,10 +479,19 @@ public class Facade {
 	 * 	Busca el index del game por su id
 	 * 	Elimina el Game en ese index del ArrayList
 	 */
-	public void endGame(int gameId){
-		Game gameToRemove = this.findGame(gameId);
-		int indexToRemove = activeGames.indexOf(gameToRemove);
-		this.activeGames.remove(indexToRemove);		
+	public EndGameAction endGame(int gameId){	
+		EndGameAction endGameActionToReturn = new EndGameAction(gameId);
+		Game activeGame = this.findGame(gameId);
+		
+		//Comparo si es igual al jugador ROJO
+		if(activeGame.getTurn().getActivePlayer().getUsername().compareTo(activeGame.getRedPlayer().getUsername()) == 0){
+			activeGame.getBlueActionQueue().add(endGameActionToReturn);
+		}else{
+			activeGame.getRedActionQueue().add(endGameActionToReturn);
+		}			
+		
+		
+		return endGameActionToReturn;		
 	}
 	
 	/*
