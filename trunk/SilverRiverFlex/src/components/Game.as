@@ -157,7 +157,7 @@ package components
 			_blueShipComponent1.show();
 			_blueShipComponent2.show();
 			_blueShipComponent3.show();
-			selectShip(_me.getNextAliveShip());			
+			selectShip(_me.getNextAliveShip());
 			
 			// Cargamos informacion de usuarios y barcos
 			_info.redPlayerUsername = _redPlayer.username;
@@ -232,7 +232,7 @@ package components
 					{
 						_main.wsRequest.fireTorpedo(_gameId, _selectedShip.shipId);
 					}
-					else if (isActivePlayer && _selectedShip != null && _menu.currentFireMode == Menu.MENU_FIRE_MODE_BULLET) 
+					else if (isActivePlayer && _selectedShip != null && _menu.currentFireMode == Menu.MENU_FIRE_MODE_BULLET)
 					{
 						_toastManager.addToast("Haz click sobre un barco enemigo al cual dispararle");
 					}
@@ -366,10 +366,20 @@ package components
 			}
 			else
 			{
-				_messageModal = new Modal(_main, "Esperando a un segundo jugador...", 300, 130);
-				_gameMode.gameMode = GameMode.WAITING_FOR_LOADING;
+				// Si el gameId es -1 es que tiene partidas para cargar en la base de datos
+				if (gameId == -1)
+				{
+					_messageModal = new Modal(_main, "Esperando a un segundo jugador...", 300, 130);
+					_gameMode.gameMode = GameMode.WAITING_FOR_LOADING;
+				}
+				else 
+				{
+					_toastManager.addToast("El usuario no tiene partidas para cargar");
+				}
 			}
-			startSyncronizing();
+			// Solo inicializamos el timer si el usuario tiene posibles partidas para cargar
+			if (gameId >= -1)
+				startSyncronizing();
 		}
 		
 		public function saveGameHandler(response:ResultEvent):void
@@ -464,8 +474,8 @@ package components
 			if (_me.isMyShip(ship))
 			{
 				//si el barco es distinto al seleccionado, desseleccionamos el anterior y seleccionamos el nuevo
-				if (_selectedShip != ship)				
-					selectShip(ship);				
+				if (_selectedShip != ship)
+					selectShip(ship);
 			}
 			else
 			{
@@ -510,7 +520,7 @@ package components
 					{
 						moveAction(_selectedShip, event.coordinate);
 					}
-					else 
+					else
 					{
 						_toastManager.addToast("La celda seleccionada no esta disponible para el movimiento");
 					}
@@ -717,12 +727,15 @@ package components
 				_toastManager.addToast("Barco hundido");
 				destroyShip(affectedShip);
 				// Si el barco eliminado es el que tengo seleccionado obtengo el siguiente barco
-				if (affectedShip.shipId == _selectedShip.shipId && _me.hasAliveShips())				
-					selectShip(_me.getNextAliveShip());				
+				if (affectedShip.shipId == _selectedShip.shipId && _me.hasAliveShips())
+					selectShip(_me.getNextAliveShip());
 			}
 			else
 			{
-				_toastManager.addToast("El disparo impacto en el barco enemigo");
+				if (!_me.isMyShip(affectedShip))
+					_toastManager.addToast("El disparo impacto en el barco enemigo, su armadura es: " + newArmor);
+				else
+					_toastManager.addToast("El disparo impacto en tu barco, su armadura es: " + newArmor);
 				if (affectedShip.shipId == _selectedShip.shipId)
 					_menu.updateShipInfo(_selectedShip);
 			}
@@ -992,6 +1005,6 @@ package components
 		public function clearMode():void
 		{
 			_gridComponent.disableCells();
-		}		
+		}
 	}
 }
