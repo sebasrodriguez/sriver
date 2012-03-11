@@ -1,5 +1,7 @@
 package logic.tests;
 
+import java.util.Iterator;
+
 import entities.Cardinal;
 import entities.Coordinate;
 import logic.ship.RedShip;
@@ -34,7 +36,7 @@ public class pruebaRedShip {
 		System.out.println("---------------------------------------------------------------");
 		
 		
-		System.out.println("Cambiando los valores a: 10,30,50,60,70,80,90, (10,1), NW");
+		System.out.println("Cambiando los valores a: 10,30,50,60,70,80,90, (10,1), N");
 		redShipPrueba.setId(10);
 		redShipPrueba.setSpeed(30);
 		redShipPrueba.setArmor(50);
@@ -45,7 +47,7 @@ public class pruebaRedShip {
 		position.setX(10);
 		position.setY(1);
 		redShipPrueba.setPosition(position);
-		orientation = new Cardinal(-45);
+		orientation = new Cardinal(Cardinal.SW);
 		redShipPrueba.setOrientation(orientation);
 		
 		System.out.println("RedShip: ");
@@ -60,6 +62,18 @@ public class pruebaRedShip {
 		System.out.println("Cardinal: " + redShipPrueba.getOrientation().toString());
 		
 		System.out.println("---------------------------------------------------------------");
+		
+		RedShip redShip = (RedShip) redShipPrueba;
+		
+		Iterator<Coordinate>  itcoordinate = redShip.calculateRedShipSize().iterator();
+		
+		
+		System.out.print("Red Ship size: ");
+		while(itcoordinate.hasNext()){
+			Coordinate aux = itcoordinate.next();
+			System.out.print("(" + aux.getX() + "," + aux.getY() + "), ");
+		}
+		
 		
 		
 	}

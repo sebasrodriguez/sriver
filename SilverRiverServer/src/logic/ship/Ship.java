@@ -1,7 +1,6 @@
 package logic.ship;
 
 import java.io.Serializable;
-
 import entities.Cardinal;
 import entities.Coordinate;
 import entities.ShipVO;

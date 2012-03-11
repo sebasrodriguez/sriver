@@ -29,7 +29,5 @@ public class BlueShip extends Ship{
 	public BlueShipVO mapToValueObject(){		
 		BlueShipVO blueShipVOToReturn = new BlueShipVO(this.getId(), this.getSpeed(), this.getArmor(), this.getAmmo(), this.getTorpedo(), this.getViewRange(), this.getSize(), this.getPosition(),this.getOrientation());
 		return blueShipVOToReturn;
-	}
-	
-	
+	}	
 }
