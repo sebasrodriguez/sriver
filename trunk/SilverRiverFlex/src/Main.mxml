@@ -81,9 +81,8 @@
 				if (wsdlLocation != null)
 					wsRequest.wsdl = wsdlLocation;
 				else
-					wsRequest.wsdl = "http://localhost:8080/SilverRiverServer/services/SilverRiverService?wsdl";
-				var username:Number = Math.random() * 100;
-				_game = new Game(this, Math.floor(username).toString());
+					wsRequest.wsdl = "http://localhost:8080/SilverRiverServer/services/SilverRiverService?wsdl";				
+				_game = new Game(this);
 			}
 			
 			private function creationCompleteHandler(e:Event):void
@@ -92,7 +91,9 @@
 			
 			public function reloadGame():void
 			{				
-				_game = new Game(this, Math.floor(2).toString());
+				// TODO: mejorar el recargar ya que se pone lento el juego cuando se inicializa haciendo un new del game
+				_game = null;
+				_game = new Game(this);
 			}
 		]]>
 	</fx:Script>
