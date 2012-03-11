@@ -93,7 +93,7 @@ package common
 		public static function distanceBetweenCells(coorA:Coordinate, coorB:Coordinate):int
 		{
 			var xdelta:Number = coorA.c - coorB.c;
-			var ydelta:Number = coorA.r - coorB.r;
+			var ydelta:Number = coorA.r - coorB.r;			
 			var distance:Number = Math.sqrt(Math.pow(xdelta, 2) + Math.pow(ydelta, 2));
 			
 			return Math.ceil(distance);

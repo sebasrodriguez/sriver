@@ -1,30 +1,17 @@
 package components
 {
-	import flash.display.InteractiveObject;
-	import flash.events.MouseEvent;
+	import common.*;
+	import events.*;
 	import flash.events.TimerEvent;
-	import flash.filters.GlowFilter;
-	import flash.utils.SetIntervalTimer;
 	import flash.utils.Timer;
 	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
 	import mx.containers.Canvas;
+	import mx.controls.Alert;
 	import mx.controls.Label;
 	import mx.core.UIComponent;
-	import mx.rpc.AbstractOperation;
-	import mx.rpc.events.FaultEvent;
-	import mx.rpc.events.ResultEvent;
-	import mx.rpc.Fault;
-	import mx.rpc.soap.WebService;
-	import mx.rpc.soap.Operation;
-	import common.*;
-	import events.*;
-	import mx.controls.Alert;
+	import mx.rpc.events.ResultEvent;	
 	
-	/**
-	 * ...
-	 * @author pablo
-	 */
 	public class Game extends UIComponent
 	{
 		public static const GAME_BOARD_COLS:Number = 64;
@@ -61,7 +48,7 @@ package components
 		public var _myUsername:String;
 		public var _redPlayer:Player;
 		public var _bluePlayer:Player;
-		public var _me:Player;		
+		public var _me:Player;
 		public var _messageModal:Modal;
 		public var _rechargeModal:RechargeModal;
 		private var _gameId:int;
@@ -99,9 +86,9 @@ package components
 			
 			_bluePlayer = new Player(game.bluePlayer.username);
 			_redPlayer = new Player(game.redPlayer.username);
-			if (_redPlayer.username == _myUsername)			
-				_me = _redPlayer;			
-			if (_bluePlayer.username == _myUsername)			
+			if (_redPlayer.username == _myUsername)
+				_me = _redPlayer;
+			if (_bluePlayer.username == _myUsername)
 				_me = _bluePlayer;
 			
 			_redShipComponent = new RedShip(redShip.id, new Coordinate(redShip.position.y, redShip.position.x), new Cardinal(redShip.orientation.direction), redShip.speed, redShip.size, redShip.armor, redShip.ammo, redShip.torpedo, redShip.viewRange);
@@ -120,10 +107,10 @@ package components
 			else
 				_turn = new Turn(turn.movesLeft, _redPlayer, turn.timeLeft);
 			
-			if (isActivePlayer())			
-				_gameMode.gameMode = GameMode.PLAYING;			
-			else			
-				_gameMode.gameMode = GameMode.WAITING_PLAYER_TURN;			
+			if (isActivePlayer())
+				_gameMode.gameMode = GameMode.PLAYING;
+			else
+				_gameMode.gameMode = GameMode.WAITING_PLAYER_TURN;
 			
 			// Agrega los barcos al mapa
 			_gridComponent.blockCells(_redShipComponent.coordinates);
@@ -163,7 +150,7 @@ package components
 			_info.movesLeftText = _turn.movesLeft.toString();
 			_info.timeLeftText = _turn.timeLeft.toString();
 			_info.setActivePlayer(_turn.activePlayer == _redPlayer);
-			
+		
 		}
 		
 		private function selectShip(ship:Ship):void
@@ -337,11 +324,6 @@ package components
 		 * ************************************************
 		 * */
 		
-		 
-		public function endGameFault(response:FaultEvent):void {
-			trace(response);
-		}
-		
 		public function newGameHandler(response:ResultEvent):void
 		{
 			var gameId:int = response.result as int;
@@ -453,6 +435,11 @@ package components
 			endTurnAction();
 		}
 		
+		public function endGameHandler(response:ResultEvent):void
+		{
+			endGameAction();
+		}
+		
 		public function getGameHandler(response:ResultEvent):void
 		{
 			initializeGame(response.result);
@@ -462,11 +449,8 @@ package components
 		{
 		}
 		
-		public function endGameHandler(response:ResultEvent):void {
-			
-		}
-		
-		public function enterPortHandler(response:ResultEvent):void {
+		public function enterPortHandler(response:ResultEvent):void
+		{
 			if (response.result.ship != null)
 			{
 				//DeveloperUtils.trObject(response.result.ship);
@@ -574,21 +558,21 @@ package components
 			// Se mueve el barco
 			ship.moveTo(coordinate, function():void
 				{
+					//refrescamos para que habilite la accion mover nuevamente
+					ship.setPosition(coordinate);
 					_isAnimating = false;
 					endTurnIfNoMovesLeftAndActivePlayer();
 					// Se muestran nuevas celdas de movimiento basadas en la nueva posicion del barco
 					refreshMode();
 					// Bloqueamos la nueva posicion del barco
-					_gridComponent.blockCells(ship.coordinates);
-					//refrescamos para que habilite la accion mover nuevamente
-					ship.setPosition(coordinate);
+					_gridComponent.blockCells(ship.coordinates);					
 					checkPort(ship);
 					checkGoal(ship);
 					// Actualizo la visibilidad de los barcos
 					setShipsVisibility();
 					if (func != null)
 						func.call();
-				}, 10);				
+				}, 10);
 		}
 		
 		// Rota el barco a la direccion dada y actualiza el estado del juego
@@ -705,30 +689,53 @@ package components
 				_menu.updateShipInfo(firingShip);
 		}
 		
-		private function enterPortAction(ship:Ship, newArmor:int, newAmmo:int, newTorpedoes:int):void {
+		private function enterPortAction(ship:Ship, newArmor:int, newAmmo:int, newTorpedoes:int):void
+		{
 			ship.armor = newArmor;
 			ship.ammo = newAmmo;
 			ship.torpedoes = newTorpedoes;
-			if (isActivePlayer()) {
-				if(ship.selected)
+			if (isActivePlayer())
+			{
+				if (ship.selected)
 					_menu.updateShipInfo(ship);
 				_main.wsRequest.endTurn(_gameId);
 			}
-			
+		
 		}
 		
 		private function endGameAction():void
 		{
 			timer.stop();
+			// Si el jugador rojo no tiene el barco vivo entonces gano el azul
+			if (!_redPlayer.hasAliveShips())
+				if (_me == _redPlayer)
+					showEndGameMessage("Haz perdido", "El jugador azul ha ganado el juego");
+				else
+					showEndGameMessage("Ganador!!!", "Haz ganado el juego");
+			// Si el jugador azul no tiene barcos vivos entonces gano el jugador rojo
+			if (!_bluePlayer.hasAliveShips())
+				if (_me == _bluePlayer)
+					showEndGameMessage("Haz perdido", "El jugador rojo ha ganado el juego");
+				else
+					showEndGameMessage("Ganador!!!", "Haz ganado el juego");
+			// Si el jugador rojo entro con el barco a una de las zonas de escape gano el juego
+			var redShip:Ship = _redPlayer.getShip();
+			if (_mapComponent.areSubCoordinates(redShip.coordinates, _mapComponent.getGoalCoordinates()))
+			{
+				if (_me == _redPlayer)
+					showEndGameMessage("Ganador!!!", "Haz ganado el juego");
+				else
+					showEndGameMessage("Haz perdido", "El jugador rojo ha ganado el juego");
+			}			
 		}
 		
 		// Finaliza el juego y muestra el mensaje de juego salvado
 		private function saveGameAction():void
 		{
 			if (isActivePlayer())
-				_toastManager.addToast("El juego fue guardado", 10);
+				showEndGameMessage("Juego guardado", "El juego fue guardado");
 			else
-				_toastManager.addToast("Tu contrincante guardo el juego", 10);
+				showEndGameMessage("Juego guardado", "Tu contrincante guardo el juego");
 			if (timer != null)
 				timer.stop();
 		}
@@ -810,7 +817,7 @@ package components
 					_rechargeModal = new RechargeModal(_main);
 					_rechargeModal.addEventListener(ModalEvent.ATTRIBUTE_SELECTED, function(event:ModalEvent):void
 						{
-							_main.wsRequest.enterPort2(_gameId, ship.shipId, event.attribute);							
+							_main.wsRequest.enterPort2(_gameId, ship.shipId, event.attribute);
 							ship.port2Enabled = false;
 							_toastManager.addToast("Se recargará el total del atributo que haz seleccionado");
 						});
@@ -821,46 +828,15 @@ package components
 		// Chequea si gano
 		private function checkGoal(ship:Ship):void
 		{
-			if (!_redPlayer.hasAliveShips())
-			{
-				if (_me == _redPlayer)
-				{
-					Alert.show("El jugador azul ha ganado el juego", "Haz perdido");
-				}
-				else
-				{
-					Alert.show("Haz ganado el juego", "Ganador!!");
-				}
+			if (!_redPlayer.hasAliveShips())							
+				if (isActivePlayer())
+					_main.wsRequest.endGame(_gameId);			
+			if (!_bluePlayer.hasAliveShips())			
 				if (isActivePlayer())
 					_main.wsRequest.endGame(_gameId);
-			}
-			if (!_bluePlayer.hasAliveShips())
-			{
-				if (_me == _bluePlayer)
-				{
-					Alert.show("El jugador rojo ha ganado el juego", "Haz perdido");
-				}
-				else
-				{
-					Alert.show("Haz ganado el juego", "Ganador!!");
-				}
-				if (isActivePlayer())
-					_main.wsRequest.endGame(_gameId);
-			}
 			if (_me == _redPlayer && _me.isMyShip(ship))
-				if (_mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getGoalCoordinates()))
-				{
-					if (_me == _bluePlayer)
-					{
-						Alert.show("El jugador rojo ha ganado el juego", "Haz perdido");
-					}
-					else
-					{
-						Alert.show("Haz ganado el juego", "Ganador!!");
-					}
-					if (isActivePlayer())
-						_main.wsRequest.endGame(_gameId);
-				}
+				if (_mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getGoalCoordinates()) && isActivePlayer())					
+						_main.wsRequest.endGame(_gameId);				
 		}
 		
 		//verifica si hay celdas bloqueadas que impidan la rotacion
@@ -892,8 +868,7 @@ package components
 		//centra la pantalla en el seleccionado
 		public function centerOnShip(ship:Ship):void
 		{
-			_scrollControl.centerMapToXY(ship.currentPos.x, ship.currentPos.y);
-		
+			_scrollControl.centerMapToXY(ship.currentPos.x, ship.currentPos.y);		
 		}
 		
 		// Actualiza los movimientos del turno y refleja en el UI la cantidad de movimientos restantes
@@ -1058,7 +1033,15 @@ package components
 		public function clearMode():void
 		{
 			_gridComponent.disableCells();
-		}		
+		}
+		
+		private function showEndGameMessage(title:String, message:String):void
+		{
+			Alert.show(message, title, Alert.OK, null, function():void
+				{
+					_main.reloadGame();
+				});
+		}
 		
 		private function setShipsVisibility():void
 		{
@@ -1081,7 +1064,7 @@ package components
 						var j:int = 0;
 						while (!shouldShowShip && j < myShips.length)
 						{
-							var distance:int = Helper.distanceBetweenCells(myShips[j].currentPos, _shipList[i].currentPos);							
+							var distance:int = Helper.distanceBetweenCells(myShips[j].currentPos, _shipList[i].currentPos);
 							if (distance <= myShips[j].viewRange + 1)
 								shouldShowShip = true;
 							j++;
