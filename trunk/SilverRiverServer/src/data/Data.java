@@ -79,11 +79,14 @@ public class Data {
 	}
 	
 	/*
-	 * Guarda el game en la BD
+	 * Guarda el game en la BD, si existia una partida antes la elimina
 	 */
 	public void saveGame(Game gameToSave){	
 		
 		 try {
+			//primero elimino las partidas anteriores
+			this.deleteGame(gameToSave.getRedPlayer().getUsername(), gameToSave.getBluePlayer().getUsername());
+			
 			Properties prop = new Properties();			
 			prop.load(new FileInputStream(this.archiveName));
 			
@@ -119,6 +122,10 @@ public class Data {
 		}    
 	}
 	
+	/*
+	 * Devuelve true si el usuario tiene partidas guardadas, 
+	 * sino false
+	 */
 	public boolean hasSavedGames (String playerUsername){
 		boolean hasSavedGamesToReturn = false;
 		
@@ -165,4 +172,45 @@ public class Data {
 		}
 		return hasSavedGamesToReturn;
 	}	
+	
+	/*
+	 * Metodos privados
+	 */
+	
+	/*
+	 * Elimina la partida existente entre dos usuarios
+	 */
+	private void deleteGame(String redPlayerUsername, String bluePlayerUsername){
+		try {
+			Properties prop = new Properties();			
+			prop.load(new FileInputStream(this.archiveName));		
+			String username = prop.getProperty("dbUsername");
+			String password = prop.getProperty("dbPassword");
+			String url = prop.getProperty("dbUrl");
+			String driver = prop.getProperty("dbDriver");
+			Class.forName(driver);
+			
+			Connection con = DriverManager.getConnection(url, username, password);
+			Queries query = new Queries();
+			String deleteGame = query.deleteGame();
+			PreparedStatement pstmt = con.prepareStatement(deleteGame);
+			pstmt.setString(1, redPlayerUsername);
+			pstmt.setString(2, bluePlayerUsername);		
+			
+		    pstmt.executeUpdate();					   
+			pstmt.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}
 }
