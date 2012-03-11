@@ -53,7 +53,7 @@ package components
 		public var _rechargeModal:RechargeModal;
 		private var _gameId:int;
 		
-		public function Game(main:Main, username:String)
+		public function Game(main:Main)
 		{
 			// initialize variables
 			_main = main;
@@ -360,7 +360,7 @@ package components
 				}
 				else
 				{
-					_toastManager.addToast("El usuario no tiene partidas para cargar");
+					showEndGameMessage("No existen partidas", "El usuario ingresado no posee partidas para cargar");
 				}
 			}
 			// Solo inicializamos el timer si el usuario tiene posibles partidas para cargar
