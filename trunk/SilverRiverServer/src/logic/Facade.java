@@ -136,10 +136,11 @@ public class Facade {
 		ShipVO firedShipVO = null;
 		ShipVO firingShipVO = null;
 		
-		Coordinate exactFiringPoint = this.calculateHitPoint(activeGame.getShip(shipFiringId), firingPoint);
-	
-		
+		Coordinate exactFiringPoint = null;
+				
 		if(activeGame != null){
+			exactFiringPoint = this.calculateHitPoint(activeGame.getShip(shipFiringId), firingPoint);
+			
 			if(activeGame.getShipFiredId(exactFiringPoint) != -1){
 				//acerto	
 				hit = true;			
@@ -214,7 +215,6 @@ public class Facade {
 			
 			while(coordinatesIt.hasNext() && hitted == false){
 				Coordinate coordinateAux = coordinatesIt.next();	
-				System.out.println("Coord: (" + coordinateAux.getX() + "," + coordinateAux.getY() + ")" );
 				if(activeGame.getShipFiredId(coordinateAux) != -1){
 					//acerto	
 					hitted = true;			

@@ -194,10 +194,25 @@ public class Game implements Serializable
 		
 		while(shipIterator.hasNext() && !found){
 			Ship aux = shipIterator.next();
-			if(aux.getPosition().getX() == position.getX() && aux.getPosition().getY() == position.getY()){
-				found = true;
-				shipIdToReturn = aux.getId();
-			}
+			
+			//comparo si es barco rojo
+			if(aux.getId() == 0){
+				RedShip redShipAux = (RedShip) aux;
+				Iterator<Coordinate> itCoordinate = redShipAux.calculateRedShipSize().iterator();
+				while(itCoordinate.hasNext() && !found){
+					Coordinate auxCoordinate = itCoordinate.next();
+					if(auxCoordinate.getX() == position.getX() && auxCoordinate.getY() == position.getY()){
+						found = true;
+						shipIdToReturn = aux.getId();
+					}
+				}				
+			}else{
+				if(aux.getPosition().getX() == position.getX() && aux.getPosition().getY() == position.getY()){
+					found = true;
+					shipIdToReturn = aux.getId();
+				}
+				
+			}			
 		}		
 		return shipIdToReturn;		
 	}
