@@ -10,7 +10,7 @@ package components
 	import mx.controls.Alert;
 	import mx.controls.Label;
 	import mx.core.UIComponent;
-	import mx.rpc.events.ResultEvent;	
+	import mx.rpc.events.ResultEvent;
 	
 	public class Game extends UIComponent
 	{
@@ -561,15 +561,15 @@ package components
 					//refrescamos para que habilite la accion mover nuevamente
 					ship.setPosition(coordinate);
 					_isAnimating = false;
-					endTurnIfNoMovesLeftAndActivePlayer();
 					// Se muestran nuevas celdas de movimiento basadas en la nueva posicion del barco
 					refreshMode();
 					// Bloqueamos la nueva posicion del barco
-					_gridComponent.blockCells(ship.coordinates);					
+					_gridComponent.blockCells(ship.coordinates);
 					checkPort(ship);
 					checkGoal(ship);
 					// Actualizo la visibilidad de los barcos
 					setShipsVisibility();
+					endTurnIfNoMovesLeftAndActivePlayer();
 					if (func != null)
 						func.call();
 				}, 10);
@@ -726,7 +726,7 @@ package components
 					showEndGameMessage("Ganador!!!", "Haz ganado el juego");
 				else
 					showEndGameMessage("Haz perdido", "El jugador rojo ha ganado el juego");
-			}			
+			}
 		}
 		
 		// Finaliza el juego y muestra el mensaje de juego salvado
@@ -828,15 +828,15 @@ package components
 		// Chequea si gano
 		private function checkGoal(ship:Ship):void
 		{
-			if (!_redPlayer.hasAliveShips())							
+			if (!_redPlayer.hasAliveShips())
 				if (isActivePlayer())
-					_main.wsRequest.endGame(_gameId);			
-			if (!_bluePlayer.hasAliveShips())			
+					_main.wsRequest.endGame(_gameId);
+			if (!_bluePlayer.hasAliveShips())
 				if (isActivePlayer())
 					_main.wsRequest.endGame(_gameId);
 			if (_me == _redPlayer && _me.isMyShip(ship))
-				if (_mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getGoalCoordinates()) && isActivePlayer())					
-						_main.wsRequest.endGame(_gameId);				
+				if (_mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getGoalCoordinates()) && isActivePlayer())
+					_main.wsRequest.endGame(_gameId);
 		}
 		
 		//verifica si hay celdas bloqueadas que impidan la rotacion
@@ -868,7 +868,7 @@ package components
 		//centra la pantalla en el seleccionado
 		public function centerOnShip(ship:Ship):void
 		{
-			_scrollControl.centerMapToXY(ship.currentPos.x, ship.currentPos.y);		
+			_scrollControl.centerMapToXY(ship.currentPos.x, ship.currentPos.y);
 		}
 		
 		// Actualiza los movimientos del turno y refleja en el UI la cantidad de movimientos restantes
