@@ -3,6 +3,7 @@ package webservice;
 import entities.*;
 import logic.Facade;
 import logic.actions.Action;
+import logic.actions.EndGameAction;
 import logic.actions.EndTurnAction;
 import logic.actions.EnterPortAction;
 import logic.actions.FireAction;
@@ -45,8 +46,8 @@ public class SilverRiverService {
 		return Facade.getInstance().loadGame(username);
 	}	
 	
-	public void endGame(int gameId){
-		Facade.getInstance().endGame(gameId);
+	public EndGameAction endGame(int gameId){
+		return Facade.getInstance().endGame(gameId);
 	}
 	
 	public int newGame(String username){
