@@ -18,5 +18,8 @@ public class Queries {
 		return "SELECT * FROM Games WHERE redPlayerUsername = ? OR bluePlayerUsername = ?";
 	}
 	
+	public String deleteGame(){
+		return "DELETE FROM Games WHERE redPlayerUsername = ? AND bluePlayerUsername = ?";
+	}
 	
 }
