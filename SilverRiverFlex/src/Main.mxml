@@ -3,30 +3,60 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark"
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   contentCreationComplete="creationCompleteHandler(event)"
-			   initialize="initializeHandler(event)">			   
-	<fx:Declarations>		
-		<s:WebService id="wsRequest">	
-					  <s:operation name="newGame" resultFormat="object" result="_game.newGameHandler(event);"  />
-					  <s:operation name="checkGameId" resultFormat="object" result="_game.checkGameIdHandler(event);"  />
-					  <s:operation name="getGame" resultFormat="object" result="_game.getGameHandler(event);"  />
-					  <s:operation name="move" resultFormat="object" result="_game.moveHandler(event);"  />
-					  <s:operation name="rotate" resultFormat="object" result="_game.rotateHandler(event);"  />
-					  <s:operation name="fireAmmo" resultFormat="object" result="_game.fireHandler(event);"  />
-					  <s:operation name="fireTorpedo" resultFormat="object" result="_game.fireHandler(event);"  />
-					  <s:operation name="endTurn" resultFormat="object" result="_game.endTurnHandler(event);" />
-					  <s:operation name="getActions" resultFormat="object" result="_game.consumeActionsHandler(event);" />
-					  <s:operation name="saveGame" resultFormat="object" result="_game.saveGameHandler(event);" />
-					  <s:operation name="loadGame" resultFormat="object" result="_game.loadGameHandler(event);"  />
-					  <s:operation name="getGameIdLoading" resultFormat="object" result="_game.checkGameIdHandler(event);"  />
+			   initialize="initializeHandler(event)">
+	<fx:Declarations>
+		<s:WebService id="wsRequest">
+			<s:operation name="newGame"
+						 resultFormat="object"
+						 result="_game.newGameHandler(event);" />
+			<s:operation name="checkGameId"
+						 resultFormat="object"
+						 result="_game.checkGameIdHandler(event);" />
+			<s:operation name="getGame"
+						 resultFormat="object"
+						 result="_game.getGameHandler(event);" />
+			<s:operation name="move"
+						 resultFormat="object"
+						 result="_game.moveHandler(event);" />
+			<s:operation name="rotate"
+						 resultFormat="object"
+						 result="_game.rotateHandler(event);" />
+			<s:operation name="fireAmmo"
+						 resultFormat="object"
+						 result="_game.fireHandler(event);" />
+			<s:operation name="fireTorpedo"
+						 resultFormat="object"
+						 result="_game.fireHandler(event);" />
+			<s:operation name="endTurn"
+						 resultFormat="object"
+						 result="_game.endTurnHandler(event);" />
+			<s:operation name="getActions"
+						 resultFormat="object"
+						 result="_game.consumeActionsHandler(event);" />
+			<s:operation name="saveGame"
+						 resultFormat="object"
+						 result="_game.saveGameHandler(event);" />
+			<s:operation name="loadGame"
+						 resultFormat="object"
+						 result="_game.loadGameHandler(event);" />
+			<s:operation name="endGame"
+						 resultFormat="object"
+						 result="_game.endGameHandler(event);"
+						 fault="_game.endGameFault(event);" />
+			<s:operation name="getGameIdLoading"
+						 resultFormat="object"
+						 result="_game.checkGameIdHandler(event);" />
 					  <s:operation name="enterPort1" resultFormat="object" result="_game.enterPortHandler(event);"   />
 					  <s:operation name="enterPort2" resultFormat="object" result="_game.enterPortHandler(event);"   />
-					  <s:operation name="endGame" resultFormat="object" result="_game.endGameHandler(event);" fault="_game.endGameFault(event)"  />
+					  <s:operation name="endGame" resultFormat="object" result="_game.endGameHandler(event);"  />
 		</s:WebService>
-	</fx:Declarations>	
+	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
 			import flash.display.*;
 			import flash.events.*;
+			import flash.net.navigateToURL;
+			import flash.net.URLRequest;
 			import flash.utils.*;
 			import mx.core.*;
 			import mx.effects.*;
@@ -35,7 +65,7 @@
 			import mx.rpc.wsdl.*;
 			import components.*
 			
-			private var _game:Game;			
+			private var _game:Game;
 			
 			private function initializeHandler(e:Event):void
 			{
@@ -43,16 +73,20 @@
 				if (wsdlLocation != null)
 					wsRequest.wsdl = wsdlLocation;
 				else
-					wsRequest.wsdl = "http://localhost:8080/SilverRiverServer/services/SilverRiverService?wsdl";				
+					wsRequest.wsdl = "http://localhost:8080/SilverRiverServer/services/SilverRiverService?wsdl";
 				var username:Number = Math.random() * 100;
 				_game = new Game(this, Math.floor(username).toString());
-			}			
+			}
 			
 			private function creationCompleteHandler(e:Event):void
-			{			
-			}			
+			{
+			}
 			
-			
+			public function reloadGame():void
+			{				
+				var urlRequest:URLRequest = new URLRequest(FlexGlobals.topLevelApplication.url);
+				navigateToURL(urlRequest, "_self");
+			}
 		]]>
 	</fx:Script>
 
