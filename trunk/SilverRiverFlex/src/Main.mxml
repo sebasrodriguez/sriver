@@ -46,24 +46,32 @@
 			<s:operation name="getGameIdLoading"
 						 resultFormat="object"
 						 result="_game.checkGameIdHandler(event);" />
-					  <s:operation name="enterPort1" resultFormat="object" result="_game.enterPortHandler(event);"   />
-					  <s:operation name="enterPort2" resultFormat="object" result="_game.enterPortHandler(event);"   />
-					  <s:operation name="endGame" resultFormat="object" result="_game.endGameHandler(event);"  />
+			<s:operation name="enterPort1"
+						 resultFormat="object"
+						 result="_game.enterPortHandler(event);" />
+			<s:operation name="enterPort2"
+						 resultFormat="object"
+						 result="_game.enterPortHandler(event);" />
+			<s:operation name="endGame"
+						 resultFormat="object"
+						 result="_game.endGameHandler(event);" />
 		</s:WebService>
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			import components.*;
 			import flash.display.*;
 			import flash.events.*;
-			import flash.net.navigateToURL;
-			import flash.net.URLRequest;
+			import flash.external.*;
+			import flash.net.*;
 			import flash.utils.*;
 			import mx.core.*;
 			import mx.effects.*;
+			import mx.managers.*;
 			import mx.rpc.events.*;
 			import mx.rpc.soap.*;
 			import mx.rpc.wsdl.*;
-			import components.*
+			import mx.utils.*;
 			
 			private var _game:Game;
 			
@@ -84,8 +92,7 @@
 			
 			public function reloadGame():void
 			{				
-				var urlRequest:URLRequest = new URLRequest(FlexGlobals.topLevelApplication.url);
-				navigateToURL(urlRequest, "_self");
+				_game = new Game(this, Math.floor(2).toString());
 			}
 		]]>
 	</fx:Script>
