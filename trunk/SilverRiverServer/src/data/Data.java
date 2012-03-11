@@ -17,6 +17,7 @@ import logic.game.Game;
 
 public class Data {
 	
+	private final String archiveName = "C:/Silver River/config.properties";
 	/*
 	 * Constructor
 	 */
@@ -33,10 +34,7 @@ public class Data {
 		
 		try {
 			Properties prop = new Properties();
-//			String archiveName = "src/logic/config.properties";
-//			String archiveName = "C:/Workspace/Silver River/SilverRiverServer/src/logic/config.properties";
-			String archiveName = "C:/Tomcat7.0/webapps/SilverRiverServer/WEB-INF/classes/logic/config.properties";
-			prop.load(new FileInputStream(archiveName));
+			prop.load(new FileInputStream(this.archiveName));
 			
 			String username = prop.getProperty("dbUsername");
 			String password = prop.getProperty("dbPassword");
@@ -86,11 +84,8 @@ public class Data {
 	public void saveGame(Game gameToSave){	
 		
 		 try {
-			Properties prop = new Properties();
-//			String archiveName = "src/logic/config.properties";
-			//String archiveName = "C:/Workspace/Silver River/SilverRiverServer/src/logic/config.properties";
-			String archiveName = "C:/Tomcat7.0/webapps/SilverRiverServer/WEB-INF/classes/logic/config.properties";
-			prop.load(new FileInputStream(archiveName));
+			Properties prop = new Properties();			
+			prop.load(new FileInputStream(this.archiveName));
 			
 			String username = prop.getProperty("dbUsername");
 			String password = prop.getProperty("dbPassword");
@@ -129,10 +124,7 @@ public class Data {
 		
 		try {
 			Properties prop = new Properties();
-//			String archiveName = "src/logic/config.properties";	
-			//String archiveName = "C:/Workspace/Silver River/SilverRiverServer/src/logic/config.properties";
-			String archiveName = "C:/Tomcat7.0/webapps/SilverRiverServer/WEB-INF/classes/logic/config.properties";
-			prop.load(new FileInputStream(archiveName));
+			prop.load(new FileInputStream(this.archiveName));
 			
 			String username = prop.getProperty("dbUsername");
 			String password = prop.getProperty("dbPassword");
