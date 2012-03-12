@@ -53,9 +53,10 @@ package components
 		public var _rechargeModal:RechargeModal;
 		private var _gameId:int;
 		
+		// Constructor de la clase Game
 		public function Game(main:Main)
 		{
-			// initialize variables
+			// Se inicializan las variables y se muestra el modal de nuevo juego o cargar juego
 			_main = main;
 			_gameMode = new GameMode(GameMode.NEWGAME);
 			_actionQueue = new ArrayList();
@@ -73,11 +74,14 @@ package components
 							break;
 					}
 				});
+			// Se carga la interfaz grafica del juego
 			loadUserInterface();
 		}
 		
+		// Inicializa el juego en base a los datos que retorna el servidor
 		private function initializeGame(game:Object):void
 		{
+			// Carga los objetos que retorna el web service
 			var redShip:Object = game.ships[0];
 			var blueShip1:Object = game.ships[1];
 			var blueShip2:Object = game.ships[2];
@@ -91,6 +95,7 @@ package components
 			if (_bluePlayer.username == _myUsername)
 				_me = _bluePlayer;
 			
+			// Crea los barcos del juego con los atributos y posiciones del servidor
 			_redShipComponent = new RedShip(redShip.id, new Coordinate(redShip.position.y, redShip.position.x), new Cardinal(redShip.orientation.direction), redShip.speed, redShip.size, redShip.armor, redShip.ammo, redShip.torpedo, redShip.viewRange);
 			_blueShipComponent1 = new BlueShip(blueShip1.id, new Coordinate(blueShip1.position.y, blueShip1.position.x), new Cardinal(blueShip1.orientation.direction), blueShip1.speed, blueShip1.size, blueShip1.armor, blueShip1.ammo, blueShip1.torpedo, blueShip1.viewRange);
 			_blueShipComponent2 = new BlueShip(blueShip2.id, new Coordinate(blueShip2.position.y, blueShip2.position.x), new Cardinal(blueShip2.orientation.direction), blueShip2.speed, blueShip2.size, blueShip2.armor, blueShip2.ammo, blueShip2.torpedo, blueShip2.viewRange);
@@ -102,22 +107,27 @@ package components
 			_bluePlayer.addShip(_blueShipComponent2);
 			_bluePlayer.addShip(_blueShipComponent3);
 			
+			// Carga los datos del turno
 			if (_bluePlayer.username == turn.activePlayer.username)
 				_turn = new Turn(turn.movesLeft, _bluePlayer, turn.timeLeft);
 			else
 				_turn = new Turn(turn.movesLeft, _redPlayer, turn.timeLeft);
 			
+			// Si el usuario es el jugador activo se pone el estado del juego en jugando, de lo contrario queda
+			// esperando los movimientos del oponente
 			if (isActivePlayer())
 				_gameMode.gameMode = GameMode.PLAYING;
 			else
 				_gameMode.gameMode = GameMode.WAITING_PLAYER_TURN;
 			
-			// Agrega los barcos al mapa
+			// Bloquea las celdas que ocupan los barcos
 			_gridComponent.blockCells(_redShipComponent.coordinates);
 			_gridComponent.blockCells(_blueShipComponent1.coordinates);
 			_gridComponent.blockCells(_blueShipComponent2.coordinates);
 			_gridComponent.blockCells(_blueShipComponent3.coordinates);
 			
+			// Si estamos cargando un juego hay posibilidad de que los barcos esten destruidos, en ese
+			// caso actualizo si estado en la partida
 			if (_redShipComponent.armor <= 0)
 				destroyShip(_redShipComponent);
 			if (_blueShipComponent1.armor <= 0)
@@ -127,21 +137,27 @@ package components
 			if (_blueShipComponent3.armor <= 0)
 				destroyShip(_blueShipComponent3);
 			
+			// Inicializo los eventos de click sobre los barcos
 			_redShipComponent.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
 			_blueShipComponent1.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
 			_blueShipComponent2.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
 			_blueShipComponent3.addEventListener(SelectedShipEvent.CLICK, selectedShipEvent);
 			
+			// Agrego los barcos al mapa
 			_board.addChild(_redShipComponent);
 			_board.addChild(_blueShipComponent1);
 			_board.addChild(_blueShipComponent2);
 			_board.addChild(_blueShipComponent3);
 			
+			// Mostramos los barcos en el mapa
 			_redShipComponent.show();
 			_blueShipComponent1.show();
 			_blueShipComponent2.show();
 			_blueShipComponent3.show();
+			
+			// Seleccionamos el primer barco disponible del jugador
 			selectShip(_me.getNextAliveShip());
+			// Actualizamos la visibilidad de los barcos
 			setShipsVisibility();
 			
 			// Cargamos informacion de usuarios y barcos
@@ -153,6 +169,7 @@ package components
 		
 		}
 		
+		// Selecciona el barco recibido por pantalla en el mapa
 		private function selectShip(ship:Ship):void
 		{
 			if (_selectedShip != null)
@@ -164,6 +181,7 @@ package components
 			refreshMode();
 		}
 		
+		// Inicializa todos los objetos graficos
 		private function loadUserInterface():void
 		{
 			// Inicializa el Canvas que contiene los demas elementos
@@ -190,8 +208,6 @@ package components
 			_gridComponent.portCells(_mapComponent.getPortHalfCoordinates());
 			_gridComponent.portCells(_mapComponent.getPortOneCoordinates());
 			
-			_selectedShip = null;
-			
 			// Agrega los componentes al objeto Canvas
 			_board.addChild(_mapComponent);
 			_board.addChild(_gridComponent);
@@ -199,11 +215,14 @@ package components
 			// Muestra los componentes en pantalla
 			_mapComponent.show();
 			
+			// Crea el menu y lo posiciona en la pantalla
 			_menu = new Menu(Menu.MENU_POSITION_BOTTOM_LEFT);
+			// Este evento es disparado cuando se cambia de opcion en el menu
 			_menu.addEventListener(ActionEvent.MODE_CHANGED, function(event:ActionEvent):void
 				{
 					refreshMode();
 				});
+			// Este evento se dispara cuando se hace click sobre un punto cardinal de rotacion
 			_menu.addEventListener(ActionEvent.ROTATION_CLICKED, function(event:ActionEvent):void
 				{
 					if (_selectedShip != null)
@@ -212,6 +231,7 @@ package components
 							rotateAction(_selectedShip, new Cardinal(event.rotation));
 					}
 				});
+			// Este evento se dispara cuando cambia el modo de disparo
 			_menu.addEventListener(ActionEvent.FIRE_MODE_CHANGED, function(event:ActionEvent):void
 				{
 					if (isActivePlayer() && !_isAnimating && _selectedShip != null && _menu.currentFireMode == Menu.MENU_FIRE_MODE_TORPEDO && _selectedShip.hasTorpedoes())
@@ -223,6 +243,7 @@ package components
 						_toastManager.addToast("Haz click sobre un barco enemigo al cual dispararle");
 					}
 				});
+			// Este evento se dispara cuando se hace click en el boton terminar turno
 			_menu.addEventListener(ActionEvent.TURN_SKIP, function():void
 				{
 					if (isActivePlayer())
@@ -235,6 +256,7 @@ package components
 					else
 						_toastManager.addToast("Para poder terminar el turno debes ser el jugador activo");
 				});
+			// Este evento se dispara cuando se hace click en el boton guardar y terminar
 			_menu.addEventListener(ActionEvent.SAVE_GAME, function():void
 				{
 					if (isActivePlayer())
@@ -247,11 +269,14 @@ package components
 					else
 						_toastManager.addToast("Para poder guardar debes ser el jugador activo");
 				});
+			// Se agrega el menu a la pantalla
 			_main.addElement(_menu);
 			
+			// Se agrega a la pantalla el panel de informacion sobre los barcos
 			_info = new Info();
 			_main.addElement(_info);
 			
+			// Se crea y se agrega a la pantalla el sistema de notificaciones
 			_toastManager = new ToastManager();
 			_main.addElement(_toastManager);
 		}
@@ -263,6 +288,8 @@ package components
 		 *
 		 * ************************************************
 		 * */
+		
+		// Inicia el timer
 		public function startSyncronizing():void
 		{
 			timer = new Timer(500, 0);
@@ -270,32 +297,35 @@ package components
 			timer.start();
 		}
 		
+		// Evento disparado cada 500 millisegundos
 		private function timerHandler(event:TimerEvent):void
 		{
+			// Si el modo de juego es esperando jugador se chequea si hay una partida disponible
 			if (_gameMode.gameMode == GameMode.WAITING_FOR_PLAYER)
 			{
 				_main.wsRequest.checkGameId();
-			}
+			} // Si el modo de juego es esperando para cargar sigo preguntando al servidor si hay algun contrincante
 			else if (_gameMode.gameMode == GameMode.WAITING_FOR_LOADING)
 			{
 				_main.wsRequest.getGameIdLoading(_myUsername);
-			}
+			} // En este caso estoy jugando, solo se realizan acciones no se consumen
 			else if (_gameMode.gameMode == GameMode.PLAYING)
 			{
 				if (_messageModal != null && _messageModal.isOpened)
 					_messageModal.close();
-			}
+			} // En este caso el jugador esta consumiendo las acciones del contrincante
 			else if (_gameMode.gameMode == GameMode.WAITING_PLAYER_TURN)
 			{
 				if (_messageModal != null && _messageModal.isOpened)
 					_messageModal.close();
 				_main.wsRequest.getActions(_gameId, _myUsername);
 			}
-			
+			// Si estoy jugando o estoy esperando por jugador actualizo el tiempo restante del turno
 			if (_gameMode.gameMode == GameMode.PLAYING || _gameMode.gameMode == GameMode.WAITING_PLAYER_TURN)
 				updateTimeLeft();
 		}
 		
+		// Actualiza el tiempo restante del turno
 		private function updateTimeLeft():void
 		{
 			if (_shouldDecreaseTime)
@@ -324,6 +354,8 @@ package components
 		 * ************************************************
 		 * */
 		
+		// Evento disparado cuando el servidor retorna un id de juego, si el mismo es mayor que cero es que
+		// hay una partida disponible, de lo contrario sigue sin haber un contrincante
 		public function newGameHandler(response:ResultEvent):void
 		{
 			var gameId:int = response.result as int;
@@ -341,6 +373,9 @@ package components
 			startSyncronizing();
 		}
 		
+		// Evento disparado cuando el servidor retorna un id de juego cargado, si el mismo es mayor que cero
+		// se carga la partida si es -1 es que no hay ningun oponente todavia y si es -2 el usuario no tiene 
+		// partidas para cargar
 		public function loadGameHandler(response:ResultEvent):void
 		{
 			var gameId:int = response.result as int;
@@ -368,11 +403,13 @@ package components
 				startSyncronizing();
 		}
 		
+		// Evento disparado cuando se guardo un juego en el servidor
 		public function saveGameHandler(response:ResultEvent):void
 		{
 			saveGameAction();
 		}
 		
+		// Evento disparado cuando se quiere cargar un juego del servidor
 		public function checkGameIdHandler(response:ResultEvent):void
 		{
 			var gameId:int = response.result as int;
@@ -384,8 +421,10 @@ package components
 			}
 		}
 		
+		// Evento disparado cuando el jugador esperando obtiene las acciones realizadas por el contrincante del servidor
 		public function consumeActionsHandler(response:ResultEvent):void
 		{
+			// Si la respuesta es distinta de nula significa que el oponente realizo al menos una accion
 			if (response.result != null)
 			{
 				// Si el resultado es un array significa que vinieron mas de una accion juntas, las agrego a la cola
@@ -401,11 +440,12 @@ package components
 					// Agregamos las nuevas acciones a ejecutar a la cola de acciones
 					_actionQueue.addItem(response.result);
 				}
-				
+				// Llamamos a consumir la primera accion
 				consumeNextAction();
 			}
 		}
 		
+		// Evento disparado cuando un jugador realiza un disparo
 		public function fireHandler(response:ResultEvent):void
 		{
 			var coordinate:Coordinate = null;
@@ -425,30 +465,35 @@ package components
 			fireAction(_selectedShip, affectedShip, newArmor, response.result.hit, coordinate, response.result.weaponType.weapon);
 		}
 		
+		// Evento disparado cuando se realiza una rotacion
 		public function rotateHandler(response:ResultEvent):void
 		{
-			trace("el server se actualizo con la nueva direccion del barco");
 		}
 		
+		// Evento disparado cuando el jugador finaliza el turno
 		public function endTurnHandler(response:ResultEvent):void
 		{
 			endTurnAction();
 		}
 		
+		// Evento disparado cuando se termina el juego
 		public function endGameHandler(response:ResultEvent):void
 		{
 			endGameAction();
 		}
 		
+		// Evento disparado cuando se obtiene un juego del servidor
 		public function getGameHandler(response:ResultEvent):void
 		{
 			initializeGame(response.result);
 		}
 		
+		// Evento disparado cuando se mueve un barco
 		public function moveHandler(response:ResultEvent):void
 		{
 		}
 		
+		// Evento disparado cuando se entra a puerto
 		public function enterPortHandler(response:ResultEvent):void
 		{
 			if (response.result.ship != null)
@@ -689,6 +734,7 @@ package components
 				_menu.updateShipInfo(firingShip);
 		}
 		
+		// Realiza la entrada a puerto, dependiendo del puerto acualiza los atributos del barco
 		private function enterPortAction(ship:Ship, newArmor:int, newAmmo:int, newTorpedoes:int):void
 		{
 			ship.armor = newArmor;
@@ -703,6 +749,7 @@ package components
 		
 		}
 		
+		// Realiza la accion de terminar el juego y mostrar los correspondientes mensajes
 		private function endGameAction():void
 		{
 			timer.stop();
@@ -748,6 +795,8 @@ package components
 		 * ************************************************
 		 * */
 		
+		// Chequea si un barco recibio daño y actualiza la armadura del mismo y muestra los correspondientes
+		// mensajes en pantalla
 		private function checkFireHit(affectedShip:Ship, newArmor:int):void
 		{
 			affectedShip.armor = newArmor;
@@ -771,9 +820,10 @@ package components
 					_toastManager.addToast("El disparo impacto en tu barco, su armadura es: " + newArmor);
 				if (affectedShip.shipId == _selectedShip.shipId)
 					_menu.updateShipInfo(_selectedShip);
-			}			
+			}
 		}
 		
+		// Destruye una nave ocultandola del mapa
 		private function destroyShip(destroyedShip:Ship):void
 		{
 			// oculto el barco
@@ -898,6 +948,7 @@ package components
 			return currentPos;
 		}
 		
+		// Habilita las celdas disponibles de movimiento para el barco seleccionado
 		public function enableMovement(ship:Ship):void
 		{
 			var nomore:Boolean = false;
@@ -945,6 +996,7 @@ package components
 			}
 		}
 		
+		// Consume la primera accion guardada en la cola de acciones
 		public function consumeNextAction():void
 		{
 			if (_actionQueue != null && _actionQueue.length > 0)
@@ -1004,6 +1056,7 @@ package components
 			}
 		}
 		
+		// Actualiza el modo actual del barco seleccionado
 		public function refreshMode():void
 		{
 			clearMode();
@@ -1022,6 +1075,7 @@ package components
 			}
 		}
 		
+		// Finaliza el turno si el usuario activo se quedo sin movimientos
 		private function endTurnIfNoMovesLeftAndActivePlayer():void
 		{
 			// Si soy el usuario activo y no me quedan movimientos termino el turno
@@ -1034,6 +1088,7 @@ package components
 			_gridComponent.disableCells();
 		}
 		
+		// Muestra el mensaje de fin de juego
 		private function showEndGameMessage(title:String, message:String):void
 		{
 			Alert.show(message, title, Alert.OK, null, function():void
@@ -1042,6 +1097,7 @@ package components
 				});
 		}
 		
+		// Actualiza la visibilidad de las naves dependiendo del rango de vision de las mismas
 		private function setShipsVisibility():void
 		{
 			for (var i:int = 0; i < _shipList.length; i++)
