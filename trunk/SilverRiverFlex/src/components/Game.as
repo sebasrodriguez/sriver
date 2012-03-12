@@ -300,29 +300,30 @@ package components
 		// Evento disparado cada 500 millisegundos
 		private function timerHandler(event:TimerEvent):void
 		{
-			// Si el modo de juego es esperando jugador se chequea si hay una partida disponible
-			if (_gameMode.gameMode == GameMode.WAITING_FOR_PLAYER)
+			switch (_gameMode.gameMode)
 			{
-				_main.wsRequest.checkGameId();
-			} // Si el modo de juego es esperando para cargar sigo preguntando al servidor si hay algun contrincante
-			else if (_gameMode.gameMode == GameMode.WAITING_FOR_LOADING)
-			{
-				_main.wsRequest.getGameIdLoading(_myUsername);
-			} // En este caso estoy jugando, solo se realizan acciones no se consumen
-			else if (_gameMode.gameMode == GameMode.PLAYING)
-			{
-				if (_messageModal != null && _messageModal.isOpened)
-					_messageModal.close();
-			} // En este caso el jugador esta consumiendo las acciones del contrincante
-			else if (_gameMode.gameMode == GameMode.WAITING_PLAYER_TURN)
-			{
-				if (_messageModal != null && _messageModal.isOpened)
-					_messageModal.close();
-				_main.wsRequest.getActions(_gameId, _myUsername);
+				// Si el modo de juego es esperando jugador se chequea si hay una partida disponible
+				case GameMode.WAITING_FOR_PLAYER: 
+					_main.wsRequest.checkGameId();
+					break;
+				// Si el modo de juego es esperando para cargar sigo preguntando al servidor si hay algun contrincante
+				case GameMode.WAITING_FOR_LOADING: 
+					_main.wsRequest.getGameIdLoading(_myUsername);
+					break;
+				// En este caso estoy jugando, solo se realizan acciones no se consumen
+				case GameMode.PLAYING: 
+					if (_messageModal != null && _messageModal.isOpened)
+						_messageModal.close();
+					updateTimeLeft();
+					break;
+				// En este caso el jugador esta consumiendo las acciones del contrincante
+				case GameMode.WAITING_PLAYER_TURN: 
+					if (_messageModal != null && _messageModal.isOpened)
+						_messageModal.close();
+					_main.wsRequest.getActions(_gameId, _myUsername);
+					updateTimeLeft();
+					break;
 			}
-			// Si estoy jugando o estoy esperando por jugador actualizo el tiempo restante del turno
-			if (_gameMode.gameMode == GameMode.PLAYING || _gameMode.gameMode == GameMode.WAITING_PLAYER_TURN)
-				updateTimeLeft();
 		}
 		
 		// Actualiza el tiempo restante del turno
