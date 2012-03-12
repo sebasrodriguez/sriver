@@ -8,12 +8,12 @@
 	<script src="js/swfobject.js"></script>
 	<script>
 		var flashvars = {
-			SilverRiverService:"http://192.168.1.235:8080/SilverRiverServer/services/SilverRiverService?wsdl"
+			SilverRiverService:"http://localhost:8080/SilverRiverServer/services/SilverRiverService?wsdl"
 		};		
 		var params = {
 			menu: "false",
 			scale: "noScale",
-			allowFullscreen: "true",
+			allowFullscreen: "false",
 			allowScriptAccess: "always",
 			bgcolor: "",
 			wmode: "direct" // can cause issues with FP settings & webcam
@@ -23,17 +23,16 @@
 		};
 		swfobject.embedSWF(
 			"SilverRiverFlex.swf", 
-			"altContent", "100%", "100%", "10.0.0", 
+			"altContent", "800", "600", "10.0.0", 
 			"expressInstall.swf", 
 			flashvars, params, attributes);
 	</script>
 	<style>
-		html, body { height:100%; overflow:hidden; }
-		body { margin:0; }
+		html, body { height:100%; overflow:hidden; text-align:center; }		
 	</style>
 </head>
 <body>
-	<div id="altContent">
+	<div id="altContent" style="text-align:center">
 		<h1>SilverRiverFlex</h1>
 		<p><a href="http://www.adobe.com/go/getflashplayer">Get Adobe Flash player</a></p>
 	</div>
