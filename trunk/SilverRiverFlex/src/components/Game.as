@@ -757,6 +757,7 @@ package components
 			{
 				// Muestro mensaje
 				_toastManager.addToast("Barco hundido");
+				checkGoal(null);
 				destroyShip(affectedShip);
 				// Si el barco eliminado es el que tengo seleccionado obtengo el siguiente barco
 				if (affectedShip.shipId == _selectedShip.shipId && _me.hasAliveShips())
@@ -770,9 +771,7 @@ package components
 					_toastManager.addToast("El disparo impacto en tu barco, su armadura es: " + newArmor);
 				if (affectedShip.shipId == _selectedShip.shipId)
 					_menu.updateShipInfo(_selectedShip);
-			}
-			if (!_me.hasAliveShips())
-				_toastManager.addToast("Perdiste el juego");
+			}			
 		}
 		
 		private function destroyShip(destroyedShip:Ship):void
