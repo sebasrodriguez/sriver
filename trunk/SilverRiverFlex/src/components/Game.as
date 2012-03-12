@@ -22,17 +22,14 @@ package components
 		private var _main:Main;
 		private var _board:Canvas;
 		private var _menu:Menu;
-		private var _mapComponent:Map;
-		private var _iter:int = 0;
+		private var _mapComponent:Map;		
 		private var _actions:ResultEvent;
 		private var _actionQueue:ArrayList;
 		private var _shouldDecreaseTime:Boolean;
 		private var _gameMode:GameMode;
-		private var _scrollControl:AutoScroll;
-		private var _componentsToShow:ArrayList;
+		private var _scrollControl:AutoScroll;		
 		private var _isAnimating:Boolean;
-		// Controles UI		
-		private var _waitingPlayerLabel:Label;
+		// Controles UI				
 		private var _info:Info;
 		private var _toastManager:ToastManager;
 		private var timer:Timer;
