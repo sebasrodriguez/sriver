@@ -22,12 +22,12 @@ package components
 		private var _main:Main;
 		private var _board:Canvas;
 		private var _menu:Menu;
-		private var _mapComponent:Map;		
+		private var _mapComponent:Map;
 		private var _actions:ResultEvent;
 		private var _actionQueue:ArrayList;
 		private var _shouldDecreaseTime:Boolean;
 		private var _gameMode:GameMode;
-		private var _scrollControl:AutoScroll;		
+		private var _scrollControl:AutoScroll;
 		private var _isAnimating:Boolean;
 		// Controles UI				
 		private var _info:Info;
@@ -1036,11 +1036,11 @@ package components
 				}
 				else if (action.actionType == "EnterPortAction")
 				{
-					trace("EnterPortAction");
-				}
-				else if (action.actionType == "LeavePortAction")
-				{
-					trace("LeavePortAction");
+					if (action.ship != null)
+					{						
+						ship = getShipById(action.ship.id);
+						enterPortAction(ship, action.ship.armor, action.ship.ammo, action.ship.torpedo);
+					}
 				}
 				else if (action.actionType == "EndGameAction")
 				{
