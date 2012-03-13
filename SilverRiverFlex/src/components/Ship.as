@@ -185,27 +185,7 @@ package components
 		public function set viewRange(value:int):void
 		{
 			_viewRange = value;
-		}
-		
-		public function get port1Enabled():Boolean 
-		{
-			return _port1Enabled;
-		}
-		
-		public function set port1Enabled(value:Boolean):void 
-		{
-			_port1Enabled = value;
-		}
-		
-		public function get port2Enabled():Boolean 
-		{
-			return _port2Enabled;
-		}
-		
-		public function set port2Enabled(value:Boolean):void 
-		{
-			_port2Enabled = value;
-		}
+		}		
 		
 		public function updateCoordinates():void
 		{

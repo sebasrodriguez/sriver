@@ -853,19 +853,17 @@ package components
 		{
 			if (isActivePlayer())
 			{
-				if (ship.port1Enabled && _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortHalfCoordinates()))
+				if (_mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortHalfCoordinates()))
 				{
-					_main.wsRequest.enterPort1(_gameId, ship.shipId);
-					ship.port1Enabled = false;
+					_main.wsRequest.enterPort1(_gameId, ship.shipId);					
 					_toastManager.addToast("Haz entrado en puerto, se recargará la mitad de los atributos del barco");
 				}
-				if (ship.port2Enabled && _mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortOneCoordinates()))
+				if (_mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortOneCoordinates()))
 				{
 					_rechargeModal = new RechargeModal(_main);
 					_rechargeModal.addEventListener(ModalEvent.ATTRIBUTE_SELECTED, function(event:ModalEvent):void
 						{
-							_main.wsRequest.enterPort2(_gameId, ship.shipId, event.attribute);
-							ship.port2Enabled = false;
+							_main.wsRequest.enterPort2(_gameId, ship.shipId, event.attribute);							
 							_toastManager.addToast("Se recargará el total del atributo que haz seleccionado");
 						});
 				}
