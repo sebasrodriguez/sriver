@@ -207,18 +207,27 @@ public class Facade {
 		Coordinate coordinateHitted = null;
 		ShipVO firedShipVO = null;
 		ShipVO firingShipVO = null;
-		
-		if(activeGame != null){
+		boolean ommitFirsCell = false;
+				
+		if(activeGame != null){			
 			shipFiring =  activeGame.getShip(shipFiringId);
 			coordinates = this.straightCoordinates(shipFiring.getPosition(), shipFiring.getOrientation());
 			coordinatesIt = coordinates.iterator();
 			
+			if(shipFiringId == 0){
+				ommitFirsCell = true;
+			}
+			
 			while(coordinatesIt.hasNext() && hitted == false){
 				Coordinate coordinateAux = coordinatesIt.next();	
 				if(activeGame.getShipFiredId(coordinateAux) != -1){
-					//acerto	
-					hitted = true;			
-					coordinateHitted = coordinateAux;
+					if(ommitFirsCell){
+						ommitFirsCell = false;					
+					}else{
+						//acerto	
+						hitted = true;			
+						coordinateHitted = coordinateAux;
+					}
 				}
 			}
 			
@@ -539,6 +548,8 @@ public class Facade {
 		Action[] actionToReturn = null;
 		boolean mustRemove = false;
 		int i = 0;
+		int indexActiveGame = 0;
+		boolean found = false;
 		
 		if(activeGame != null){
 			//comparo si es redPlayer
@@ -559,7 +570,16 @@ public class Facade {
 			}
 			
 			if(mustRemove){
-				this.activeGames.remove(this.activeGames.indexOf(this.activeGames.get(gameId)));			
+				Iterator<Game> gameIt = this.activeGames.iterator();
+				while(gameIt.hasNext() && !found){
+					Game aux = gameIt.next();
+					if(aux.getId() == gameId){
+						found = true;						
+						this.activeGames.remove(indexActiveGame);
+					}
+					indexActiveGame++;
+				}
+				//this.activeGames.remove(this.activeGames.indexOf(this.activeGames.get(gameId)));			
 			}
 		}			
 		return actionToReturn;		
