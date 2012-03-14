@@ -742,6 +742,8 @@ package components
 							func.call();
 					});
 			}
+			// Actualizamos la visibilidad de los barcos
+			setShipsVisibility();
 			if (isActivePlayer())
 				_menu.updateShipInfo(firingShip);
 		}
