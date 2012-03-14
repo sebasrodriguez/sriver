@@ -858,18 +858,25 @@ package components
 			{
 				if (_mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortHalfCoordinates()))
 				{
-					_main.wsRequest.enterPort1(_gameId, ship.shipId);					
-					_toastManager.addToast("Haz entrado en puerto, se recargará la mitad de los atributos del barco");
-				}
+					if(!ship.isInPort){
+						_main.wsRequest.enterPort1(_gameId, ship.shipId);					
+						_toastManager.addToast("Haz entrado en puerto, se recargará la mitad de los atributos del barco");
+						ship.isInPort = true;
+					}
+				}else
 				if (_mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getPortOneCoordinates()))
 				{
-					_rechargeModal = new RechargeModal(_main);
-					_rechargeModal.addEventListener(ModalEvent.ATTRIBUTE_SELECTED, function(event:ModalEvent):void
-						{
-							_main.wsRequest.enterPort2(_gameId, ship.shipId, event.attribute);							
-							_toastManager.addToast("Se recargará el total del atributo que haz seleccionado");
-						});
-				}
+					if(!ship.isInPort){
+						_rechargeModal = new RechargeModal(_main);
+						_rechargeModal.addEventListener(ModalEvent.ATTRIBUTE_SELECTED, function(event:ModalEvent):void
+							{
+								_main.wsRequest.enterPort2(_gameId, ship.shipId, event.attribute);							
+								_toastManager.addToast("Se recargará el total del atributo que haz seleccionado");
+							});
+						ship.isInPort = true;					
+					}
+				}else
+					ship.isInPort = false;
 			}
 		}
 		
