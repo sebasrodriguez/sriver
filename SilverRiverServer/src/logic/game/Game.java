@@ -207,7 +207,7 @@ public class Game implements Serializable
 					}
 				}				
 			}else{
-				if(aux.getPosition().getX() == position.getX() && aux.getPosition().getY() == position.getY()){
+				if(aux.getPosition().getX() == position.getX() && aux.getPosition().getY() == position.getY() && aux.getArmor() > 0){
 					found = true;
 					shipIdToReturn = aux.getId();
 				}
