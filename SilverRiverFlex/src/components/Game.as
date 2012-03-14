@@ -225,10 +225,8 @@ package components
 			// Este evento se dispara cuando se hace click sobre un punto cardinal de rotacion
 			_menu.addEventListener(ActionEvent.ROTATION_CLICKED, function(event:ActionEvent):void
 				{
-					if (_selectedShip != null)
-					{
-						if (isActivePlayer() && !_isAnimating && _turn.hasMovesLeft())
-							rotateAction(_selectedShip, new Cardinal(event.rotation));
+					if (isActivePlayer() && !_isAnimating && _turn.hasMovesLeft()) {						
+						rotateAction(_selectedShip, new Cardinal(event.rotation));	
 					}
 				});
 			// Este evento se dispara cuando cambia el modo de disparo
@@ -632,27 +630,27 @@ package components
 		{
 			if (rotationEnabled(ship, direction))
 			{
+				_isAnimating = true;
+				// Actualizamos los movimientos restantes
+				updateMovesLeft();
 				if (isActivePlayer())
 				{
 					// Llamamos al web service para actualizar la direccion del barco				
 					_main.wsRequest.rotate(_gameId, ship.shipId, direction.cardinal);
-				}
-				// Actualizamos los movimientos restantes
-				updateMovesLeft();
+				}				
 				// Actualizamos las celdas bloqueadas por el barco
 				_gridComponent.unblockCells(ship.coordinates);
 				// Seteamos la nueva direccion del barco
-				ship.direction = direction;
-				_isAnimating = true;
+				ship.direction = direction;				
 				// Rotamos el barco
 				ship.rotateTo(direction.cardinal, function():void
 					{
-						_isAnimating = false;
-						endTurnIfNoMovesLeftAndActivePlayer()
+						_isAnimating = false;						
 						// Actualizamos las celdas bloqueadas por el barco en su nueva posicion
 						_gridComponent.blockCells(ship.coordinates);
 						checkPort(ship);
 						checkGoal(ship);
+						endTurnIfNoMovesLeftAndActivePlayer()
 						if (func != null)
 							func.call();
 					});
