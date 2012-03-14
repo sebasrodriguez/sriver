@@ -90,10 +90,9 @@
 			}
 			
 			public function reloadGame():void
-			{				
-				// TODO: mejorar el recargar ya que se pone lento el juego cuando se inicializa haciendo un new del game
-				_game = null;
-				_game = new Game(this);
+			{
+				var pageUrl:String = ExternalInterface.call("window.location.href.toString");
+				navigateToURL(new URLRequest(pageUrl), "_self");
 			}
 		]]>
 	</fx:Script>
