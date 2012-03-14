@@ -427,14 +427,14 @@ package components
 			{
 				// Si el resultado es un array significa que vinieron mas de una accion juntas, las agrego a la cola
 				if (response.result is ArrayCollection)
-				{
+				{					
 					for (var i:int = 0; i < response.result.length; i++)
-					{
+					{						
 						_actionQueue.addItem(response.result[i]);
 					}
 				}
 				else
-				{
+				{					
 					// Agregamos las nuevas acciones a ejecutar a la cola de acciones
 					_actionQueue.addItem(response.result);
 				}
@@ -471,6 +471,7 @@ package components
 		// Evento disparado cuando el jugador finaliza el turno
 		public function endTurnHandler(response:ResultEvent):void
 		{
+			trace("el server ya tiene el end turn");
 			endTurnAction();
 		}
 		
@@ -733,7 +734,7 @@ package components
 		}
 		
 		// Realiza la entrada a puerto, dependiendo del puerto acualiza los atributos del barco
-		private function enterPortAction(ship:Ship, newArmor:int, newAmmo:int, newTorpedoes:int):void
+		private function enterPortAction(ship:Ship, newArmor:int, newAmmo:int, newTorpedoes:int, func:Function = null):void
 		{
 			ship.armor = newArmor;
 			ship.ammo = newAmmo;
@@ -744,7 +745,10 @@ package components
 					_menu.updateShipInfo(ship);
 				_main.wsRequest.endTurn(_gameId);
 			}
-		
+			if (func != null) {
+				_actionQueue.removeItemAt(0);
+				func.call();
+			}
 		}
 		
 		// Realiza la accion de terminar el juego y mostrar los correspondientes mensajes
@@ -1005,7 +1009,7 @@ package components
 					moveAction(ship, new Coordinate(action.position.y, action.position.x), consumeNextAction);
 				}
 				else if (action.actionType == "RotateAction")
-				{
+				{					
 					ship = getShipById(action.ship.id);
 					rotateAction(ship, new Cardinal(action.cardinal.direction), consumeNextAction);
 				}
@@ -1029,15 +1033,15 @@ package components
 					fireAction(ship, affectedShip, newArmor, action.hit, coordinate, action.weaponType.weapon, consumeNextAction);
 				}
 				else if (action.actionType == "EndTurnAction")
-				{
+				{					
 					endTurnAction();
 				}
 				else if (action.actionType == "EnterPortAction")
-				{
+				{					
 					if (action.ship != null)
 					{						
 						ship = getShipById(action.ship.id);
-						enterPortAction(ship, action.ship.armor, action.ship.ammo, action.ship.torpedo);
+						enterPortAction(ship, action.ship.armor, action.ship.ammo, action.ship.torpedo, consumeNextAction);
 					}
 				}
 				else if (action.actionType == "EndGameAction")
@@ -1048,7 +1052,8 @@ package components
 				{
 					saveGameAction();
 				}
-				_actionQueue.removeItemAt(0);
+				if(action.actionType != "EnterPortAction")
+					_actionQueue.removeItemAt(0);
 			}
 		}
 		

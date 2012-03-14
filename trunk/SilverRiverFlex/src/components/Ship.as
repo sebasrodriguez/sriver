@@ -16,7 +16,7 @@ package components
 	{
 		public static const VARIABLE_ATTRIBUTE_ARMOR:String = "armor";
 		public static const VARIABLE_ATTRIBUTE_AMMO:String = "ammo";
-		public static const VARIABLE_ATTRIBUTE_TORPEDOES:String = "torpedoes";
+		public static const VARIABLE_ATTRIBUTE_TORPEDOES:String = "torpedo";
 		
 		private var _id:int;
 		private var _ship:Ship;
