@@ -234,7 +234,7 @@ package components
 			// Este evento se dispara cuando cambia el modo de disparo
 			_menu.addEventListener(ActionEvent.FIRE_MODE_CHANGED, function(event:ActionEvent):void
 				{
-					if (isActivePlayer() && !_isAnimating && _selectedShip != null && _menu.currentFireMode == Menu.MENU_FIRE_MODE_TORPEDO && _selectedShip.hasTorpedoes())
+					if (isActivePlayer() && !_isAnimating && _turn.hasMovesLeft() && _menu.currentFireMode == Menu.MENU_FIRE_MODE_TORPEDO && _selectedShip.hasTorpedoes())
 					{
 						_isAnimating = true;
 						updateMovesLeft();
@@ -533,7 +533,7 @@ package components
 				if (_menu.currentMode == Menu.MENU_MODE_FIRE)
 				{
 					// Si es el usuario activo disparo
-					if (isActivePlayer() && !_isAnimating)
+					if (isActivePlayer() && !_isAnimating && _turn.hasMovesLeft())
 					{
 						// Si quedan balas disparo
 						if (_selectedShip.hasAmmo() && _selectedShip.isInFireRange(ship.currentPos))
