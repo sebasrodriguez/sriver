@@ -117,11 +117,7 @@ package components
 			else
 				_gameMode.gameMode = GameMode.WAITING_PLAYER_TURN;
 			
-			// Bloquea las celdas que ocupan los barcos
-			_gridComponent.blockCells(_redShipComponent.coordinates);
-			_gridComponent.blockCells(_blueShipComponent1.coordinates);
-			_gridComponent.blockCells(_blueShipComponent2.coordinates);
-			_gridComponent.blockCells(_blueShipComponent3.coordinates);
+			
 			
 			// Si estamos cargando un juego hay posibilidad de que los barcos esten destruidos, en ese
 			// caso actualizo si estado en la partida
@@ -163,7 +159,12 @@ package components
 			_info.movesLeftText = _turn.movesLeft.toString();
 			_info.timeLeftText = _turn.timeLeft.toString();
 			_info.setActivePlayer(_turn.activePlayer == _redPlayer);
-		
+			
+			_gridComponent.blockCells(_redShipComponent.coordinates);
+			_gridComponent.blockCells(_blueShipComponent1.coordinates);
+			_gridComponent.blockCells(_blueShipComponent2.coordinates);
+			_gridComponent.blockCells(_blueShipComponent3.coordinates);
+			//refreshMode();
 		}
 		
 		// Selecciona el barco recibido por pantalla en el mapa
@@ -957,6 +958,8 @@ package components
 		// Habilita las celdas disponibles de movimiento para el barco seleccionado
 		public function enableMovement(ship:Ship):void
 		{
+			for (var f:int = 0; f < ship.coordinates.length; f ++)
+				_gridComponent.enableCell(ship.coordinates[f]);
 			var nomore:Boolean = false;
 			var offset:Number = Math.floor(ship.size / 2);
 			var i:int = 0;
@@ -1000,6 +1003,7 @@ package components
 					nomore = true;
 				i++;
 			}
+			
 		}
 		
 		// Consume la primera accion guardada en la cola de acciones

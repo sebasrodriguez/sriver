@@ -96,7 +96,7 @@ package components
 			createMoveTab();
 			createRotateTab();
 			createFireTab();
-			dispatchModeChanged(MENU_MODE_MOVE);
+			//dispatchModeChanged(MENU_MODE_MOVE);
 			createFooter();
 		
 		}
