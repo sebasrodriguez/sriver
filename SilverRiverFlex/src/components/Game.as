@@ -710,6 +710,8 @@ package components
 						if (!hit)
 							_toastManager.addToast("El disparo no impacto en el barco enemigo");
 						_isAnimating = false;
+						// Actualizamos la visibilidad de los barcos
+						setShipsVisibility();
 						if (func != null)
 							func.call();
 					});
@@ -738,12 +740,12 @@ package components
 							checkFireHit(affectedShip, newArmor);
 						}
 						_isAnimating = false;
+						// Actualizamos la visibilidad de los barcos
+						setShipsVisibility();
 						if (func != null)
 							func.call();
 					});
-			}
-			// Actualizamos la visibilidad de los barcos
-			setShipsVisibility();
+			}			
 			if (isActivePlayer())
 				_menu.updateShipInfo(firingShip);
 		}
