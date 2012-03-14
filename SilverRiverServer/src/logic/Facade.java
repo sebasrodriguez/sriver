@@ -721,18 +721,18 @@ public class Facade {
 			switch (shipToRepair.getId()){
 			//barco rojo
 			case 0:			
-				if(attribute.compareTo("armor") == 0){
+				if(attribute.toLowerCase().compareTo("armor") == 0){
 					newAmmo = shipToRepair.getAmmo();
 					newArmor = 10;
 					newTorpedo = shipToRepair.getTorpedo();
 				}else{
-					if(attribute.compareTo("ammo") == 0){
+					if(attribute.toLowerCase().compareTo("ammo") == 0){
 						newAmmo = 12;
 						newArmor = shipToRepair.getArmor();
 						newTorpedo = shipToRepair.getTorpedo();
 						
 					}else{
-						if(attribute.compareTo("torpedo") == 0){
+						if(attribute.toLowerCase().compareTo("torpedo") == 0){
 							newAmmo = shipToRepair.getAmmo();
 							newArmor = shipToRepair.getArmor();
 							newTorpedo = 4;						
@@ -743,18 +743,18 @@ public class Facade {
 			break;
 			//barco azul 1
 			case 1:				
-				if(attribute.compareTo("ARMOR") == 0){
+				if(attribute.toLowerCase().compareTo("armor") == 0){
 					newAmmo = shipToRepair.getAmmo();
 					newArmor = 5;
 					newTorpedo = shipToRepair.getTorpedo();
 				}else{
-					if(attribute.compareTo("AMMO") == 0){
+					if(attribute.toLowerCase().compareTo("ammo") == 0){
 						newAmmo = 12;
 						newArmor = shipToRepair.getArmor();
 						newTorpedo = shipToRepair.getTorpedo();
 						
 					}else{
-						if(attribute.compareTo("TORPEDO") == 0){
+						if(attribute.toLowerCase().compareTo("torpedo") == 0){
 							newAmmo = shipToRepair.getAmmo();
 							newArmor = shipToRepair.getArmor();
 							newTorpedo = 4;						
@@ -765,18 +765,18 @@ public class Facade {
 			break;
 			//barco azul 2
 			case 2:		
-				if(attribute.compareTo("ARMOR") == 0){
+				if(attribute.toLowerCase().compareTo("armor") == 0){
 					newAmmo = shipToRepair.getAmmo();
 					newArmor = 5;
 					newTorpedo = shipToRepair.getTorpedo();
 				}else{
-					if(attribute.compareTo("AMMO") == 0){
+					if(attribute.toLowerCase().compareTo("ammo") == 0){
 						newAmmo = 6;
 						newArmor = shipToRepair.getArmor();
 						newTorpedo = shipToRepair.getTorpedo();
 						
 					}else{
-						if(attribute.compareTo("TORPEDO") == 0){
+						if(attribute.toLowerCase().compareTo("torpedo") == 0){
 							newAmmo = shipToRepair.getAmmo();
 							newArmor = shipToRepair.getArmor();
 							newTorpedo = 2;						
@@ -787,18 +787,18 @@ public class Facade {
 			break;
 			//barco azul 3
 			case 3:					
-				if(attribute.compareTo("ARMOR") == 0){
+				if(attribute.toLowerCase().compareTo("armor") == 0){
 					newAmmo = shipToRepair.getAmmo();
 					newArmor = 5;
 					newTorpedo = shipToRepair.getTorpedo();
 				}else{
-					if(attribute.compareTo("AMMO") == 0){
+					if(attribute.toLowerCase().compareTo("ammo") == 0){
 						newAmmo = 6;
 						newArmor = shipToRepair.getArmor();
 						newTorpedo = shipToRepair.getTorpedo();
 						
 					}else{
-						if(attribute.compareTo("TORPEDO") == 0){
+						if(attribute.toLowerCase().compareTo("torpedo") == 0){
 							newAmmo = shipToRepair.getAmmo();
 							newArmor = shipToRepair.getArmor();
 							newTorpedo = 2;						
