@@ -624,7 +624,8 @@ package components
 					checkGoal(ship);
 					// Actualizo la visibilidad de los barcos
 					setShipsVisibility();
-					endTurnIfNoMovesLeftAndActivePlayer();
+					if(!ship.isInPort)
+						endTurnIfNoMovesLeftAndActivePlayer();
 					if (func != null)
 						func.call();
 				}, 10);
