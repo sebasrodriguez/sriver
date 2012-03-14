@@ -227,7 +227,7 @@ package components
 				{
 					if (_selectedShip != null)
 					{
-						if (isActivePlayer() && !_isAnimating)
+						if (isActivePlayer() && !_isAnimating && _turn.hasMovesLeft())
 							rotateAction(_selectedShip, new Cardinal(event.rotation));
 					}
 				});
