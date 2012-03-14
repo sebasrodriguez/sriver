@@ -237,6 +237,7 @@ package components
 					if (isActivePlayer() && !_isAnimating && _selectedShip != null && _menu.currentFireMode == Menu.MENU_FIRE_MODE_TORPEDO && _selectedShip.hasTorpedoes())
 					{
 						_isAnimating = true;
+						updateMovesLeft();
 						_main.wsRequest.fireTorpedo(_gameId, _selectedShip.shipId);
 					}
 					else if (isActivePlayer && _selectedShip != null && _menu.currentFireMode == Menu.MENU_FIRE_MODE_BULLET)
@@ -542,6 +543,7 @@ package components
 							coor.y = ship.currentPos.r;
 							
 							_isAnimating = true;
+							updateMovesLeft();
 							// Llamamos al webservice con la accion de disparo
 							_main.wsRequest.fireAmmo(_gameId, _selectedShip.shipId, coor);
 						}
@@ -685,8 +687,6 @@ package components
 		// Dispara un projectil desde un barco dado
 		private function fireAction(firingShip:Ship, affectedShip:Ship, newArmor:int, hit:Boolean, target:Coordinate, projectile:int, func:Function = null):void
 		{			
-			updateMovesLeft();
-			
 			if (projectile == Projectile.WEAPON_TYPE_BULLET)
 			{				
 				// Decremento la cantidad de balas
@@ -1046,6 +1046,7 @@ package components
 				}
 				else if (action.actionType == "FireAction")
 				{
+					updateMovesLeft();
 					ship = getShipById(action.ship.id);
 					var coordinate:Coordinate = null;
 					var affectedShip:Ship = null;
