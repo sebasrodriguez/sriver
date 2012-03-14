@@ -745,8 +745,7 @@ package components
 					_menu.updateShipInfo(ship);
 				_main.wsRequest.endTurn(_gameId);
 			}
-			if (func != null) {
-				_actionQueue.removeItemAt(0);
+			if (func != null) {				
 				func.call();
 			}
 		}
@@ -1001,8 +1000,9 @@ package components
 		{
 			if (_actionQueue != null && _actionQueue.length > 0)
 			{
-				var action:Object = _actionQueue.source[0];
+				var action:Object = _actionQueue.source[0];				
 				var ship:Ship;
+				_actionQueue.removeItemAt(0);
 				if (action.actionType == "MoveAction")
 				{
 					ship = getShipById(action.ship.id);
@@ -1051,9 +1051,7 @@ package components
 				else if (action.actionType == "SaveGameAction")
 				{
 					saveGameAction();
-				}
-				if(action.actionType != "EnterPortAction")
-					_actionQueue.removeItemAt(0);
+				}					
 			}
 		}
 		
