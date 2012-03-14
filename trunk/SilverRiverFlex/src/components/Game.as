@@ -735,18 +735,17 @@ package components
 				}
 				// Ejecuto la accion de disparar
 				firingShip.fireTorpedo(coordinate, function():void
-					{
-						endTurnIfNoMovesLeftAndActivePlayer();
+					{						
 						// Actualizo el daño recibido en el barco
 						if (hit && affectedShip != null)
 						{
 							checkFireHit(affectedShip, newArmor);
-						}
-						_isAnimating = false;
+						}						
 						// Actualizamos la visibilidad de los barcos
 						setShipsVisibility();
 						if(!_isGameFinished)
 							endTurnIfNoMovesLeftAndActivePlayer();
+						_isAnimating = false;
 						if (func != null)
 							func.call();
 					});
