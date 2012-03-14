@@ -175,25 +175,11 @@ package components
 			return _gridMatrix[coordinate.r][coordinate.c].available;
 		}
 	
-	/*public function getSquareFromXY(x:Number, y:Number):Shape {
-	   var r:int = Math.floor(y / this.squareSize);
-	   var c:int = Math.floor(x / this.squareSize);
-	   return _gridMatrix[r][c];
-	   }
-	
-	   public function getCoordinateFromXY(x:Number, y:Number):Coordinate {
-	   var square:Shape = this.getSquareFromXY(x, y);
-	   var newX:Number = square.x + this.squareSize / 2;
-	   var newY:Number = square.y + this.squareSize / 2;
-	   return new Coordinate(newX, newY);
-	   }
-	
-	   public function getCoordinateFromRC(r:Number, c:Number):Coordinate {
-	   var square:Shape = _gridMatrix[r][c];
-	   var newX:Number = square.x + this.squareSize / 2;
-	   var newY:Number = square.y + this.squareSize / 2;
-	   return new Coordinate(newX, newY);
-	 }*/
+		public function getCoordinateFromXY(x:Number, y:Number):Coordinate {
+			var r:int = Math.floor(y / _cellSize);
+			var c:int = Math.floor(x / _cellSize);
+			return new Coordinate(r, c);
+		}
 	}
 
 }

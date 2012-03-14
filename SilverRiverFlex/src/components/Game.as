@@ -522,6 +522,16 @@ package components
 				//si el barco es distinto al seleccionado, desseleccionamos el anterior y seleccionamos el nuevo
 				if (_selectedShip != ship)
 					selectShip(ship);
+				else {
+					/*if (_menu.currentMode == Menu.MENU_MODE_MOVE) {
+						if (_selectedShip != null && isActivePlayer() && _turn.hasMovesLeft() && !_isAnimating)
+						{
+							var c:Coordinate = _gridComponent.getCoordinateFromXY(_gridComponent.mouseX, _gridComponent.mouseY);
+							if(!c.equals(ship.currentPos))
+								moveAction(ship, c);
+						}
+					}*/
+				}
 			}
 			else
 			{
@@ -659,6 +669,7 @@ package components
 			_turn.switchTurn(_redPlayer, _bluePlayer);
 			// Cambia el modo
 			refreshMode();
+			
 			// Actualizo el contador de tiempo/movimientos y jugador actual
 			_info.movesLeftText = _turn.movesLeft.toString();
 			_info.timeLeftText = _turn.timeLeft.toString();
@@ -958,6 +969,8 @@ package components
 		// Habilita las celdas disponibles de movimiento para el barco seleccionado
 		public function enableMovement(ship:Ship):void
 		{
+			
+			_gridComponent.unblockCells(ship.coordinates);
 			for (var f:int = 0; f < ship.coordinates.length; f ++)
 				_gridComponent.enableCell(ship.coordinates[f]);
 			var nomore:Boolean = false;
@@ -1003,6 +1016,7 @@ package components
 					nomore = true;
 				i++;
 			}
+			_gridComponent.blockCells(ship.coordinates);
 			
 		}
 		
