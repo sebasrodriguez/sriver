@@ -28,7 +28,8 @@ package components
 		private var _shouldDecreaseTime:Boolean;
 		private var _gameMode:GameMode;
 		private var _scrollControl:AutoScroll;
-		private var _isAnimating:Boolean;
+		private var _isAnimating:Boolean;		
+		private var _isGameFinished:Boolean;
 		// Controles UI				
 		private var _info:Info;
 		private var _toastManager:ToastManager;
@@ -55,6 +56,7 @@ package components
 		{
 			// Se inicializan las variables y se muestra el modal de nuevo juego o cargar juego
 			_main = main;
+			_isGameFinished = false;
 			_gameMode = new GameMode(GameMode.NEWGAME);
 			_actionQueue = new ArrayList();
 			var modal:GameModal = new GameModal(_main);
@@ -700,8 +702,7 @@ package components
 				firingShip.decreaseAmmo();
 				// Ejecuto la accion de disparar
 				firingShip.fireBullet(target, function():void
-					{
-						endTurnIfNoMovesLeftAndActivePlayer();
+					{					
 						// Actualizo el daño recibido en el barco
 						if (hit && affectedShip != null)
 						{
@@ -712,6 +713,8 @@ package components
 						_isAnimating = false;
 						// Actualizamos la visibilidad de los barcos
 						setShipsVisibility();
+						if(!_isGameFinished)
+							endTurnIfNoMovesLeftAndActivePlayer();
 						if (func != null)
 							func.call();
 					});
@@ -742,6 +745,8 @@ package components
 						_isAnimating = false;
 						// Actualizamos la visibilidad de los barcos
 						setShipsVisibility();
+						if(!_isGameFinished)
+							endTurnIfNoMovesLeftAndActivePlayer();
 						if (func != null)
 							func.call();
 					});
@@ -901,14 +906,20 @@ package components
 		private function checkGoal(ship:Ship):void
 		{
 			if (!_redPlayer.hasAliveShips())
-				if (isActivePlayer())
+				if (isActivePlayer()) {
+					_isGameFinished = true;
 					_main.wsRequest.endGame(_gameId);
+				}
 			if (!_bluePlayer.hasAliveShips())
-				if (isActivePlayer())
+				if (isActivePlayer()) {
+					_isGameFinished = true;
 					_main.wsRequest.endGame(_gameId);
+				}
 			if (_me == _redPlayer && _me.isMyShip(ship))
-				if (_mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getGoalCoordinates()) && isActivePlayer())
+				if (_mapComponent.areSubCoordinates(ship.coordinates, _mapComponent.getGoalCoordinates()) && isActivePlayer()) {
+					_isGameFinished = true;
 					_main.wsRequest.endGame(_gameId);
+				}
 		}
 		
 		//verifica si hay celdas bloqueadas que impidan la rotacion
