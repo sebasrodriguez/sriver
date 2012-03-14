@@ -233,7 +233,9 @@ public class Facade {
 			
 			if(hitted){
 				Ship affectedShip = activeGame.getShip(activeGame.getShipFiredId(coordinateHitted));
-				int newArmor = affectedShip.getArmor() - 1;
+				int newArmor = affectedShip.getArmor() - 2;
+				if(newArmor < 0)
+					newArmor = 0;
 				affectedShip.setArmor(newArmor);						
 				//Comapro si el barco dañado es rojo
 				if(affectedShip.getId() == 0){
@@ -633,7 +635,7 @@ public class Facade {
 					newArmor = shipToRepair.getArmor() + 5;
 					if(newArmor > 10){
 						newArmor = 10;
-					}
+					}					
 					shipVO = new RedShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());				
 				break;
 				//barco azul 1
@@ -685,9 +687,19 @@ public class Facade {
 					shipVO = new BlueShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());
 				break;
 			}		
-			
+			shipToRepair.setAmmo(newAmmo);
+			shipToRepair.setArmor(newArmor);
+			shipToRepair.setTorpedo(newTorpedo);
 			enterPortActionToReturn = new EnterPortAction(shipVO, 1);
-		}
+			
+			//Comparo si es igual al jugador ROJO
+			if(activeGame.getTurn().getActivePlayer().getUsername().compareTo(activeGame.getRedPlayer().getUsername()) == 0){
+				activeGame.getBlueActionQueue().add(enterPortActionToReturn);
+			}else{
+				activeGame.getRedActionQueue().add(enterPortActionToReturn);
+			}
+		}		
+		
 		return enterPortActionToReturn;
 	}
 	
@@ -796,8 +808,17 @@ public class Facade {
 				shipVO = new RedShipVO(shipToRepair.getId(), shipToRepair.getSpeed(), newArmor, newAmmo, newTorpedo, shipToRepair.getViewRange(), shipToRepair.getSize(), shipToRepair.getPosition(), shipToRepair.getOrientation());
 			break;
 			}	
-			
+			shipToRepair.setAmmo(newAmmo);
+			shipToRepair.setArmor(newArmor);
+			shipToRepair.setTorpedo(newTorpedo);
 			enterPortActionToReturn = new EnterPortAction(shipVO, 2);
+			
+			//Comparo si es igual al jugador ROJO
+			if(activeGame.getTurn().getActivePlayer().getUsername().compareTo(activeGame.getRedPlayer().getUsername()) == 0){
+				activeGame.getBlueActionQueue().add(enterPortActionToReturn);
+			}else{
+				activeGame.getRedActionQueue().add(enterPortActionToReturn);
+			}
 		}
 		return enterPortActionToReturn;
 	}
