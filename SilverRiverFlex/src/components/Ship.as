@@ -35,6 +35,7 @@ package components
 		private var _maxArmor:int;
 		private var _port1Enabled:Boolean;
 		private var _port2Enabled:Boolean;
+		private var _isInPort:Boolean;
 		
 		public function Ship(id:int, c:Coordinate, d:Cardinal, s:int, size:int, armor:int, ammo:int, torpedoes:int, viewRange:int)
 		{
@@ -53,6 +54,7 @@ package components
 			_viewRange = viewRange;
 			_port1Enabled = true;
 			_port2Enabled = true;
+			_isInPort = false;
 			this.rotation = d.cardinal;
 			updateCoordinates();
 			this.addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void
@@ -186,6 +188,16 @@ package components
 		{
 			_viewRange = value;
 		}		
+		
+		public function get isInPort():Boolean 
+		{
+			return _isInPort;
+		}
+		
+		public function set isInPort(value:Boolean):void 
+		{
+			_isInPort = value;
+		}
 		
 		public function updateCoordinates():void
 		{
