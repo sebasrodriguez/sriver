@@ -236,6 +236,7 @@ package components
 				{
 					if (isActivePlayer() && !_isAnimating && _selectedShip != null && _menu.currentFireMode == Menu.MENU_FIRE_MODE_TORPEDO && _selectedShip.hasTorpedoes())
 					{
+						_isAnimating = true;
 						_main.wsRequest.fireTorpedo(_gameId, _selectedShip.shipId);
 					}
 					else if (isActivePlayer && _selectedShip != null && _menu.currentFireMode == Menu.MENU_FIRE_MODE_BULLET)
@@ -523,17 +524,7 @@ package components
 			{
 				//si el barco es distinto al seleccionado, desseleccionamos el anterior y seleccionamos el nuevo
 				if (_selectedShip != ship)
-					selectShip(ship);
-				else {
-					/*if (_menu.currentMode == Menu.MENU_MODE_MOVE) {
-						if (_selectedShip != null && isActivePlayer() && _turn.hasMovesLeft() && !_isAnimating)
-						{
-							var c:Coordinate = _gridComponent.getCoordinateFromXY(_gridComponent.mouseX, _gridComponent.mouseY);
-							if(!c.equals(ship.currentPos))
-								moveAction(ship, c);
-						}
-					}*/
-				}
+					selectShip(ship);				
 			}
 			else
 			{
@@ -550,6 +541,7 @@ package components
 							coor.x = ship.currentPos.c;
 							coor.y = ship.currentPos.r;
 							
+							_isAnimating = true;
 							// Llamamos al webservice con la accion de disparo
 							_main.wsRequest.fireAmmo(_gameId, _selectedShip.shipId, coor);
 						}
@@ -692,12 +684,11 @@ package components
 		
 		// Dispara un projectil desde un barco dado
 		private function fireAction(firingShip:Ship, affectedShip:Ship, newArmor:int, hit:Boolean, target:Coordinate, projectile:int, func:Function = null):void
-		{
-			_isAnimating = true;
+		{			
 			updateMovesLeft();
 			
 			if (projectile == Projectile.WEAPON_TYPE_BULLET)
-			{
+			{				
 				// Decremento la cantidad de balas
 				firingShip.decreaseAmmo();
 				// Ejecuto la accion de disparar
@@ -720,7 +711,7 @@ package components
 					});
 			}
 			else
-			{
+			{				
 				// Decremento la cantidad de torpedos
 				firingShip.decreaseTorpedoes();
 				var coordinate:Coordinate = null;
