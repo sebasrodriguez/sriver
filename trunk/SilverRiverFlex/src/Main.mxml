@@ -91,8 +91,7 @@
 			
 			public function reloadGame():void
 			{
-				var pageUrl:String = ExternalInterface.call("window.location.href.toString");
-				navigateToURL(new URLRequest(pageUrl), "_self");
+				ExternalInterface.call("reloadPage()");				
 			}
 		]]>
 	</fx:Script>
