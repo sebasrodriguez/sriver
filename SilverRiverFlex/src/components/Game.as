@@ -473,8 +473,7 @@ package components
 		
 		// Evento disparado cuando el jugador finaliza el turno
 		public function endTurnHandler(response:ResultEvent):void
-		{
-			trace("el server ya tiene el end turn");
+		{			
 			endTurnAction();
 		}
 		
@@ -972,11 +971,8 @@ package components
 		
 		// Habilita las celdas disponibles de movimiento para el barco seleccionado
 		public function enableMovement(ship:Ship):void
-		{
-			
-			_gridComponent.unblockCells(ship.coordinates);
-			for (var f:int = 0; f < ship.coordinates.length; f ++)
-				_gridComponent.enableCell(ship.coordinates[f]);
+		{			
+			_gridComponent.unblockCells(ship.coordinates);			
 			var nomore:Boolean = false;
 			var offset:Number = Math.floor(ship.size / 2);
 			var i:int = 0;
